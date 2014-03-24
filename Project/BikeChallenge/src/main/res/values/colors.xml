@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Color for Navigation -->
+    <color name="navigation_social">#FFC552</color>
+    <color name="navigation_drive">#14CC74</color>
+    <color name="navigation_charts">#94BEFF</color>
+
+    <!-- Color of Activity Background -->
+    <color name="activity_social">@color/navigation_social</color>
+    <color name="activity_drive">@color/navigation_drive</color>
+    <color name="activity_charts">@color/navigation_charts</color>
+
+    <!-- Color of Foreground -->
+    <color name="activity_foreground">#FFF</color>
+</resources>

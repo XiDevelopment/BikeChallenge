@@ -1,21 +1,22 @@
 package at.xidev.bikechallenge;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.os.Build;
 
-public class DriveActivity extends ActionBarActivity {
+public class SocialActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drive);
+        setContentView(R.layout.activity_social);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new PlaceholderFragment())
@@ -23,18 +24,12 @@ public class DriveActivity extends ActionBarActivity {
         }
     }
 
-    // TEST ADI
-    // TODO REMOVE
-    public void buttonOnClick(View view) {
-        Intent intent = new Intent(DriveActivity.this, SocialActivity.class);
-        startActivity(intent);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
+        
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.drive, menu);
+        getMenuInflater().inflate(R.menu.social, menu);
         return true;
     }
 
@@ -60,8 +55,8 @@ public class DriveActivity extends ActionBarActivity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_drive, container, false);
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_social, container, false);
             return rootView;
         }
     }
