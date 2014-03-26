@@ -4,4 +4,149 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.mycompany.myapp.SocialActivity"
-    tools:ignore="MergeRootFrame" />
+    tools:ignore="MergeRootFrame"
+    android:background="@color/activity_social">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:padding="@dimen/navigation_padding"
+        android:layout_height="@dimen/navigation_height"
+        android:id="@+id/linearLayout">
+
+
+        <Button
+            android:background="@color/navigation_social"
+            android:layout_height="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="0.333"
+            android:text="Social"
+            android:id="@+id/buttonSocial" />
+
+        <Button
+            android:background="@color/navigation_drive"
+            android:layout_height="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="0.334"
+            android:text="Drive"
+            android:id="@+id/buttonDrive" />
+
+        <Button
+            android:background="@color/navigation_charts"
+            android:layout_height="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="0.333"
+            android:text="Charts"
+            android:id="@+id/buttonCharts" />
+    </LinearLayout>
+
+
+    <ScrollView
+        android:layout_marginTop="@dimen/navigation_height"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_padding">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/activity_padding"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/social_list_element_height"
+                android:background="@color/activity_foreground"></RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>
