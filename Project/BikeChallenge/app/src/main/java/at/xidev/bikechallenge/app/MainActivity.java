@@ -31,6 +31,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
      */
     ViewPager mViewPager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,5 +153,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             }
             return null;
         }
+
     }
+
 }
