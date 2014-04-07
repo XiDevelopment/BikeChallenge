@@ -9,6 +9,7 @@ import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -35,6 +36,10 @@ import java.util.List;
 
  */
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
+    /**
+     * final String for the SharedPreferences name
+     */
+    public static final String PREFS_NAME = "SettingsPrefs";
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -93,6 +98,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        if (settings.getBoolean("loggedIn", false)) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
     }
 
     private void populateAutoComplete() {
@@ -169,6 +182,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
     }
 
     private void register() {
+        //save the state if logged in or not
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME,0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("loggedIn", true);
+        editor.commit();
+
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         //calling finish to prevent back button functionalities
