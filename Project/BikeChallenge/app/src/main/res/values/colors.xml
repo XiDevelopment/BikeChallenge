@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="drive_background">#AEFF99</color>
+    <color name="social_background">#FFC243</color>
+    <color name="charts_background">#7E7DB2</color>
+</resources>
