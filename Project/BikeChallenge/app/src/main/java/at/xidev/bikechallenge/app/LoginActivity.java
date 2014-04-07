@@ -172,8 +172,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
         }
     }
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
+        //check if email address matches a regex of email addresses
+        return email.matches("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b");
     }
 
     private boolean isPasswordValid(String password) {
