@@ -21,7 +21,25 @@
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:name="com.google.android.gms.maps.MapFragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         tools:layout="@layout/abc_simple_decor" />
+
+    <!--<fragment
+        android:id="@+id/map2"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/> -->
+
+    <Button
+        android:id="@+id/button_getpos"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="get position" />
+
+    <TextView
+        android:id="@+id/tv_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="position"/>
 
 </LinearLayout>
