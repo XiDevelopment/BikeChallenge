@@ -11,6 +11,7 @@
     tools:context="at.xidev.bikechallenge.app.LoginActivity">
 
     <!-- Login progress -->
+
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
@@ -18,7 +19,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:visibility="gone"/>
-
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
@@ -32,11 +32,11 @@
                 android:orientation="vertical">
 
                 <AutoCompleteTextView
-                    android:id="@+id/email"
+                    android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_email"
-                    android:inputType="textEmailAddress"
+                    android:hint="@string/prompt_username"
+                    android:inputType="textAutoCorrect"
                     android:maxLines="1"
                     android:singleLine="true"/>
 
@@ -53,7 +53,7 @@
                     android:singleLine="true"/>
 
                 <Button
-                    android:id="@+id/email_sign_in_button"
+                    android:id="@+id/username_sign_in_button"
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                     android:text="@string/action_sign_in"
                     android:textStyle="bold"/>
                 <Button
-                    android:id="@+id/email_register_button"
+                    android:id="@+id/username_register_button"
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
