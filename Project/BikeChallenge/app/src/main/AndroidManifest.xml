@@ -47,7 +47,15 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCyYiMW0voBsCCLv5D5xi_34ZqhAgrRpAs" />
 
+        <activity
+            android:name="at.xidev.bikechallenge.app.RegisterActivity"
+            android:label="@string/title_activity_register"
+            android:parentActivityName="at.xidev.bikechallenge.app.LoginActivity"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="LoginActivity" />
+        </activity>
     </application>
-
 
 </manifest>
