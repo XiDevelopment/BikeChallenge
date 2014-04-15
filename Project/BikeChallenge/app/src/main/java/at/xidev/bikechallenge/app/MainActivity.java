@@ -10,6 +10,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -30,7 +32,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +127,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 case 0:
                     return FragmentSocial.newInstance();
                 case 1:
-                    return FragmentDrive.newInstance();
+                    // return FragmentDrive.newInstance();
+                    return FragmentCharts.newInstance(); // TO DEVELOP Social FRAGMENT WITH VIRTUAL DEVICE
                 case 2:
                     return FragmentCharts.newInstance();
                 default:

@@ -1,27 +1,24 @@
 package at.xidev.bikechallenge.app;
 
+import android.content.Context;
+import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.location.LocationManager;
-import android.content.Context;
-import android.location.Criteria;
-import android.location.Location;
 import android.widget.Toast;
-import android.widget.Button;
-import android.content.Intent;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.SupportMapFragment;
 
 
 /**
@@ -57,29 +54,26 @@ public class FragmentDrive extends Fragment {
             startActivity(intent);
             now = new LatLng(47.2641, 11.3445);
             Toast.makeText(getActivity(), "BITTE GPS EINSCHALTEN", Toast.LENGTH_LONG).show();
-        }else if (!gpsEnabled && networkEnabled){
+        } else if (!gpsEnabled && networkEnabled) {
             //only network is available
             provider = locationManager.NETWORK_PROVIDER;
             location = locationManager.getLastKnownLocation(provider);
             Toast.makeText(getActivity(), "Lat: " + location.getLatitude() + " . Lon: " +
-                    location.getLongitude()  + " - " + location.getProvider(), Toast.LENGTH_LONG).show();
+                    location.getLongitude() + " - " + location.getProvider(), Toast.LENGTH_LONG).show();
 
             //Coordinates of current Position (WLAN)
             now = new LatLng(location.getLatitude(), location.getLongitude());
-        }else{
+        } else {
             //gps and network are available. use gps
             Criteria criteria = new Criteria();
             provider = locationManager.getBestProvider(criteria, false);
             location = locationManager.getLastKnownLocation(provider);
             Toast.makeText(getActivity(), "Lat: " + location.getLatitude() + " . Lon: " +
-                    location.getLongitude()  + " - " + location.getProvider(), Toast.LENGTH_LONG).show();
+                    location.getLongitude() + " - " + location.getProvider(), Toast.LENGTH_LONG).show();
 
             //Coordinates of current Position (GPS)
             now = new LatLng(location.getLatitude(), location.getLongitude());
         }
-
-
-
 
 
         //Coordinates of Jakob and Ricks Home
@@ -109,8 +103,6 @@ public class FragmentDrive extends Fragment {
 
         return rootView;
     }
-
-
 
 
 }
