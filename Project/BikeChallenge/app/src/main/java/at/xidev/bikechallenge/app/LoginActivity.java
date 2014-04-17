@@ -143,7 +143,7 @@ public class LoginActivity extends Activity {
 
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (!isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -179,7 +179,7 @@ public class LoginActivity extends Activity {
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() >= 3;
+        return password.length() > 4;
     }
 
     private void register() {

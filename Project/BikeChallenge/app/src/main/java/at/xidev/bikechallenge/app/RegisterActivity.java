@@ -17,6 +17,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
+import at.xidev.bikechallenge.app.persistence.ServerConnector;
+import at.xidev.bikechallenge.app.tools.BCrypt;
+
 
 /**
  * A login screen that offers login via email/password.
@@ -108,29 +113,29 @@ public class RegisterActivity extends Activity {
         boolean cancel = false;
         View focusView = null;
 
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
+        // Check for a valid username.
+        if (TextUtils.isEmpty(username)) {
+            mUsernameView.setError(getString(R.string.error_field_required));
+            focusView = mUsernameView;
             cancel = true;
         }
 
-        // Check if both passwords are the same
-        if (!arePasswordsEqual(password, passwordCheck)) {
+        // Check for a valid password.
+        if (!isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
+            cancel = true;
+        } // Check if both passwords are the same
+        else if (!arePasswordsEqual(password, passwordCheck)) {
             mPasswordCheckView.setError(getString(R.string.reg_error_password_match));
             focusView = mPasswordCheckView;
             cancel = true;
         }
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mUsernameView.setError(getString(R.string.error_field_required));
-            focusView = mUsernameView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mUsernameView.setError(getString(R.string.reg_error_invalid_email));
-            focusView = mUsernameView;
+        // Check for a valid email address if the user entered one.
+        if (!TextUtils.isEmpty(email) && !isEmailValid(email)) {
+            mEmailView.setError(getString(R.string.reg_error_invalid_email));
+            focusView = mEmailView;
             cancel = true;
         }
 
@@ -141,19 +146,18 @@ public class RegisterActivity extends Activity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+            password = BCrypt.hashpw(password, BCrypt.gensalt(11));
             showProgress(true);
-            mAuthTask = new UserRegisterTask(username, email, password);
+            mAuthTask = new UserRegisterTask(new User(username, password, 0));
             mAuthTask.execute((Void) null);
         }
     }
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.matches("\\b[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\\.)+[A-Z]{2,4}\\b");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 4 && password.matches("(.*\\d+)+(.*\\d*)*");
     }
 
     private boolean arePasswordsEqual(String pw1, String pw2) {
@@ -201,20 +205,19 @@ public class RegisterActivity extends Activity {
      */
     public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mUsername;
-        private final String mEmail;
-        private final String mPassword;
+        private final User mUser;
+        private final Gson gson;
 
-        UserRegisterTask(String username, String email, String password) {
-            mUsername = username;
-            mEmail = email;
-            mPassword = password;
+        UserRegisterTask(User user) {
+            mUser = user;
+            gson = new Gson();
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
+            ServerConnector.register(gson.toJson(mUser, User.class));
             // TODO: register the new account here.
             return true;
         }
@@ -227,6 +230,7 @@ public class RegisterActivity extends Activity {
             if (success) {
                 finish();
             } else {
+                //TODO: what to do after unsuccessful registration
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
