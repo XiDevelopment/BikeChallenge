@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import at.xidev.bikechallenge.app.persistence.ServerConnector;
+import at.xidev.bikechallenge.app.persistence.RESTClient;
 import at.xidev.bikechallenge.app.tools.BCrypt;
 
 
@@ -216,8 +216,13 @@ public class RegisterActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-
-            ServerConnector.register(gson.toJson(mUser, User.class));
+            try {
+                String resp = RESTClient.post(gson.toJson(mUser, User.class), "user/");
+            }
+            catch (Exception e) {
+                //TODO: exception handling
+                e.printStackTrace();
+            }
             // TODO: register the new account here.
             return true;
         }

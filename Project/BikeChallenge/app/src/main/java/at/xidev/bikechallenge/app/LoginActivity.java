@@ -30,6 +30,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.xidev.bikechallenge.app.persistence.RESTClient;
+import at.xidev.bikechallenge.app.tools.BCrypt;
+
 
 /**
  * A login screen that offers login via email/password.
@@ -99,6 +102,7 @@ public class LoginActivity extends Activity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
+        //TODO: maybe switch to OnResume for checking after registering
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         if (settings.getBoolean("loggedIn", false)) {
             Intent intent = new Intent(this, MainActivity.class);
@@ -168,6 +172,7 @@ public class LoginActivity extends Activity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             //showProgress(true);
+            password = BCrypt.hashpw(password, BCrypt.gensalt(11));
             mAuthTask = new UserLoginTask(username, password);
             mAuthTask.execute((Void) null);
         }
@@ -239,13 +244,13 @@ public class LoginActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
+            String resp = "";
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+                resp = RESTClient.get("login/" + mUsername + "/" + mPassword);
+            }
+            catch (Exception e) {
+                //TODO: exception handling
+                e.printStackTrace();
             }
 
             for (String credential : DUMMY_CREDENTIALS) {
@@ -256,8 +261,7 @@ public class LoginActivity extends Activity {
                 }
             }
 
-            // TODO: register the new account here.
-            return true;
+            return resp.equals("OK");
         }
 
         @Override
