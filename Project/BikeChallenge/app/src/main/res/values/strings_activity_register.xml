@@ -9,6 +9,7 @@
     <string name="reg_action_register">Register</string>
 
     <string name="reg_error_invalid_email">This email address is invalid</string>
+    <string name="reg_error_invalid_username">This username is already taken</string>
     <string name="reg_error_invalid_password">This password is too short</string>
     <string name="reg_error_password_match">The passwords do not match</string>
     <string name="reg_error_incorrect_password">This password is incorrect</string>

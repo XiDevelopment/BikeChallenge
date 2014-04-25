@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import android.os.Build;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import at.xidev.bikechallenge.app.model.User;
 import at.xidev.bikechallenge.app.persistence.RESTClient;
 import at.xidev.bikechallenge.app.tools.BCrypt;
 
@@ -148,16 +150,17 @@ public class RegisterActivity extends Activity {
             // perform the user login attempt.
             password = BCrypt.hashpw(password, BCrypt.gensalt(11));
             showProgress(true);
-            mAuthTask = new UserRegisterTask(new User(username, password, 0));
+            mAuthTask = new UserRegisterTask(new User(username, password, 0, email));
             mAuthTask.execute((Void) null);
         }
     }
     private boolean isEmailValid(String email) {
-        return email.matches("\\b[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\\.)+[A-Z]{2,4}\\b");
+        return email.matches("\\b[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,4}\\b");
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 4 && password.matches("(.*\\d+)+(.*\\d*)*");
+        //contains a number: && password.matches("(.*\\d+)+(.*\\d*)*")
+        return password.length() > 2;
     }
 
     private boolean arePasswordsEqual(String pw1, String pw2) {
@@ -215,16 +218,21 @@ public class RegisterActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+            String resp ="";
             try {
-                String resp = RESTClient.post(gson.toJson(mUser, User.class), "user/");
+                resp = RESTClient.post(gson.toJson(mUser, User.class), "user/"+mUser.getName());
             }
             catch (Exception e) {
                 //TODO: exception handling
                 e.printStackTrace();
             }
-            // TODO: register the new account here.
-            return true;
+
+            if(resp.equals("OK"))
+                return true;
+            else if(resp.equals("Error"))
+                return false;
+            else
+                return false;
         }
 
         @Override
@@ -233,11 +241,17 @@ public class RegisterActivity extends Activity {
             showProgress(false);
 
             if (success) {
+                //save username and encrypted password
+                SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME,0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("username", mUser.getName());
+                editor.putString("password", mUser.getPassword());
+                editor.putBoolean("loggedIn", true);
+                editor.commit();
                 finish();
             } else {
-                //TODO: what to do after unsuccessful registration
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                mUsernameView.setError(getString(R.string.reg_error_invalid_username));
+                mUsernameView.requestFocus();
             }
         }
 

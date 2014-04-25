@@ -27,9 +27,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.xidev.bikechallenge.app.model.User;
 import at.xidev.bikechallenge.app.persistence.RESTClient;
 import at.xidev.bikechallenge.app.tools.BCrypt;
 
@@ -43,14 +48,7 @@ public class LoginActivity extends Activity {
      * final String for the SharedPreferences name
      */
     public static final String PREFS_NAME = "SettingsPrefs";
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "dev:dev", "admin:admin",
-    };
+    public static final String INTENT_USER = "UserObject";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -102,14 +100,17 @@ public class LoginActivity extends Activity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        //TODO: maybe switch to OnResume for checking after registering
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         if (settings.getBoolean("loggedIn", false)) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            showProgress(true);
+            mAuthTask = new UserLoginTask(settings.getString("username",""), settings.getString("password",""));
+            mAuthTask.execute((Void) null);
         }
-
     }
 
     /*
@@ -158,10 +159,6 @@ public class LoginActivity extends Activity {
             mUsernameView.setError(getString(R.string.error_field_required));
             focusView = mUsernameView;
             cancel = true;
-        } else if (!isUsernameValid(username)) {
-            mUsernameView.setError(getString(R.string.error_invalid_username));
-            focusView = mUsernameView;
-            cancel = true;
         }
 
         if (cancel) {
@@ -171,25 +168,23 @@ public class LoginActivity extends Activity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            //showProgress(true);
+            showProgress(true);
+            //TODO: password hashen
             password = BCrypt.hashpw(password, BCrypt.gensalt(11));
             mAuthTask = new UserLoginTask(username, password);
             mAuthTask.execute((Void) null);
         }
     }
-    private boolean isUsernameValid(String username) {
-        //TODO: check on server if username is valid
-        return true;
-    }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        //TODO: Maybe switch to register logic
+        return password.length() > 2;
     }
 
     private void register() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
+        Log.v("loginActivity", "closed register");
     }
 
     /**
@@ -236,6 +231,7 @@ public class LoginActivity extends Activity {
 
         private final String mUsername;
         private final String mPassword;
+        private String resp = "";
 
         UserLoginTask(String username, String password) {
             mUsername = username;
@@ -244,45 +240,37 @@ public class LoginActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String resp = "";
             try {
-                resp = RESTClient.get("login/" + mUsername + "/" + mPassword);
+                // + "/" + mPassword
+                resp = RESTClient.get("user/" + mUsername);
             }
             catch (Exception e) {
                 //TODO: exception handling
                 e.printStackTrace();
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mUsername)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            return resp.equals("OK");
+            return !resp.equals("Error");
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            showProgress(false);
 
             if (success) {
                 //save username and encrypted password
                 SharedPreferences settings = getSharedPreferences(PREFS_NAME,0);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("username", mUsername);
-                editor.putInt("password", mPassword.hashCode());
+                editor.putString("password", mPassword);
                 editor.putBoolean("loggedIn", true);
                 editor.commit();
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra(INTENT_USER, resp);
                 startActivity(intent);
                 //calling finish to prevent back button functionalities
                 finish();
             } else {
+                showProgress(false);
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
