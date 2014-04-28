@@ -1,7 +1,12 @@
 package at.xidev.bikechallenge.app;
 
+<<<<<<< HEAD
 import android.content.Intent;
 import android.content.SharedPreferences;
+=======
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+>>>>>>> master
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +17,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -32,6 +40,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    FragmentDrive fragmentDrive;
+
 
 
     @Override
@@ -73,6 +83,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setTabListener(this)
             );
         }
+
     }
 
 
@@ -121,6 +132,31 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
+    public void startButtonMain(View view) {
+        fragmentDrive.startButton(view);
+    }
+
+    public void stopButtonMain(View view) {
+        fragmentDrive.stopButton(view);
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Closing BikeChallenge")
+                .setMessage("Are you sure you want to close BikeChallenge?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -138,7 +174,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 case 0:
                     return FragmentSocial.newInstance();
                 case 1:
-                    return FragmentDrive.newInstance();
+                    fragmentDrive = FragmentDrive.newInstance();
+                    return fragmentDrive;
                 case 2:
                     return FragmentCharts.newInstance();
                 default:
@@ -165,6 +202,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             }
             return null;
         }
+
+
 
     }
 

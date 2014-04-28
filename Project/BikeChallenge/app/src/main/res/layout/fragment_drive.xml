@@ -11,35 +11,117 @@
     android:background="#AEFF99"
     >
 
-    <TextView
+    <!--<TextView
         android:id="@+id/section_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title_section_drive"/>
+        android:text="@string/title_section_drive"/> -->
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
+
+        <TextView
+            android:id="@+id/tv_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textSize="35dp"
+            android:layout_weight="1"
+            android:text="@string/distance"/>
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:textSize="35dp"
+            android:layout_weight="1"
+            android:text="@string/time"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
+
+        <TextView
+            android:id="@+id/tv_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textSize="25dp"
+            android:layout_weight="1"
+            android:text="@string/speed"/>
+
+        <TextView
+            android:id="@+id/tv_avspeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="15dp"
+            android:layout_weight="1"
+            android:text="@string/avspeed"/>
+
+        <TextView
+            android:id="@+id/tv_co2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:textSize="25dp"
+            android:layout_weight="1"
+            android:text="@string/co2saved"/>
+
+    </LinearLayout>
+
+
+
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_weight="1"
         tools:layout="@layout/abc_simple_decor" />
+    <!-- android:layout_height="260dp" -->
 
-    <!--<fragment
-        android:id="@+id/map2"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/> -->
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
 
     <Button
-        android:id="@+id/button_getpos"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="get position" />
+        android:layout_gravity="left"
+        android:text="Start"
+        android:background="@drawable/green_button"
+        style="@style/button_text"
+        android:layout_weight="1"
+        android:onClick="startButtonMain" />
+    <Button
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="right"
+        android:text="Stop"
+        android:background="@drawable/red_button"
+        style="@style/button_text"
+        android:layout_weight="1"
+        android:onClick="stopButtonMain" />
 
-    <TextView
-        android:id="@+id/tv_position"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="position"/>
+        </LinearLayout>
+
+
+
+
+
 
 </LinearLayout>
