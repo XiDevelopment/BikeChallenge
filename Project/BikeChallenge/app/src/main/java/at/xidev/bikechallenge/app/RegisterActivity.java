@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -20,14 +19,13 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import at.xidev.bikechallenge.app.model.User;
-import at.xidev.bikechallenge.app.persistence.RESTClient;
-import at.xidev.bikechallenge.app.tools.BCrypt;
+import at.xidev.bikechallenge.model.User;
+import at.xidev.bikechallenge.persistence.RESTClient;
+import at.xidev.bikechallenge.tools.BCrypt;
 
 
 /**
  * A login screen that offers login via email/password.
-
  */
 public class RegisterActivity extends Activity {
 
@@ -154,6 +152,7 @@ public class RegisterActivity extends Activity {
             mAuthTask.execute((Void) null);
         }
     }
+
     private boolean isEmailValid(String email) {
         return email.matches("\\b[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,4}\\b");
     }
@@ -202,6 +201,7 @@ public class RegisterActivity extends Activity {
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -218,18 +218,17 @@ public class RegisterActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String resp ="";
+            String resp = "";
             try {
-                resp = RESTClient.post(gson.toJson(mUser, User.class), "user/"+mUser.getName());
-            }
-            catch (Exception e) {
+                resp = RESTClient.post(gson.toJson(mUser, User.class), "user/" + mUser.getName());
+            } catch (Exception e) {
                 //TODO: exception handling
                 e.printStackTrace();
             }
 
-            if(resp.equals("OK"))
+            if (resp.equals("OK"))
                 return true;
-            else if(resp.equals("Error"))
+            else if (resp.equals("Error"))
                 return false;
             else
                 return false;
@@ -242,7 +241,7 @@ public class RegisterActivity extends Activity {
 
             if (success) {
                 //save username and encrypted password
-                SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME,0);
+                SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("username", mUser.getName());
                 editor.putString("password", mUser.getPassword());

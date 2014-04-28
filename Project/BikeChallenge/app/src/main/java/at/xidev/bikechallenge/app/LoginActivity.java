@@ -34,9 +34,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import at.xidev.bikechallenge.app.model.User;
-import at.xidev.bikechallenge.app.persistence.RESTClient;
-import at.xidev.bikechallenge.app.tools.BCrypt;
+import at.xidev.bikechallenge.model.User;
+import at.xidev.bikechallenge.persistence.RESTClient;
+import at.xidev.bikechallenge.tools.BCrypt;
 
 
 /**

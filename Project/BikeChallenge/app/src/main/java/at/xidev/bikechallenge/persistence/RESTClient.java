@@ -1,4 +1,4 @@
-package at.xidev.bikechallenge.app.persistence;
+package at.xidev.bikechallenge.persistence;
 
 import android.util.Log;
 
