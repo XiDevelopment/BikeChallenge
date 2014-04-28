@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="at.xidev.bikechallenge.app" >
+    package="at.xidev.bikechallenge.view" >
 
     <uses-library android:name="com.google.android.maps" />
 
@@ -21,11 +21,11 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="at.xidev.bikechallenge.app.MainActivity"
+            android:name="at.xidev.bikechallenge.view.MainActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="at.xidev.bikechallenge.app.LoginActivity"
+            android:name="at.xidev.bikechallenge.view.LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateHidden" >
             <intent-filter>
@@ -43,9 +43,9 @@
             android:value="AIzaSyCyYiMW0voBsCCLv5D5xi_34ZqhAgrRpAs" />
 
         <activity
-            android:name="at.xidev.bikechallenge.app.RegisterActivity"
+            android:name="at.xidev.bikechallenge.view.RegisterActivity"
             android:label="@string/title_activity_register"
-            android:parentActivityName="at.xidev.bikechallenge.app.LoginActivity"
+            android:parentActivityName="at.xidev.bikechallenge.view.LoginActivity"
             android:windowSoftInputMode="adjustResize|stateVisible" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
