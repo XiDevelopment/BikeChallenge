@@ -1,12 +1,9 @@
 package at.xidev.bikechallenge.app;
 
-<<<<<<< HEAD
 import android.content.Intent;
 import android.content.SharedPreferences;
-=======
 import android.app.AlertDialog;
 import android.content.DialogInterface;
->>>>>>> master
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
