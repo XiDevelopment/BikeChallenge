@@ -2,12 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="at.xidev.bikechallenge.app.FragmentSocial">
+    tools:context="at.xidev.bikechallenge.app.FragmentSocial"
+    android:background="@color/social_background">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
 
+        <LinearLayout
+            android:id="@+id/friends_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+            <!-- Friends are loaded in here! -->
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>
