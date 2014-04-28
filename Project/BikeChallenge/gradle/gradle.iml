@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD:Project/BikeChallenge/gradle/gradle.iml
+<module external.linked.project.path="C:\Users\Rick\Development\BikeChallenge\branches\rick\Project\BikeChallenge\gradle" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+=======
 <module external.linked.project.path="C:\Users\Rick\Development\BikeChallenge\trunk\Project\BikeChallenge" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+>>>>>>> master:Project/BikeChallenge/BikeChallenge.iml
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">

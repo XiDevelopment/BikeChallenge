@@ -1,0 +1,15 @@
+<resources>
+        <string name="title_activity_login">BikeChallenge</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_short">Sign in short</string>
+    <string name="action_login_register">Register</string>
+
+    <string name="error_invalid_username">This username is invalid</string>
+    <string name="error_invalid_password">This password is invalid (At least 5 characters and one of them a number</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+</resources>

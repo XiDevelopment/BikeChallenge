@@ -1,7 +1,12 @@
 package at.xidev.bikechallenge.app;
 
+<<<<<<< HEAD
+import android.content.Intent;
+import android.content.SharedPreferences;
+=======
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+>>>>>>> master
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -98,6 +103,16 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_log_out) {
+            SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean("loggedIn", false);
+            editor.commit();
+
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
