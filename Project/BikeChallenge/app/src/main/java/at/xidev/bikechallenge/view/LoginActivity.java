@@ -1,15 +1,16 @@
-package at.xidev.bikechallenge.app;
+package at.xidev.bikechallenge.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,126 +19,129 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
-import at.xidev.bikechallenge.app.model.User;
-import at.xidev.bikechallenge.app.persistence.RESTClient;
-import at.xidev.bikechallenge.app.tools.BCrypt;
+import at.xidev.bikechallenge.persistence.RESTClient;
+import at.xidev.bikechallenge.tools.BCrypt;
 
 
 /**
  * A login screen that offers login via email/password.
 
  */
-public class RegisterActivity extends Activity {
-
+public class LoginActivity extends Activity {
+    /**
+     * final String for the SharedPreferences name
+     */
+    public static final String PREFS_NAME = "SettingsPrefs";
+    public static final String INTENT_USER = "UserObject";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserRegisterTask mAuthTask = null;
+    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private EditText mUsernameView;
-    private EditText mEmailView;
     private EditText mPasswordView;
-    private EditText mPasswordCheckView;
-
     private View mProgressView;
     private View mLoginFormView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
-        setupActionBar();
+        setContentView(R.layout.activity_login);
 
         // Set up the login form.
         mUsernameView = (EditText) findViewById(R.id.username);
-        mEmailView = (EditText) findViewById(R.id.email);
+        //populateAutoComplete();
+
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordCheckView = (EditText) findViewById(R.id.password_check);
-        mPasswordCheckView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.register || id == EditorInfo.IME_NULL) {
-                    attemptRegister();
+                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                    attemptLogin();
                     return true;
                 }
                 return false;
             }
         });
 
-        Button mUserRegisterButton = (Button) findViewById(R.id.user_register_button);
-        mUserRegisterButton.setOnClickListener(new OnClickListener() {
+        Button mUsernameSignInButton = (Button) findViewById(R.id.login_sign_in_button);
+        mUsernameSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptRegister();
+                attemptLogin();
             }
         });
 
-        mLoginFormView = findViewById(R.id.register_form);
-        mProgressView = findViewById(R.id.register_progress);
-    }
+        Button mUsernameRegisterButton = (Button) findViewById(R.id.login_register_button);
+        mUsernameRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                register();
+            }
+        });
 
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void setupActionBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            // Show the Up button in the action bar.
-            getActionBar().setDisplayHomeAsUpEnabled(true);
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        if (settings.getBoolean("loggedIn", false)) {
+            showProgress(true);
+            mAuthTask = new UserLoginTask(settings.getString("username",""), settings.getString("password",""));
+            mAuthTask.execute((Void) null);
         }
     }
+
+    /*
+    private void populateAutoComplete() {
+        if (VERSION.SDK_INT >= 14) {
+            // Use ContactsContract.Profile (API 14+)
+            getLoaderManager().initLoader(0, null, this);
+        } else if (VERSION.SDK_INT >= 8) {
+            // Use AccountManager (API 8+)
+            new SetupEmailAutoCompleteTask().execute(null, null);
+        }
+    }
+    */
 
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    public void attemptRegister() {
+    public void attemptLogin() {
         if (mAuthTask != null) {
             return;
         }
 
         // Reset errors.
         mUsernameView.setError(null);
-        mEmailView.setError(null);
         mPasswordView.setError(null);
-        mPasswordCheckView.setError(null);
 
         // Store values at the time of the login attempt.
         String username = mUsernameView.getText().toString();
-        String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        String passwordCheck = mPasswordCheckView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
+
+
+        // Check for a valid password, if the user entered one.
+        if (!isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
+            cancel = true;
+        }
 
         // Check for a valid username.
         if (TextUtils.isEmpty(username)) {
             mUsernameView.setError(getString(R.string.error_field_required));
             focusView = mUsernameView;
-            cancel = true;
-        }
-
-        // Check for a valid password.
-        if (!isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        } // Check if both passwords are the same
-        else if (!arePasswordsEqual(password, passwordCheck)) {
-            mPasswordCheckView.setError(getString(R.string.reg_error_password_match));
-            focusView = mPasswordCheckView;
-            cancel = true;
-        }
-
-        // Check for a valid email address if the user entered one.
-        if (!TextUtils.isEmpty(email) && !isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.reg_error_invalid_email));
-            focusView = mEmailView;
             cancel = true;
         }
 
@@ -148,23 +152,23 @@ public class RegisterActivity extends Activity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            password = BCrypt.hashpw(password, BCrypt.gensalt(11));
             showProgress(true);
-            mAuthTask = new UserRegisterTask(new User(username, password, 0, email));
+            //TODO: password hashen
+            password = BCrypt.hashpw(password, BCrypt.gensalt(11));
+            mAuthTask = new UserLoginTask(username, password);
             mAuthTask.execute((Void) null);
         }
     }
-    private boolean isEmailValid(String email) {
-        return email.matches("\\b[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,4}\\b");
-    }
 
     private boolean isPasswordValid(String password) {
-        //contains a number: && password.matches("(.*\\d+)+(.*\\d*)*")
+        //TODO: Maybe switch to register logic
         return password.length() > 2;
     }
 
-    private boolean arePasswordsEqual(String pw1, String pw2) {
-        return pw1.equals(pw2);
+    private void register() {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+        Log.v("loginActivity", "closed register");
     }
 
     /**
@@ -202,56 +206,57 @@ public class RegisterActivity extends Activity {
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final User mUser;
-        private final Gson gson;
+        private final String mUsername;
+        private final String mPassword;
+        private String resp = "";
 
-        UserRegisterTask(User user) {
-            mUser = user;
-            gson = new Gson();
+        UserLoginTask(String username, String password) {
+            mUsername = username;
+            mPassword = password;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String resp ="";
             try {
-                resp = RESTClient.post(gson.toJson(mUser, User.class), "user/"+mUser.getName());
+                // + "/" + mPassword
+                resp = RESTClient.get("user/" + mUsername);
             }
             catch (Exception e) {
                 //TODO: exception handling
                 e.printStackTrace();
             }
-
-            if(resp.equals("OK"))
-                return true;
-            else if(resp.equals("Error"))
-                return false;
-            else
-                return false;
+            return !resp.equals("Error");
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            showProgress(false);
 
             if (success) {
                 //save username and encrypted password
-                SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME,0);
+                SharedPreferences settings = getSharedPreferences(PREFS_NAME,0);
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString("username", mUser.getName());
-                editor.putString("password", mUser.getPassword());
+                editor.putString("username", mUsername);
+                editor.putString("password", mPassword);
                 editor.putBoolean("loggedIn", true);
                 editor.commit();
+
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra(INTENT_USER, resp);
+                startActivity(intent);
+                //calling finish to prevent back button functionalities
                 finish();
             } else {
-                mUsernameView.setError(getString(R.string.reg_error_invalid_username));
-                mUsernameView.requestFocus();
+                showProgress(false);
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
             }
         }
 

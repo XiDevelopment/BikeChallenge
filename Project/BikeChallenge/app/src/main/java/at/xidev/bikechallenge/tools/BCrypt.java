@@ -1,4 +1,4 @@
-package at.xidev.bikechallenge.app.tools;
+package at.xidev.bikechallenge.tools;
 
 // Copyright (c) 2006 Damien Miller <djm@mindrot.org>
 //

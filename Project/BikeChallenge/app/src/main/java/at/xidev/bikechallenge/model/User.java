@@ -1,4 +1,4 @@
-package at.xidev.bikechallenge.app.model;
+package at.xidev.bikechallenge.model;
 
 // Generated 23.04.2014 16:22:23 by Hibernate Tools 3.4.0.CR1
 

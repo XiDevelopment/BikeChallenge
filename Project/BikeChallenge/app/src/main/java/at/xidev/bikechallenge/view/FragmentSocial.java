@@ -1,4 +1,4 @@
-package at.xidev.bikechallenge.app;
+package at.xidev.bikechallenge.view;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
