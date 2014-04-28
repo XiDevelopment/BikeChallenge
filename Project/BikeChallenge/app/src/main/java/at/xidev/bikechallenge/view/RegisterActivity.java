@@ -1,4 +1,4 @@
-package at.xidev.bikechallenge.app;
+package at.xidev.bikechallenge.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

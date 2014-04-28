@@ -1,11 +1,9 @@
-package at.xidev.bikechallenge.app;
+package at.xidev.bikechallenge.view;
 
 import android.app.AlertDialog;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,22 +11,17 @@ import android.view.ViewGroup;
 import android.location.LocationManager;
 import android.location.LocationListener;
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
 import android.widget.Toast;
-import android.widget.Button;
 import android.widget.TextView;
 import android.content.Intent;
-import android.support.v4.app.DialogFragment;
+
 import java.util.Date;
 import java.util.ArrayList;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.SupportMapFragment;
