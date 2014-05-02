@@ -90,7 +90,7 @@ public class FragmentSocial extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //inflater.inflate(R.menu.social, menu);
+        inflater.inflate(R.menu.social, menu);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -98,9 +98,9 @@ public class FragmentSocial extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-       /* if (id == R.id.action_social_add) {
+        if (id == R.id.action_social_add) {
             new AddFriendDialogFragment().show(getFragmentManager(), "addFriend");
-        }*/
+        }
         return super.onOptionsItemSelected(item);
     }
 
