@@ -6,23 +6,23 @@ import android.graphics.drawable.Drawable;
  * Created by int3r on 14.04.2014.
  */
 public class Friend {
-    private int id;
+    private Integer id;
     private String name;
-    private int points;
+    private Integer score;
     private Drawable image;
 
-    public Friend(int id, String name, int points) {
+    public Friend(int id, String name, int score) {
         this.id = id;
         this.name = name;
-        this.points = points;
-       // this.image = image;
+        this.score = score;
+        // this.image = image;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -34,12 +34,12 @@ public class Friend {
         this.name = name;
     }
 
-    public int getPoints() {
-        return points;
+    public Integer getScore() {
+        return score;
     }
 
-    public void setPoints(int points) {
-        this.points = points;
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
     public Drawable getImage() {

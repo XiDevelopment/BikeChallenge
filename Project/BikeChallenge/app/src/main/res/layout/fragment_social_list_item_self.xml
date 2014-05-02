@@ -2,18 +2,19 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="75dp"
+    android:layout_height="79dp"
     android:layout_marginBottom="10dp"
-    android:background="@drawable/friends_list_item_background">
+    android:padding="2dp"
+    android:background="@drawable/friends_list_item_self_background">
 
     <ImageView
-        android:id="@+id/friend_image"
+        android:id="@+id/user_image"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:background="@drawable/ic_action_person" />
 
     <TextView
-        android:id="@+id/friend_name"
+        android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -21,7 +22,7 @@
         android:textSize="24sp" />
 
     <TextView
-        android:id="@+id/friend_rank"
+        android:id="@+id/user_rank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="85dp"
@@ -30,7 +31,7 @@
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/friend_score"
+        android:id="@+id/user_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
