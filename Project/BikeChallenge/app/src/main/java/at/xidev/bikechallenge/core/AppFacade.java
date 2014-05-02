@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import at.xidev.bikechallenge.model.Friend;
+import at.xidev.bikechallenge.model.User;
 
 /**
  * Created by int3r on 14.04.2014.
@@ -24,6 +25,7 @@ public class AppFacade {
         return ourInstance;
     }
 
+    private User user;
     private List<Friend> friends;
 
     private AppFacade() {
@@ -38,6 +40,17 @@ public class AppFacade {
         sortFriendList(SortBy.Points);
     }
 
+    public User getUser() {
+        if(user == null)
+            user = new User("Test", "abc", 500000, "Test@Test.at");
+
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public void sortFriendList(SortBy sortBy) {
         switch (sortBy) {
             case Name:
@@ -50,9 +63,9 @@ public class AppFacade {
             case Points:
                 Collections.sort(friends, new Comparator<Friend>() {
                     public int compare(Friend o1, Friend o2) {
-                        if (o2.getPoints() > o1.getPoints())
+                        if (o2.getScore() > o1.getScore())
                             return +1;
-                        if (o2.getPoints() < o1.getPoints())
+                        if (o2.getScore() < o1.getScore())
                             return -1;
                         else
                             return 0;
@@ -88,7 +101,6 @@ public class AppFacade {
 
         return addFriend(id);
     }
-
 
     public List<Friend> getFriendsLists() {
         // TODO get from database

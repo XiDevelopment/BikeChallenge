@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import at.xidev.bikechallenge.core.AppFacade;
 import at.xidev.bikechallenge.model.Friend;
+import at.xidev.bikechallenge.model.User;
 
 /**
  * Created by int3r on 31.03.2014.
@@ -68,15 +69,30 @@ public class FragmentSocial extends Fragment {
         friendsListContainer.removeAllViewsInLayout();
 
         // Add Items
+        boolean isUserAdded = false;
+        int rankCounter = 0;
         for (Friend friend : AppFacade.getInstance().getFriendsLists()) {
+            // if new friend has less score then user, put user first, then add friend
+            if (!isUserAdded && friend.getScore() < AppFacade.getInstance().getUser().getScore()) {
+                rankCounter++;
+                friendsListContainer.addView(getUserView(rankCounter));
+                isUserAdded = true;
+            }
+
+            // increment rank counter
+            rankCounter++;
+
             View friendView = inflater.inflate(R.layout.fragment_social_list_item, friendsListContainer, false);
             TextView name = (TextView) friendView.findViewById(R.id.friend_name);
-            TextView points = (TextView) friendView.findViewById(R.id.friend_points);
+            TextView score = (TextView) friendView.findViewById(R.id.friend_score);
+            TextView rank = (TextView) friendView.findViewById(R.id.friend_rank);
             // ImageView image = (ImageView) friendView.findViewById(R.id.friend_image);
 
-            friendView.setId(friend.getId());
+            // Set values
+            friendView.setTag(friend.getId());
             name.setText(friend.getName());
-            points.setText(friend.getPoints() + " Punkte");
+            score.setText(friend.getScore().toString() + " Punkte");
+            rank.setText("Rank: " + rankCounter);
             //image.setImageDrawable(curFriend.getImage());
 
             // Setup listeners
@@ -86,11 +102,36 @@ public class FragmentSocial extends Fragment {
             // Add to view
             friendsListContainer.addView(friendView);
         }
+
+        // if User not allready added, add to list
+        if (!isUserAdded) {
+            rankCounter++;
+            friendsListContainer.addView(getUserView(rankCounter));
+        }
+    }
+
+    private View getUserView(int rankCounter) {
+        User user = AppFacade.getInstance().getUser();
+
+        View userView = inflater.inflate(R.layout.fragment_social_list_item_self, friendsListContainer, false);
+        TextView name = (TextView) userView.findViewById(R.id.user_name);
+        TextView score = (TextView) userView.findViewById(R.id.user_score);
+        TextView rank = (TextView) userView.findViewById(R.id.user_rank);
+        // ImageView image = (ImageView) friendView.findViewById(R.id.user_image);
+
+        // Set values
+        name.setText(user.getName());
+        score.setText(user.getScore().toString() + " Punkte");
+        rank.setText("Rank: " + rankCounter);
+        //image.setImageDrawable(user.getImage());
+
+        // return view
+        return userView;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //inflater.inflate(R.menu.social, menu);
+        inflater.inflate(R.menu.social, menu);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -98,31 +139,31 @@ public class FragmentSocial extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-       /* if (id == R.id.action_social_add) {
+        if (id == R.id.action_social_add) {
             new AddFriendDialogFragment().show(getFragmentManager(), "addFriend");
-        }*/
+        }
         return super.onOptionsItemSelected(item);
     }
 
 
-    public class FriendsListListener implements View.OnClickListener, View.OnLongClickListener {
+    private class FriendsListListener implements View.OnClickListener, View.OnLongClickListener {
         @Override
         public void onClick(View v) {
             DetailFriendDialogFragment detailsDialog =
-                    new DetailFriendDialogFragment(AppFacade.getInstance().getFriend(v.getId()));
+                    new DetailFriendDialogFragment(AppFacade.getInstance().getFriend((Integer) v.getTag()));
             detailsDialog.show(getFragmentManager(), "detailFriend");
         }
 
         @Override
         public boolean onLongClick(View v) {
             DeleteFriendDialogFragment deleteDialog =
-                    new DeleteFriendDialogFragment(AppFacade.getInstance().getFriend(v.getId()), v);
+                    new DeleteFriendDialogFragment(AppFacade.getInstance().getFriend((Integer) v.getTag()), v);
             deleteDialog.show(getFragmentManager(), "deleteFriend");
             return true;
         }
     }
 
-    public class AddFriendDialogFragment extends DialogFragment {
+    private class AddFriendDialogFragment extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -158,7 +199,7 @@ public class FragmentSocial extends Fragment {
         }
     }
 
-    public class DetailFriendDialogFragment extends DialogFragment {
+    private class DetailFriendDialogFragment extends DialogFragment {
         Friend friend;
 
         public DetailFriendDialogFragment(Friend friend) {
@@ -180,8 +221,8 @@ public class FragmentSocial extends Fragment {
             TextView points = (TextView) view.findViewById(R.id.friend_detail_points);
             TextView km = (TextView) view.findViewById(R.id.friend_detail_km);
             name.setText(friend.getName());
-            points.setText(friend.getPoints() + " Points"); // TODO Strings
-            km.setText(friend.getPoints() / 20 + " km"); // TODO Strings
+            points.setText(friend.getScore() + " Points"); // TODO Strings
+            km.setText(friend.getScore() / 20 + " km"); // TODO Strings
 
             // Build
             builder.setView(view);
@@ -190,7 +231,7 @@ public class FragmentSocial extends Fragment {
     }
 
 
-    public class DeleteFriendDialogFragment extends DialogFragment {
+    private class DeleteFriendDialogFragment extends DialogFragment {
         Friend friend;
         View friendView;
 
