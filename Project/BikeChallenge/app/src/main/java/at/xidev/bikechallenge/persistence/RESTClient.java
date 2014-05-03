@@ -20,12 +20,14 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-/**
- * Created by Rick on 17.04.2014.
+/**This class handles the http connection to the server.
+ *
+ * @author Rick Spiegl/XiDev
+ *
  */
 public class RESTClient {
 
-    public static final String SERVER_IP = "http://138.232.65.231:8080/BikeChallengeWeb/";
+    private static final String SERVER_IP = "http://138.232.65.231:8080/BikeChallengeWeb/";
 
     private static final String GET_TAG = "REST Get";
     private static final String POST_TAG = "REST Post";

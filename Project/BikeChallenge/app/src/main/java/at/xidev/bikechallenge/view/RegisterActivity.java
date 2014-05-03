@@ -17,10 +17,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import java.io.IOException;
 
+import at.xidev.bikechallenge.core.AppFacade;
+import at.xidev.bikechallenge.persistence.DataFacade;
 import at.xidev.bikechallenge.model.User;
-import at.xidev.bikechallenge.persistence.RESTClient;
 import at.xidev.bikechallenge.tools.BCrypt;
 
 
@@ -209,29 +210,22 @@ public class RegisterActivity extends Activity {
     public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
 
         private final User mUser;
-        private final Gson gson;
 
         UserRegisterTask(User user) {
             mUser = user;
-            gson = new Gson();
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             String resp = "";
+
             try {
-                resp = RESTClient.post(gson.toJson(mUser, User.class), "user/" + mUser.getName());
-            } catch (Exception e) {
+                return AppFacade.getInstance().registerUser(mUser);
+            } catch (IOException e) {
                 //TODO: exception handling
                 e.printStackTrace();
             }
-
-            if (resp.equals("OK"))
-                return true;
-            else if (resp.equals("Error"))
-                return false;
-            else
-                return false;
+            return false;
         }
 
         @Override

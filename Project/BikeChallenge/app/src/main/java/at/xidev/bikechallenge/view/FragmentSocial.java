@@ -17,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 import at.xidev.bikechallenge.core.AppFacade;
 import at.xidev.bikechallenge.model.Friend;
 import at.xidev.bikechallenge.model.User;
@@ -73,10 +75,15 @@ public class FragmentSocial extends Fragment {
         int rankCounter = 0;
         for (Friend friend : AppFacade.getInstance().getFriendsLists()) {
             // if new friend has less score then user, put user first, then add friend
-            if (!isUserAdded && friend.getScore() < AppFacade.getInstance().getUser().getScore()) {
-                rankCounter++;
-                friendsListContainer.addView(getUserView(rankCounter));
-                isUserAdded = true;
+            try {
+                if (!isUserAdded && friend.getScore() < AppFacade.getInstance().getUser().getScore()) {
+                    rankCounter++;
+                    friendsListContainer.addView(getUserView(rankCounter));
+                    isUserAdded = true;
+                }
+            } catch (IOException e) {
+                //TODO: exception handling
+                e.printStackTrace();
             }
 
             // increment rank counter
@@ -111,7 +118,13 @@ public class FragmentSocial extends Fragment {
     }
 
     private View getUserView(int rankCounter) {
-        User user = AppFacade.getInstance().getUser();
+        User user = null;
+        try {
+            user = AppFacade.getInstance().getUser();
+        } catch (IOException e) {
+            //TODO: exception handling
+            e.printStackTrace();
+        }
 
         View userView = inflater.inflate(R.layout.fragment_social_list_item_self, friendsListContainer, false);
         TextView name = (TextView) userView.findViewById(R.id.user_name);
