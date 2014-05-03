@@ -19,7 +19,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import at.xidev.bikechallenge.persistence.RESTClient;
+import at.xidev.bikechallenge.core.AppFacade;
+import at.xidev.bikechallenge.model.User;
+import at.xidev.bikechallenge.persistence.DataFacade;
 import at.xidev.bikechallenge.tools.BCrypt;
 
 
@@ -216,6 +218,7 @@ public class LoginActivity extends Activity {
         private final String mUsername;
         private final String mPassword;
         private String resp = "";
+        private User user = null;
 
         UserLoginTask(String username, String password) {
             mUsername = username;
@@ -226,13 +229,13 @@ public class LoginActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
             try {
                 // + "/" + mPassword
-                resp = RESTClient.get("user/" + mUsername);
+                user = AppFacade.getInstance().getUser(mUsername, mPassword);
             }
             catch (Exception e) {
                 //TODO: exception handling
                 e.printStackTrace();
             }
-            return !resp.equals("Error");
+            return user != null;
         }
 
         @Override
@@ -249,7 +252,7 @@ public class LoginActivity extends Activity {
                 editor.commit();
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra(INTENT_USER, resp);
+                intent.putExtra(INTENT_USER, user);
                 startActivity(intent);
                 //calling finish to prevent back button functionalities
                 finish();

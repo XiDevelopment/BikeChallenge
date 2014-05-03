@@ -1,5 +1,6 @@
 package at.xidev.bikechallenge.core;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,6 +9,7 @@ import java.util.Random;
 
 import at.xidev.bikechallenge.model.Friend;
 import at.xidev.bikechallenge.model.User;
+import at.xidev.bikechallenge.persistence.DataFacade;
 
 /**
  * Created by int3r on 14.04.2014.
@@ -40,15 +42,34 @@ public class AppFacade {
         sortFriendList(SortBy.Points);
     }
 
-    public User getUser() {
-        if(user == null)
-            user = new User("Test", "abc", 500000, "Test@Test.at");
+    /**
+     * Test function for further testings, has to be replaced in running project
+     * TODO: replace this function when friends are working
+     * @deprecated replace when friend connection to server is working
+     * @return
+     * @throws IOException
+     */
+    public User getUser() throws IOException {
+        return user;
+        //return getUser(user.getName(), user.getPassword());
+    }
 
+    public User getUser(String username, String password) throws IOException {
+        User user = DataFacade.getInstance().getUser(username, password);
+        this.setUser(user);
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(User user) { this.user = user; }
+
+    /**
+     * Registers an user on the server. Returns true if it was successfull and false if not.
+     * @param user user to register
+     * @return true if succesfull, false if not
+     */
+    public boolean registerUser(User user) throws IOException {
+        String resp = DataFacade.getInstance().registerUser(user);
+        return !resp.equals("Error");
     }
 
     public void sortFriendList(SortBy sortBy) {

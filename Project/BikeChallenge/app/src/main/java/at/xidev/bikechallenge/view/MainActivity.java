@@ -18,6 +18,9 @@ import android.view.View;
 
 import java.util.Locale;
 
+import at.xidev.bikechallenge.core.AppFacade;
+import at.xidev.bikechallenge.model.User;
+
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
@@ -78,6 +81,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setTabListener(this)
             );
         }
+
+        //get User object from Intent, display its information in drive screen
+        AppFacade.getInstance().setUser((User)getIntent().getSerializableExtra(LoginActivity.INTENT_USER));
 
     }
 
