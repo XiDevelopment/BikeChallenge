@@ -10,7 +10,7 @@ import at.xidev.bikechallenge.model.User;
 import at.xidev.bikechallenge.model.Route;
 
 /**This class provides functionalities to communicate with the server.
- * For that it uses the class RESTClient. With the first use of getUser
+ * For that it uses the class RESTClient. With the first use of login
  * the username is saved for further calls.
  *
  * @author Rick Spiegl/XiDev

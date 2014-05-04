@@ -17,7 +17,7 @@ import at.xidev.bikechallenge.persistence.DataFacade;
 public class AppFacade {
     public enum SortBy {
         Name,
-        Points,
+        Score,
         Km,
     }
 
@@ -39,33 +39,42 @@ public class AppFacade {
         }
 
         // Sort by Points
-        sortFriendList(SortBy.Points);
+        sortFriendList(SortBy.Score);
     }
 
     /**
-     * Test function for further testings, has to be replaced in running project
-     * TODO: replace this function when friends are working
-     * @deprecated replace when friend connection to server is working
-     * @return
+     * Current User
+     *
+     * @return logged in user or null
      * @throws IOException
      */
     public User getUser() throws IOException {
         return user;
-        //return getUser(user.getName(), user.getPassword());
     }
-
-    public User getUser(String username, String password) throws IOException {
-        User user = DataFacade.getInstance().getUser(username, password);
-        this.setUser(user);
-        return user;
-    }
-
-    public void setUser(User user) { this.user = user; }
 
     /**
-     * Registers an user on the server. Returns true if it was successfull and false if not.
+     * Login
+     *
+     * @param username
+     * @param password
+     * @return true if successful
+     * @throws IOException
+     */
+    public boolean login(String username, String password) throws IOException {
+        User user = DataFacade.getInstance().getUser(username, password);
+        this.setUser(user);
+        return user != null;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    /**
+     * Registers an user on the server. Returns true if it was successful and false if not.
+     *
      * @param user user to register
-     * @return true if succesfull, false if not
+     * @return true if successful, false if not
      */
     public boolean registerUser(User user) throws IOException {
         String resp = DataFacade.getInstance().registerUser(user);
@@ -81,7 +90,7 @@ public class AppFacade {
                     }
                 });
                 break;
-            case Points:
+            case Score:
                 Collections.sort(friends, new Comparator<Friend>() {
                     public int compare(Friend o1, Friend o2) {
                         if (o2.getScore() > o1.getScore())
@@ -99,28 +108,45 @@ public class AppFacade {
         }
     }
 
-    public Friend addFriend(int id) {
-        // TODO Get friend from user
-        // for now, just make a new Random friend
-        Random rnd = new Random();
-        Friend friend = new Friend(id, "Created" + id, rnd.nextInt(999999));
+    /***
+     * Add friend to friends list given a friend obj
+     * @param friend the friend to add
+     * @return true if successful, false if not
+     */
+    public boolean addFriend(Friend friend) {
+        // TODO add to server
 
-        // Add to FriendsList
+        // TODO if server response successful
+
+        // Add to friend list
         friends.add(friend);
 
-        // Sort by Points
-        sortFriendList(SortBy.Points);
+        // Sort friend list
+        sortFriendList(SortBy.Score);
 
-        return friend;
+        // TODO if everything successful return true
+        return true;
     }
 
-    public Friend addFriend(String search) {
+    /**
+     * Searches for friends by string, and returns possible matches
+     * @param search
+     * @return a list with possible friends
+     */
+    public List<Friend> searchFriend(String search) {
+        List<Friend> result = new ArrayList<>();
+
         // TODO Search for User in Db und return id...
 
-        Random rnd = new Random();
-        int id = rnd.nextInt(200);
+        // For now just create one random friend
+        Random random = new Random();
+        Integer id = random.nextInt(1000);
+        Friend friend = new Friend(id, "TestFriend"+id, random.nextInt(100000));
+        result.add(friend);
 
-        return addFriend(id);
+        friends.add(friend); // TODO remove, just testing purpose
+
+        return result;
     }
 
     public List<Friend> getFriendsLists() {

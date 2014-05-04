@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.List;
 
 import at.xidev.bikechallenge.core.AppFacade;
 import at.xidev.bikechallenge.model.Friend;
@@ -192,7 +193,8 @@ public class FragmentSocial extends Fragment {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     String value = input.getText().toString();
 
-                    Friend newFriend = AppFacade.getInstance().addFriend(value);
+                    List<Friend> possibleFriends = AppFacade.getInstance().searchFriend(value);
+                    Friend newFriend = possibleFriends.get(0); // TODO
                     if (newFriend != null) {
                         reloadFriendsList();
                         Toast.makeText(getActivity(), newFriend.getName() + " added!", Toast.LENGTH_SHORT).show();
