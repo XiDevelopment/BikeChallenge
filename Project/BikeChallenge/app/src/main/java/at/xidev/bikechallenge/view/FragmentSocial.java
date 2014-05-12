@@ -150,7 +150,6 @@ public class FragmentSocial extends Fragment {
     private class FriendsListListener implements View.OnClickListener, View.OnLongClickListener {
         @Override
         public void onClick(View v) {
-            Log.i("DAFUQ", "" + AppFacade.getInstance().getFriend((String) v.getTag()));
             DetailFriendDialogFragment detailsDialog =
                     new DetailFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()));
             detailsDialog.show(getFragmentManager(), "detailFriend");
