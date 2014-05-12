@@ -17,11 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.util.List;
-
 import at.xidev.bikechallenge.core.AppFacade;
-import at.xidev.bikechallenge.model.Friend;
 import at.xidev.bikechallenge.model.User;
 
 /**
@@ -74,17 +70,12 @@ public class FragmentSocial extends Fragment {
         // Add Items
         boolean isUserAdded = false;
         int rankCounter = 0;
-        for (Friend friend : AppFacade.getInstance().getFriendsLists()) {
+        for (User friend : AppFacade.getInstance().getFriends()) {
             // if new friend has less score then user, put user first, then add friend
-            try {
-                if (!isUserAdded && friend.getScore() < AppFacade.getInstance().getUser().getScore()) {
-                    rankCounter++;
-                    friendsListContainer.addView(getUserView(rankCounter));
-                    isUserAdded = true;
-                }
-            } catch (IOException e) {
-                //TODO: exception handling
-                e.printStackTrace();
+            if (!isUserAdded && friend.getScore() < AppFacade.getInstance().getUser().getScore()) {
+                rankCounter++;
+                friendsListContainer.addView(getUserView(rankCounter));
+                isUserAdded = true;
             }
 
             // increment rank counter
@@ -119,13 +110,7 @@ public class FragmentSocial extends Fragment {
     }
 
     private View getUserView(int rankCounter) {
-        User user = null;
-        try {
-            user = AppFacade.getInstance().getUser();
-        } catch (IOException e) {
-            //TODO: exception handling
-            e.printStackTrace();
-        }
+        User user = AppFacade.getInstance().getUser();
 
         View userView = inflater.inflate(R.layout.fragment_social_list_item_self, friendsListContainer, false);
         TextView name = (TextView) userView.findViewById(R.id.user_name);
@@ -135,7 +120,7 @@ public class FragmentSocial extends Fragment {
 
         // Set values
         name.setText(user.getName());
-        score.setText(user.getScore().toString() + " Punkte");
+        score.setText(user.getScore().toString() + " Points");
         rank.setText("Rank: " + rankCounter);
         //image.setImageDrawable(user.getImage());
 
@@ -193,13 +178,11 @@ public class FragmentSocial extends Fragment {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     String value = input.getText().toString();
 
-                    List<Friend> possibleFriends = AppFacade.getInstance().searchFriend(value);
-                    Friend newFriend = possibleFriends.get(0); // TODO
-                    if (newFriend != null) {
-                        reloadFriendsList();
-                        Toast.makeText(getActivity(), newFriend.getName() + " added!", Toast.LENGTH_SHORT).show();
+                    boolean requestSend = AppFacade.getInstance().requestFriend(value);
+                    if (requestSend) {
+                        Toast.makeText(getActivity(), "Friend request sent to " + value, Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(getActivity(), "Couldn't find Friend", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Could not send a request to " + value, Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -215,9 +198,9 @@ public class FragmentSocial extends Fragment {
     }
 
     private class DetailFriendDialogFragment extends DialogFragment {
-        Friend friend;
+        User friend;
 
-        public DetailFriendDialogFragment(Friend friend) {
+        public DetailFriendDialogFragment(User friend) {
             this.friend = friend;
         }
 
@@ -247,10 +230,10 @@ public class FragmentSocial extends Fragment {
 
 
     private class DeleteFriendDialogFragment extends DialogFragment {
-        Friend friend;
+        User friend;
         View friendView;
 
-        public DeleteFriendDialogFragment(Friend toDelete, View friendView) {
+        public DeleteFriendDialogFragment(User toDelete, View friendView) {
             this.friend = toDelete;
             this.friendView = friendView;
         }

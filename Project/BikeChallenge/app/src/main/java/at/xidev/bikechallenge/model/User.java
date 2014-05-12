@@ -12,9 +12,6 @@ public class User implements java.io.Serializable {
     private Integer score;
     private String email;
 
-    public User() {
-    }
-
     public User(String name, String password, String email) {
         this.name = name;
         this.password = password;
