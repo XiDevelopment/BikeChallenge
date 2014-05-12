@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import at.xidev.bikechallenge.core.AppFacade;
 import at.xidev.bikechallenge.model.User;
-import at.xidev.bikechallenge.persistence.DataFacade;
 import at.xidev.bikechallenge.tools.BCrypt;
 
 
@@ -229,7 +228,8 @@ public class LoginActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
             try {
                 // + "/" + mPassword
-                user = AppFacade.getInstance().getUser(mUsername, mPassword);
+                AppFacade.getInstance().login(mUsername, mPassword);
+                user = AppFacade.getInstance().getUser();
             }
             catch (Exception e) {
                 //TODO: exception handling

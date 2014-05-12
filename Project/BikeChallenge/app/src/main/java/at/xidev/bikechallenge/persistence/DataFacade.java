@@ -5,12 +5,11 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.List;
 
-import at.xidev.bikechallenge.model.Friend;
 import at.xidev.bikechallenge.model.User;
 import at.xidev.bikechallenge.model.Route;
 
 /**This class provides functionalities to communicate with the server.
- * For that it uses the class RESTClient. With the first use of getUser
+ * For that it uses the class RESTClient. With the first use of login
  * the username is saved for further calls.
  *
  * @author Rick Spiegl/XiDev
@@ -104,7 +103,7 @@ public class DataFacade {
      * Gets a list of all friends from the user.
      * @return a list of friend objects
      */
-    public List<Friend> getFriends() throws IOException {
+    public List<User> getFriends() throws IOException {
         return null;
     }
 
