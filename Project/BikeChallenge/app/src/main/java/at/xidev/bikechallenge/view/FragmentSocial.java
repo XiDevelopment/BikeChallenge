@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -88,7 +89,7 @@ public class FragmentSocial extends Fragment {
             // ImageView image = (ImageView) friendView.findViewById(R.id.friend_image);
 
             // Set values
-            friendView.setTag(friend.getId());
+            friendView.setTag(friend.getName());
             name.setText(friend.getName());
             score.setText(friend.getScore().toString() + " Punkte");
             rank.setText("Rank: " + rankCounter);
@@ -119,6 +120,7 @@ public class FragmentSocial extends Fragment {
         // ImageView image = (ImageView) friendView.findViewById(R.id.user_image);
 
         // Set values
+        userView.setTag(user.getName());
         name.setText(user.getName());
         score.setText(user.getScore().toString() + " Points");
         rank.setText("Rank: " + rankCounter);
@@ -148,15 +150,16 @@ public class FragmentSocial extends Fragment {
     private class FriendsListListener implements View.OnClickListener, View.OnLongClickListener {
         @Override
         public void onClick(View v) {
+            Log.i("DAFUQ", "" + AppFacade.getInstance().getFriend((String) v.getTag()));
             DetailFriendDialogFragment detailsDialog =
-                    new DetailFriendDialogFragment(AppFacade.getInstance().getFriend((Integer) v.getTag()));
+                    new DetailFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()));
             detailsDialog.show(getFragmentManager(), "detailFriend");
         }
 
         @Override
         public boolean onLongClick(View v) {
             DeleteFriendDialogFragment deleteDialog =
-                    new DeleteFriendDialogFragment(AppFacade.getInstance().getFriend((Integer) v.getTag()), v);
+                    new DeleteFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()), v);
             deleteDialog.show(getFragmentManager(), "deleteFriend");
             return true;
         }

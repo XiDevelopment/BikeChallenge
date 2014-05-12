@@ -58,56 +58,69 @@ public class AppFacade {
         return user != null;
     }
 
-    public boolean register(String name, String password, String email){
+    public boolean register(String name, String password, String email) {
         return false;
     }
 
-    public void logout(){}
+    public void logout() {
+    }
 
-    public boolean isLoggedIn(){
+    public boolean isLoggedIn() {
         return false;
     }
 
     public User getUser() {
         return user;
     }
+
     public Drawable getAvatar(User user) {
         return null;
     }
-    public boolean setAvatar(Drawable avatar){
+
+    public boolean setAvatar(Drawable avatar) {
         return false;
     }
 
-    public User getFriend(int id) {
-        for(User u : friends)
-            if(u.getId() == id)
+    public User getFriend(String username) {
+        for (User u : friends)
+            if (u.getName().equals(username))
                 return u;
 
         return null;
     }
-    public List<User> getFriends(){
+
+    public List<User> getFriends() {
         return friends;
     }
-    public List<User> getFriends(SortBy sortBy){
+
+    public List<User> getFriends(SortBy sortBy) {
         return friends;
     }
-    public List<User> getFriendRequests(){
+
+    public List<User> getFriendRequests() {
         return null;
     }
-    public  boolean requestFriend(String username){
-        return false;
-    }
-    public boolean acceptFriend(User user){
-        return false;
-    }
-    public  boolean removeFriend(User user){
+
+    public boolean requestFriend(String username) {
         return false;
     }
 
-    public List<Route> getRoutes(User user){
+    public boolean acceptFriend(User user) {
+        return false;
+    }
+
+    public boolean removeFriend(User user) {
+        // TODO server
+
+        friends.remove(user);
+        return true;
+    }
+
+    public List<Route> getRoutes(User user) {
         return null;
     }
-    public boolean saveRoute(Route route){
+
+    public boolean saveRoute(Route route) {
         return false;
     }
 
