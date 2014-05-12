@@ -138,7 +138,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     public void stopButtonMain(View view) {
-        fragmentDrive.stopButton(view);
+        // TODO staudi
+        //fragmentDrive.stopButton(view);
     }
 
     @Override

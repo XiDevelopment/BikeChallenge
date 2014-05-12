@@ -29,8 +29,16 @@
     <string name="allready_started">allready started</string>
     <string name="not_started">not started</string>
     <string name="stop_tracking_question">Stop tracking?</string>
-    <string name="stop_tracking">Stop tracking</string>
-    <string name="continue_tracking">Continue</string>
+    <string name="turn_on_gps_question">Turn on GPS?</string>
+    <string name="stop_tracking">YES</string>
+    <string name="continue_tracking">NO</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+
+    <string name="start">start</string>
+    <string name="stop">stop</string>
+
+    <string name="points">points</string>
 
 
 
