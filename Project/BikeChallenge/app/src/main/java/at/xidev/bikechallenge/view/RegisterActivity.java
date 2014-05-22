@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,9 +22,8 @@ import android.widget.TextView;
 import java.io.IOException;
 
 import at.xidev.bikechallenge.core.AppFacade;
-import at.xidev.bikechallenge.persistence.DataFacade;
 import at.xidev.bikechallenge.model.User;
-import at.xidev.bikechallenge.tools.BCrypt;
+import at.xidev.bikechallenge.tools.Sha1;
 
 
 /**
@@ -95,6 +96,12 @@ public class RegisterActivity extends Activity {
      * errors are presented and no actual login attempt is made.
      */
     public void attemptRegister() {
+        //hide keyboard if it is shown
+        InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
+
         if (mAuthTask != null) {
             return;
         }
@@ -147,7 +154,7 @@ public class RegisterActivity extends Activity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            password = BCrypt.hashpw(password, BCrypt.gensalt(11));
+            password = Sha1.getHash(password);
             showProgress(true);
             mAuthTask = new UserRegisterTask(new User(username, password, 0, email));
             mAuthTask.execute((Void) null);
@@ -220,7 +227,7 @@ public class RegisterActivity extends Activity {
             String resp = "";
 
             try {
-                return AppFacade.getInstance().registerUser(mUser);
+                return AppFacade.getInstance().register(mUser.getName(), mUser.getPassword(), mUser.getEmail());
             } catch (IOException e) {
                 //TODO: exception handling
                 e.printStackTrace();

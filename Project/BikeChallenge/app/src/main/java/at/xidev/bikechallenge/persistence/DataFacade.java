@@ -1,6 +1,7 @@
 package at.xidev.bikechallenge.persistence;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,6 +22,7 @@ public class DataFacade {
     private static DataFacade instance = new DataFacade();
     private final String TAG = "DataFacade";
     private String username = "";
+    private String password = "";
     private Gson gson = new Gson();
 
     public static DataFacade getInstance() {return instance;}
@@ -40,11 +42,12 @@ public class DataFacade {
      * @return an user object if the get request was successfull or null if not
      */
     public User getUser(String username, String password) throws IOException {
-        String resp = "Error";
+        String resp;
         // + "/" + password
         resp = RESTClient.get("user/"+username);
         if(!resp.equals("Error")) {
             this.setUsername(username);
+            this.password = password;
             return gson.fromJson(resp, User.class);
         }
         else
@@ -68,6 +71,11 @@ public class DataFacade {
      * @return a list of the routes
      */
     public List<Route> getRoutes() throws IOException {
+        String resp;
+        resp = RESTClient.get("route/" + username);
+        if(!resp.equals("Error")) {
+            return gson.fromJson(resp, new TypeToken<List<Route>>(){}.getType());
+        }
         return null;
     }
 
@@ -77,6 +85,10 @@ public class DataFacade {
      * @return a route object
      */
     public Route getRoute(Integer routeId) throws IOException {
+        String resp;
+        resp = RESTClient.get("route/"+username+"/"+routeId);
+        if(!resp.equals("Error"))
+            return gson.fromJson(resp, Route.class);
         return null;
     }
 
@@ -86,17 +98,21 @@ public class DataFacade {
      * @return the response of the request
      */
     public String saveRoute(Route route) throws IOException {
-        return null;
+        String resp = "Error";
+        resp = RESTClient.post(gson.toJson(route, Route.class), "route/"+username);
+        return resp;
     }
 
     /**
      * Deletes a route on the server.
-     * TODO: not yet implemented on the server
      * @param routeId ID of the route
      * @return the response of the request
      */
     public String deleteRoute(Integer routeId) throws IOException {
-        return null;
+        String resp = "Error";
+        resp = RESTClient.delete("route/"+username+"/"+routeId);
+
+        return resp;
     }
 
     /**
@@ -104,6 +120,10 @@ public class DataFacade {
      * @return a list of friend objects
      */
     public List<User> getFriends() throws IOException {
+        String resp;
+        resp = RESTClient.get("friend/" + username);
+        if(!resp.equals("Error"))
+            return gson.fromJson(resp, new TypeToken<List<User>>(){}.getType());
         return null;
     }
 
@@ -113,7 +133,9 @@ public class DataFacade {
      * @return the response of the request
      */
     public String addFriend(String friend) throws IOException {
-        return null;
+        String resp = "Error";
+        resp = RESTClient.post("", "friend/"+username+"/request/"+friend);
+        return resp;
     }
 
     /**
@@ -123,15 +145,25 @@ public class DataFacade {
      * @return the response of the request
      */
     public String answerRequest(String friend, boolean accept) throws IOException {
-        return null;
+        String resp = "Error";
+        String answer;
+        if(accept)
+            answer = "accept";
+        answer = "deny";
+
+        resp = RESTClient.post("","friend/"+username+"/request/"+friend+"/"+answer);
+        return resp;
     }
 
     /**
      * Gets the statistics from the server.
-     * //TODO: decide if it should be implemented
      * @return
      */
     public String getStatistics() throws IOException {
+        String resp = "Error";
+        resp = RESTClient.get("/statistic/"+username);
+        /*if(!resp.equals("Error"))
+            return gson.fromJson(resp, Statistics.class); */
         return null;
     }
 }
