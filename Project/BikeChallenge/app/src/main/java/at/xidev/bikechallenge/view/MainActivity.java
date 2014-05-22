@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import at.xidev.bikechallenge.core.AppFacade;
 import at.xidev.bikechallenge.model.User;
+import at.xidev.bikechallenge.persistence.DataFacade;
 
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -81,10 +82,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setTabListener(this)
             );
         }
-
-        //get User object from Intent, display its information in drive screen
-        AppFacade.getInstance().setUser((User)getIntent().getSerializableExtra(LoginActivity.INTENT_USER));
-
     }
 
 
@@ -105,14 +102,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_log_out) {
-            SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean("loggedIn", false);
-            editor.commit();
+            AppFacade.getInstance().logout(this);
 
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-
             finish();
         }
         return super.onOptionsItemSelected(item);

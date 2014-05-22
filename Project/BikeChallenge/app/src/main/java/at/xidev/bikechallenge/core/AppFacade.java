@@ -1,5 +1,7 @@
 package at.xidev.bikechallenge.core;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.util.Random;
 import at.xidev.bikechallenge.model.Route;
 import at.xidev.bikechallenge.model.User;
 import at.xidev.bikechallenge.persistence.DataFacade;
+import at.xidev.bikechallenge.view.LoginActivity;
 
 /**
  * Created by int3r on 14.04.2014.
@@ -54,19 +57,33 @@ public class AppFacade {
      */
     public boolean login(String username, String password) throws IOException {
         User user = DataFacade.getInstance().getUser(username, password);
-        this.setUser(user);
+        this.user = user;
         return user != null;
     }
 
-    public boolean register(String name, String password, String email) {
-        return false;
+    public boolean register(String name, String password, String email) throws IOException {
+        String resp = DataFacade.getInstance().registerUser(new User(name, password, email));
+        return !resp.equals("Error");
     }
 
-    public void logout() {
+    public void logout(Context context) {
+        SharedPreferences settings = context.getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("loggedIn", false);
+        editor.commit();
     }
 
-    public boolean isLoggedIn() {
-        return false;
+    public boolean isLoggedIn(Context context) {
+        SharedPreferences settings = context.getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+       return settings.getBoolean("loggedIn", false);
+    }
+
+    public List<String> getLoggedInCredentials(Context context) {
+        SharedPreferences settings = context.getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+        List<String> list = new ArrayList<String>();
+        list.add(settings.getString("username",""));
+        list.add(settings.getString("password",""));
+        return list;
     }
 
     public User getUser() {
@@ -127,24 +144,6 @@ public class AppFacade {
    /*Statistic getStatistic(User user){
         return null;
     }*/
-
-
-    @Deprecated
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    /**
-     * Registers an user on the server. Returns true if it was successful and false if not.
-     *
-     * @param user user to register
-     * @return true if successful, false if not
-     */
-    @Deprecated
-    public boolean registerUser(User user) throws IOException {
-        String resp = DataFacade.getInstance().registerUser(user);
-        return !resp.equals("Error");
-    }
 
     private void sortFriendList(SortBy sortBy) {
         switch (sortBy) {

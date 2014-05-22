@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -15,13 +16,22 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.http.HttpHost;
+import org.apache.http.conn.HttpHostConnectException;
+
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import at.xidev.bikechallenge.core.AppFacade;
 import at.xidev.bikechallenge.model.User;
-import at.xidev.bikechallenge.tools.BCrypt;
+import at.xidev.bikechallenge.tools.Sha1;
 
 
 /**
@@ -90,10 +100,10 @@ public class LoginActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        if (settings.getBoolean("loggedIn", false)) {
+        if (AppFacade.getInstance().isLoggedIn(this)) {
             showProgress(true);
-            mAuthTask = new UserLoginTask(settings.getString("username",""), settings.getString("password",""));
+            mAuthTask = new UserLoginTask(AppFacade.getInstance().getLoggedInCredentials(this).get(0),
+                    AppFacade.getInstance().getLoggedInCredentials(this).get(1));
             mAuthTask.execute((Void) null);
         }
     }
@@ -116,10 +126,17 @@ public class LoginActivity extends Activity {
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
+        InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
         if (mAuthTask != null) {
             return;
         }
 
+        Button mUsernameSignInButton = (Button) findViewById(R.id.login_sign_in_button);
+        mUsernameSignInButton.setError(null);
         // Reset errors.
         mUsernameView.setError(null);
         mPasswordView.setError(null);
@@ -155,10 +172,23 @@ public class LoginActivity extends Activity {
             // perform the user login attempt.
             showProgress(true);
             //TODO: password hashen
-            password = BCrypt.hashpw(password, BCrypt.gensalt(11));
+            password = Sha1.getHash(password);
             mAuthTask = new UserLoginTask(username, password);
             mAuthTask.execute((Void) null);
         }
+    }
+
+    private String sha1(String s) {
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        digest.reset();
+        byte[] data = digest.digest(s.getBytes());
+        return String.format("%0" + (data.length*2) + "X", new BigInteger(1, data));
     }
 
     private boolean isPasswordValid(String password) {
@@ -169,7 +199,7 @@ public class LoginActivity extends Activity {
     private void register() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
-        Log.v("loginActivity", "closed register");
+        Log.v("loginActivity", "started register");
     }
 
     /**
@@ -216,8 +246,10 @@ public class LoginActivity extends Activity {
 
         private final String mUsername;
         private final String mPassword;
+        private boolean noConnection = false;
         private String resp = "";
         private User user = null;
+        private Thread t;
 
         UserLoginTask(String username, String password) {
             mUsername = username;
@@ -227,9 +259,25 @@ public class LoginActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                // + "/" + mPassword
+                //TODO: maybe move that into AppFACADE
+                 t = new Thread() {
+                    public void run() {
+                        try {
+                            sleep(30000);
+                        } catch (InterruptedException e) {
+
+                        }
+                        if(mAuthTask != null)
+                            mAuthTask.cancel(true);
+                    }
+                };
+                t.start();
                 AppFacade.getInstance().login(mUsername, mPassword);
                 user = AppFacade.getInstance().getUser();
+            }
+            catch(HttpHostConnectException e) {
+                noConnection = true;
+                //Toast.makeText(getApplicationContext(), R.string.error_no_connection, Toast.LENGTH_LONG).show();
             }
             catch (Exception e) {
                 //TODO: exception handling
@@ -252,14 +300,19 @@ public class LoginActivity extends Activity {
                 editor.commit();
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra(INTENT_USER, user);
                 startActivity(intent);
                 //calling finish to prevent back button functionalities
                 finish();
             } else {
                 showProgress(false);
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                if(noConnection) {
+                    Button mUsernameSignInButton = (Button) findViewById(R.id.login_sign_in_button);
+                    mUsernameSignInButton.setError(getString(R.string.error_no_connection));
+                    mUsernameSignInButton.requestFocus();
+                } else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
             }
         }
 
