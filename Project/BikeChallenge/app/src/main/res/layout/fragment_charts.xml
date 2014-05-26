@@ -2,12 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="at.xidev.bikechallenge.view.FragmentCharts">
+    tools:context="at.xidev.bikechallenge.view.FragmentCharts"
+    android:background="@color/charts_background">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
+    <ExpandableListView
+        android:layout_marginLeft="@dimen/default_margin"
+        android:layout_marginRight="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/white"
+        android:id="@+id/charts_expandableListView"
+        tools:listitem="@android:layout/simple_expandable_list_item_1" />
 </FrameLayout>
