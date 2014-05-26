@@ -3,6 +3,7 @@ package at.xidev.bikechallenge.core;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,9 +62,9 @@ public class AppFacade {
         return user != null;
     }
 
-    public boolean register(String name, String password, String email) throws IOException {
-        String resp = DataFacade.getInstance().registerUser(new User(name, password, email));
-        return !resp.equals("Error");
+    public boolean register(User user) throws IOException {
+        String resp = DataFacade.getInstance().registerUser(user);
+        return resp.equals("OK");
     }
 
     public void logout(Context context) {
@@ -111,18 +112,23 @@ public class AppFacade {
     }
 
     public List<User> getFriends(SortBy sortBy) {
+        //List<User> user = DataFacade.getInstance().getFriends();
         return friends;
     }
 
     public List<User> getFriendRequests() {
+
         return null;
     }
 
     public boolean requestFriend(String username) {
+        //String resp = DataFacade.getInstance().addFriend(username);
+        //return resp.equals("OK");
         return false;
     }
 
-    public boolean acceptFriend(User user) {
+    public boolean acceptFriend(User user) throws IOException {
+        String resp = DataFacade.getInstance().answerRequest(user.getName(),true);
         return false;
     }
 
@@ -133,12 +139,13 @@ public class AppFacade {
         return true;
     }
 
-    public List<Route> getRoutes(User user) {
-        return null;
+    public List<Route> getRoutes(User user) throws IOException{
+        return DataFacade.getInstance().getRoutes();
     }
 
-    public boolean saveRoute(Route route) {
-        return false;
+    public boolean saveRoute(Route route) throws IOException {
+        String resp = DataFacade.getInstance().saveRoute(route);
+        return resp.equals("OK");
     }
 
    /*Statistic getStatistic(User user){
