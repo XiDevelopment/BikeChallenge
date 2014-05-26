@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
@@ -286,7 +285,7 @@ public class FragmentCharts extends Fragment {
                 v = inflater.inflate(R.layout.fragment_charts_expandable_child_diagram, parent, false);
 
                 // init example series data
-                GraphViewSeries exampleSeries = new GraphViewSeries(new GraphView.GraphViewData[] {
+                GraphViewSeries exampleSeries = new GraphViewSeries(new GraphView.GraphViewData[]{
                         new GraphViewData(1, 2.0d)
                         , new GraphViewData(2, 1.5d)
                         , new GraphViewData(3, 2.5d)
@@ -299,9 +298,9 @@ public class FragmentCharts extends Fragment {
                 );
 
                 graphView.addSeries(exampleSeries); // data#
-                graphView.setHorizontalLabels(new String[] {"2 days ago", "yesterday", "today", "tomorrow"});
-                graphView.getGraphViewStyle().setGridColor(R.color.transparent);
-                graphView.getGraphViewStyle().setNumHorizontalLabels(4);
+                graphView.setHorizontalLabels(new String[]{"2 days ago", "yesterday", "today", "tomorrow"});
+                graphView.getGraphViewStyle().setGridColor(context.getResources().getColor(R.color.transparent));
+                graphView.getGraphViewStyle().setHorizontalLabelsColor(context.getResources().getColor(R.color.black));
 
                 LinearLayout layout = (LinearLayout) v.findViewById(R.id.charts_expandable_diagram_container);
                 layout.addView(graphView);

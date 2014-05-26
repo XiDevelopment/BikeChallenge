@@ -3,6 +3,7 @@
     <color name="white">#FFFFFF</color>
     <color name="gray">#88000000</color>
     <color name="transparent">#0000</color>
+    <color name="black">#000</color>
 
     <color name="drive_background">#AEFF99</color>
     <color name="social_background">#FFC243</color>
