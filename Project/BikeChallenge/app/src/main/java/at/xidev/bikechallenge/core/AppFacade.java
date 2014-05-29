@@ -3,7 +3,6 @@ package at.xidev.bikechallenge.core;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,14 +75,14 @@ public class AppFacade {
 
     public boolean isLoggedIn(Context context) {
         SharedPreferences settings = context.getSharedPreferences(LoginActivity.PREFS_NAME, 0);
-       return settings.getBoolean("loggedIn", false);
+        return settings.getBoolean("loggedIn", false);
     }
 
     public List<String> getLoggedInCredentials(Context context) {
         SharedPreferences settings = context.getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         List<String> list = new ArrayList<String>();
-        list.add(settings.getString("username",""));
-        list.add(settings.getString("password",""));
+        list.add(settings.getString("username", ""));
+        list.add(settings.getString("password", ""));
         return list;
     }
 
@@ -116,20 +115,39 @@ public class AppFacade {
         return friends;
     }
 
+    // TODO
     public List<User> getFriendRequests() {
-
-        return null;
+        List<User> testList = new ArrayList<>();
+        testList.add(new User("test1", "bla", "bla"));
+        testList.add(new User("test2", "bla", "bla"));
+        return testList;
     }
 
+    // TODO
     public boolean requestFriend(String username) {
         //String resp = DataFacade.getInstance().addFriend(username);
         //return resp.equals("OK");
         return false;
     }
 
-    public boolean acceptFriend(User user) throws IOException {
-        String resp = DataFacade.getInstance().answerRequest(user.getName(),true);
-        return false;
+    // TODO javadoc
+    public boolean acceptFriend(User user) {
+        try {
+            String resp = DataFacade.getInstance().answerRequest(user.getName(), true);
+            return false; // TODO response
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    // TODO javadoc
+    public boolean declineFriend(User user) {
+        try {
+            String resp = DataFacade.getInstance().answerRequest(user.getName(), false);
+            return false; // TODO response
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     public boolean removeFriend(User user) {
@@ -139,7 +157,7 @@ public class AppFacade {
         return true;
     }
 
-    public List<Route> getRoutes(User user) throws IOException{
+    public List<Route> getRoutes(User user) throws IOException {
         return DataFacade.getInstance().getRoutes();
     }
 
