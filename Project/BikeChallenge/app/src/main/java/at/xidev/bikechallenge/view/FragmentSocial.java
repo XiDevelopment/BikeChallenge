@@ -130,8 +130,8 @@ public class FragmentSocial extends Fragment {
             // Set values
             friendView.setTag(friend.getName());
             name.setText(friend.getName());
-            score.setText(friend.getScore().toString() + " Punkte");
-            rank.setText("Rank: " + rankCounter);
+            score.setText(friend.getScore().toString() + " " + getResources().getString(R.string.social_score));
+            rank.setText(getResources().getString(R.string.social_rank) + ": " + rankCounter);
             //image.setImageDrawable(curFriend.getImage());
 
             // Setup listeners
@@ -212,8 +212,8 @@ public class FragmentSocial extends Fragment {
         // Set values
         userView.setTag(user.getName());
         name.setText(user.getName());
-        score.setText(user.getScore().toString() + " Points");
-        rank.setText("Rank: " + rankCounter);
+        score.setText(user.getScore().toString() + " " + getResources().getString(R.string.social_score));
+        rank.setText(getResources().getString(R.string.social_rank) + ": " + rankCounter);
         //image.setImageDrawable(user.getImage());
 
         // return view
@@ -263,22 +263,21 @@ public class FragmentSocial extends Fragment {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-            // TODO strings
-            builder.setTitle("Send a friend request");
-            builder.setMessage("Username of friend:");
+            builder.setTitle(getResources().getString(R.string.social_add_title));
+            builder.setMessage(getResources().getString(R.string.social_add_message));
 
             // Set an EditText view to get user input
             final EditText input = new EditText(getActivity());
             builder.setView(input);
 
-            builder.setPositiveButton("Search", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(getResources().getString(R.string.social_add_button_ok), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     TaskAddFriend task = new TaskAddFriend();
                     task.execute(input.getText().toString());
                 }
             });
 
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(getResources().getString(R.string.social_add_button_cancel), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     dismiss();
                 }
@@ -339,13 +338,13 @@ public class FragmentSocial extends Fragment {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("Remove " + friend.getName() + "?") // TODO Strings
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            builder.setMessage(getResources().getString(R.string.social_delete_message_start) + " " + friend.getName() + "?")
+                    .setPositiveButton(getResources().getString(R.string.social_delete_button_ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             task.execute(friend);
                         }
                     })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(getResources().getString(R.string.social_delete_button_cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // User cancelled the dialog
                         }
@@ -388,7 +387,9 @@ public class FragmentSocial extends Fragment {
 
         @Override
         protected void onPostExecute(List<User> friends) {
-            if (type)
+            if (friends == null)
+                Toast.makeText(getActivity(), getResources().getString(R.string.social_list_error), Toast.LENGTH_SHORT).show();
+            else if (type)
                 reloadFriendsList(friends);
             else
                 reloadInviteList(friends);
@@ -427,16 +428,16 @@ public class FragmentSocial extends Fragment {
                 if (action) {
                     // Successful and Accept Request
                     reloadFriendsList();
-                    Toast.makeText(getActivity(), user.getName() + " accepted!", Toast.LENGTH_SHORT).show(); // TODO strings
+                    Toast.makeText(getActivity(), user.getName() + " " + getResources().getString(R.string.social_request_ok) + "!", Toast.LENGTH_SHORT).show();
                 } else {
                     // Successful and Decline Request
-                    Toast.makeText(getActivity(), user.getName() + " rejected!", Toast.LENGTH_SHORT).show(); // TODO strings
+                    Toast.makeText(getActivity(), user.getName() + " " + getResources().getString(R.string.social_request_cancel) + "!", Toast.LENGTH_SHORT).show(); // TODO strings
                 }
                 reloadRequestList();
             } else {
-                // TODO strings
+                // TODO maybe better error handling
                 // Not successful -> error
-                Toast.makeText(getActivity(), "There was an error...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.social_request_error), Toast.LENGTH_SHORT).show();
             }
             showProgress(false);
         }
@@ -461,9 +462,9 @@ public class FragmentSocial extends Fragment {
             if (result) {
                 // if successful reload friends
                 reloadFriendsList();
-                Toast.makeText(getActivity(), friend.getName() + " removed!", Toast.LENGTH_SHORT).show(); // TODO strings
+                Toast.makeText(getActivity(), friend.getName() + " " + getResources().getString(R.string.social_delete_successful) + "!", Toast.LENGTH_SHORT).show(); // TODO strings
             } else {
-                Toast.makeText(getActivity(), friend.getName() + " not removed!", Toast.LENGTH_SHORT).show(); // TODO strings
+                Toast.makeText(getActivity(), friend.getName() + " " + getResources().getString(R.string.social_delete_not_successful) + "!", Toast.LENGTH_SHORT).show(); // TODO strings
             }
             showProgress(false);
         }
@@ -486,9 +487,9 @@ public class FragmentSocial extends Fragment {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                Toast.makeText(getActivity(), "Friend request sent to " + name, Toast.LENGTH_SHORT).show(); // TODO strings
+                Toast.makeText(getActivity(), getResources().getString(R.string.social_add_successful) + " " + name, Toast.LENGTH_SHORT).show(); // TODO strings
             } else {
-                Toast.makeText(getActivity(), "Could not send a request to " + name, Toast.LENGTH_SHORT).show(); // TODO strings
+                Toast.makeText(getActivity(), getResources().getString(R.string.social_add_not_successful) + " " + name, Toast.LENGTH_SHORT).show(); // TODO strings
             }
             showProgress(false);
         }
