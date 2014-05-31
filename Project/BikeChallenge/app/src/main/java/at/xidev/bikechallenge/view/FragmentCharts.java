@@ -8,7 +8,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,6 +46,8 @@ public class FragmentCharts extends Fragment {
     }
 
     private View chartsProgressView;
+    private SwipeRefreshLayout swipeLayout;
+
     private ChartsExpandableListAdapter chartsExpandableListAdapter;
 
     @Override
@@ -65,6 +69,19 @@ public class FragmentCharts extends Fragment {
 
         // Fill list
         reloadList();
+
+        // Setup swipe refresh
+        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.charts_swipe_container);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reloadList();
+            }
+        });
+        swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         // Inflate the layout for this fragment
         return view;
@@ -405,6 +422,7 @@ public class FragmentCharts extends Fragment {
         protected void onPostExecute(Boolean result) {
             reloadList(false);
             showProgress(false);
+            swipeLayout.setRefreshing(false);
         }
     }
 

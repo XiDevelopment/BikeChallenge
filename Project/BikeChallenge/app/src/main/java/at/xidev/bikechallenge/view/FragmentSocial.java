@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,6 +51,7 @@ public class FragmentSocial extends Fragment {
     private LinearLayout friendsRequestListContainer;
 
     private View friendsProgressView;
+    private SwipeRefreshLayout swipeLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,6 +79,20 @@ public class FragmentSocial extends Fragment {
         // Load friend list into LinearLayout
         reloadFriendsList();
         reloadRequestList();
+
+        // Setup swipe refresh
+        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.social_swipe_container);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reloadFriendsList();
+                reloadRequestList();
+            }
+        });
+        swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         return view;
     }
@@ -377,6 +393,7 @@ public class FragmentSocial extends Fragment {
             else
                 reloadInviteList(friends);
             showProgress(false);
+            swipeLayout.setRefreshing(false);
         }
     }
 
