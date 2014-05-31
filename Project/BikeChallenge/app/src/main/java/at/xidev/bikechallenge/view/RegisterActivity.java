@@ -227,7 +227,7 @@ public class RegisterActivity extends Activity {
             String resp = "";
 
             try {
-                return AppFacade.getInstance().register(mUser.getName(), mUser.getPassword(), mUser.getEmail());
+                return AppFacade.getInstance().register(mUser);
             } catch (IOException e) {
                 //TODO: exception handling
                 e.printStackTrace();

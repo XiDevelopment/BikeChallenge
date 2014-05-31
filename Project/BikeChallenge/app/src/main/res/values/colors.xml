@@ -9,6 +9,9 @@
     <color name="social_background">#FFC243</color>
     <color name="charts_background">#7E7DB2</color>
 
+    <color name="dark_transparent">#5000</color>
+
+    <color name="friends_request_background">#2000</color>
     <color name="social_list_button">#FFFFFF</color>
     <color name="social_list_button_pressed">#CCCCCC</color>
     <color name="social_list_button_self_stroke">#FF0000</color>

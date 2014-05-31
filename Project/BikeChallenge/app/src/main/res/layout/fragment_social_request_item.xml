@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="35dp"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/friends_list_item_background">
+
+    <TextView
+        android:id="@+id/friend_request_name"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_marginLeft="10dp"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/friends_request_background" />
+
+        <RelativeLayout
+            android:id="@+id/friend_request_accept"
+            android:clickable="true"
+            android:layout_gravity="center"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/friends_list_item_background">
+
+            <View
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/ic_action_accept"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/friends_request_background" />
+
+        <RelativeLayout
+            android:id="@+id/friend_request_decline"
+            android:clickable="true"
+            android:layout_gravity="center"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/friends_list_item_background">
+
+            <View
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/ic_action_cancel"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -7,55 +7,39 @@
     android:background="@drawable/friends_list_item_background"
     android:padding="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:textSize="24sp"
-        android:id="@+id/friend_detail_name" />
-
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="140dp"
         android:layout_marginTop="10dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="32sp"
+            android:text="2." />
+
         <ImageView
             android:id="@+id/friend_detail_image"
             android:layout_width="140dp"
             android:layout_height="140dp"
-            android:background="#CCC" />
+            android:background="@drawable/ic_action_person" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/friend_detail_name"
+            android:text="int3ro"
+            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="160dp"
-            android:orientation="vertical">
+            android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/friend_detail_points"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp" />
+        <TextView
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="1200 Points" />
 
-            <TextView
-                android:id="@+id/friend_detail_km"
-                android:text="200 km"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp" />
-
-            <TextView
-                android:text="200 km"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp" />
-
-            <TextView
-                android:text="200 km"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp" />
-        </LinearLayout>
     </RelativeLayout>
 
     <ScrollView
