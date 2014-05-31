@@ -5,20 +5,6 @@
     tools:context="at.xidev.bikechallenge.view.FragmentSocial"
     android:background="@color/social_background">
 
-    <RelativeLayout
-        android:id="@+id/friends_progress"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
-
-
     <ScrollView
         android:id="@+id/friends_view"
         android:layout_width="fill_parent"
@@ -71,4 +57,17 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/friends_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 </FrameLayout>

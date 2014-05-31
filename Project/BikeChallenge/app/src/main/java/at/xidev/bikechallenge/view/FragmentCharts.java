@@ -1,10 +1,18 @@
 package at.xidev.bikechallenge.view;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -35,13 +43,57 @@ public class FragmentCharts extends Fragment {
         // Required empty public constructor
     }
 
+    private View chartsProgressView;
+    private ChartsExpandableListAdapter chartsExpandableListAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_charts, container, false);
 
+        // Actionbar Menu Items
+        setHasOptionsMenu(true);
 
+        // Get progress view
+        chartsProgressView = view.findViewById(R.id.charts_progress);
+
+        // Setup expandable list and adapter
+        chartsExpandableListAdapter = new ChartsExpandableListAdapter(view.getContext());
+        ExpandableListView elv = (ExpandableListView) view.findViewById(R.id.charts_expandableListView);
+        elv.setAdapter(chartsExpandableListAdapter);
+
+        // Fill list
+        reloadList();
+
+        // Inflate the layout for this fragment
+        return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.charts, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_charts_refresh) {
+            reloadList();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void reloadList() {
+        // setup task und execute
+        TaskGetStatistic task = new TaskGetStatistic();
+        task.execute();
+    }
+
+    private void reloadList(boolean stasticObj) {
         List<ChartCategory> expandableElements = new ArrayList<>();
         ChartCategory category = new ChartCategory();
         category.name = "Test1";
@@ -89,11 +141,7 @@ public class FragmentCharts extends Fragment {
         category.elems.add(new ChartElement("Test", "100"));
         expandableElements.add(category);
 
-        ExpandableListView elv = (ExpandableListView) view.findViewById(R.id.charts_expandableListView);
-        elv.setAdapter(new ChartsExpandableListAdapter(view.getContext(), expandableElements));
-
-        // Inflate the layout for this fragment
-        return view;
+        chartsExpandableListAdapter.setElements(expandableElements);
     }
 
     private class ChartCategory {
@@ -133,15 +181,15 @@ public class FragmentCharts extends Fragment {
         ChartsExpandableListAdapter(Context context) {
             this.context = context;
             inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-        }
-
-        ChartsExpandableListAdapter(Context context, List<ChartCategory> elements) {
-            this(context);
-            this.elements = elements;
+            elements = new ArrayList<>();
         }
 
         public void setElements(List<ChartCategory> elements) {
+            // Set new content
             this.elements = elements;
+
+            // notify observers -> refreshes list
+            this.notifyDataSetChanged();
         }
 
         /**
@@ -225,7 +273,7 @@ public class FragmentCharts extends Fragment {
          * underlying data.
          *
          * @return whether or not the same ID always refers to the same object
-         * @see Adapter#hasStableIds()
+         * @see android.widget.Adapter#hasStableIds()
          */
         @Override
         public boolean hasStableIds() {
@@ -330,6 +378,60 @@ public class FragmentCharts extends Fragment {
         @Override
         public boolean isChildSelectable(int groupPosition, int childPosition) {
             return false;
+        }
+    }
+
+    /**
+     * Task to get Statistics object
+     */
+    private class TaskGetStatistic extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO just for test
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            reloadList(false);
+            showProgress(false);
+        }
+    }
+
+    /**
+     * Shows the progress UI.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            // TODO why two times setVisibility()? Shouldn't be animate() sufficient?
+            chartsProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            chartsProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    chartsProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            chartsProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 }

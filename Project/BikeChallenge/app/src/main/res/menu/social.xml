@@ -7,6 +7,11 @@
         android:icon="@drawable/ic_action_add_person"
         app:showAsAction="ifRoom"
         android:title="Add Friend"
-        android:orderInCategory="200"
-    />
+        android:orderInCategory="200" />
+    <item
+        android:id="@+id/action_social_refresh"
+        android:icon="@drawable/ic_action_refresh"
+        app:showAsAction="ifRoom"
+        android:title="Refresh"
+        android:orderInCategory="201" />
 </menu>

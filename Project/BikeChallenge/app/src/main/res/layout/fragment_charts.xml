@@ -14,4 +14,17 @@
         android:divider="@color/white"
         android:id="@+id/charts_expandableListView"
         tools:listitem="@android:layout/simple_expandable_list_item_1" />
+
+    <RelativeLayout
+        android:id="@+id/charts_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 </FrameLayout>

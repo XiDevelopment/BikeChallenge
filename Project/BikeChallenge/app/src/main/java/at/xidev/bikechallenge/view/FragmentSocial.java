@@ -76,13 +76,13 @@ public class FragmentSocial extends Fragment {
 
         // Load friend list into LinearLayout
         reloadFriendsList();
-        reloadInviteList();
+        reloadRequestList();
 
         return view;
     }
 
     private void reloadFriendsList() {
-        // set up task und execute, true is for friend list
+        // setup task und execute, true is for friend list
         TaskGetList friendListTask = new TaskGetList(true);
         friendListTask.execute();
     }
@@ -126,15 +126,15 @@ public class FragmentSocial extends Fragment {
             friendsListContainer.addView(friendView);
         }
 
-        // if User not allready added, add to list
+        // if User not already added, add to list
         if (!isUserAdded) {
             rankCounter++;
             friendsListContainer.addView(getUserView(rankCounter));
         }
     }
 
-    private void reloadInviteList() {
-        // set up task und execute, false is for Invite List
+    private void reloadRequestList() {
+        // setup task und execute, false is for Invite List
         TaskGetList requestListTask = new TaskGetList(false);
         requestListTask.execute();
     }
@@ -209,6 +209,7 @@ public class FragmentSocial extends Fragment {
         inflater.inflate(R.menu.social, menu);
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -216,6 +217,9 @@ public class FragmentSocial extends Fragment {
         int id = item.getItemId();
         if (id == R.id.action_social_add) {
             new AddFriendDialogFragment().show(getFragmentManager(), "addFriend");
+        } else if (id == R.id.action_social_refresh) {
+            reloadFriendsList();
+            reloadRequestList();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -411,7 +415,7 @@ public class FragmentSocial extends Fragment {
                     // Successful and Decline Request
                     Toast.makeText(getActivity(), user.getName() + " rejected!", Toast.LENGTH_SHORT).show(); // TODO strings
                 }
-                reloadInviteList();
+                reloadRequestList();
             } else {
                 // TODO strings
                 // Not successful -> error
@@ -474,7 +478,7 @@ public class FragmentSocial extends Fragment {
     }
 
     /**
-     * Shows the progress UI and hides the login form.
+     * Shows the progress UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showProgress(final boolean show) {

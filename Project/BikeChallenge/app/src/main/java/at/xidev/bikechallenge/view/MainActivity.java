@@ -1,9 +1,8 @@
 package at.xidev.bikechallenge.view;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,8 +18,6 @@ import android.view.View;
 import java.util.Locale;
 
 import at.xidev.bikechallenge.core.AppFacade;
-import at.xidev.bikechallenge.model.User;
-import at.xidev.bikechallenge.persistence.DataFacade;
 
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -40,7 +37,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
      */
     ViewPager mViewPager;
     FragmentDrive fragmentDrive;
-
 
 
     @Override
@@ -82,12 +78,17 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setTabListener(this)
             );
         }
+
+        // don't reload fragments on every switch
+        mViewPager.setOffscreenPageLimit(2);
+
+        //default to center page
+        mViewPager.setCurrentItem(1);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -141,8 +142,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Closing BikeChallenge")
                 .setMessage("Are you sure you want to close BikeChallenge?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
@@ -197,7 +197,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             }
             return null;
         }
-
 
 
     }
