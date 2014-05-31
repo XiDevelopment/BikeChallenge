@@ -6,6 +6,8 @@
     <dimen name="default_margin">10dp</dimen>
     <dimen name="default_item_height">75dp</dimen>
 
+    <dimen name="social_request_item_height">35dp</dimen>
+
     <dimen name="charts_group_text_size">24sp</dimen>
     <dimen name="charts_item_text_size">16sp</dimen>
     <dimen name="charts_diagram_height">250dp</dimen>

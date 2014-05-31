@@ -2,14 +2,14 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="75dp"
-    android:layout_marginBottom="10dp"
+    android:layout_height="@dimen/default_item_height"
+    android:layout_marginBottom="@dimen/default_margin"
     android:background="@drawable/friends_list_item_background">
 
     <ImageView
         android:id="@+id/friend_image"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="@dimen/default_item_height"
+        android:layout_height="@dimen/default_item_height"
         android:background="@drawable/ic_action_person" />
 
     <TextView
@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/default_margin"
         android:textSize="24sp" />
 
     <TextView
@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="85dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="@dimen/default_margin"
         android:layout_alignParentBottom="true"
         android:textSize="16sp" />
 
@@ -33,7 +33,7 @@
         android:id="@+id/friend_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/default_margin"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:textSize="16sp" />

@@ -1,9 +1,13 @@
 package at.xidev.bikechallenge.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -38,12 +42,14 @@ public class FragmentSocial extends Fragment {
     }
 
     // OnClick Listener
-    FriendsListListener fListener;
+    private FriendsListListener fListener;
 
-    LayoutInflater inflater;
-    LinearLayout friendsListContainer;
-    LinearLayout friendsRequestContainer;
-    LinearLayout friendsRequestListContainer;
+    private LayoutInflater inflater;
+    private LinearLayout friendsListContainer;
+    private LinearLayout friendsRequestContainer;
+    private LinearLayout friendsRequestListContainer;
+
+    private View friendsProgressView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +64,9 @@ public class FragmentSocial extends Fragment {
 
         // Initialize OnClick Listener
         fListener = new FriendsListListener();
+
+        // Initialize friends view and progress view
+        friendsProgressView = view.findViewById(R.id.friends_progress);
 
         // Initialize friend list
         // Get Parent
@@ -353,11 +362,17 @@ public class FragmentSocial extends Fragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
         protected void onPostExecute(List<User> friends) {
             if (type)
                 reloadFriendsList(friends);
             else
                 reloadInviteList(friends);
+            showProgress(false);
         }
     }
 
@@ -381,6 +396,11 @@ public class FragmentSocial extends Fragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
                 if (action) {
@@ -397,6 +417,7 @@ public class FragmentSocial extends Fragment {
                 // Not successful -> error
                 Toast.makeText(getActivity(), "There was an error...", Toast.LENGTH_SHORT).show();
             }
+            showProgress(false);
         }
     }
 
@@ -410,6 +431,11 @@ public class FragmentSocial extends Fragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
                 // if successful reload friends
@@ -418,6 +444,7 @@ public class FragmentSocial extends Fragment {
             } else {
                 Toast.makeText(getActivity(), friend.getName() + " not removed!", Toast.LENGTH_SHORT).show(); // TODO strings
             }
+            showProgress(false);
         }
     }
 
@@ -431,12 +458,45 @@ public class FragmentSocial extends Fragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
                 Toast.makeText(getActivity(), "Friend request sent to " + name, Toast.LENGTH_SHORT).show(); // TODO strings
             } else {
                 Toast.makeText(getActivity(), "Could not send a request to " + name, Toast.LENGTH_SHORT).show(); // TODO strings
             }
+            showProgress(false);
+        }
+    }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            // TODO why two times setVisibility()? Shouldn't be animate() sufficient?
+            friendsProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            friendsProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    friendsProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            friendsProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 }
