@@ -39,7 +39,7 @@
                         android:layout_marginBottom="@dimen/default_margin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/new_requests" />
+                        android:text="@string/social_new_requests" />
 
                     <LinearLayout
                         android:id="@+id/friends_request_list"

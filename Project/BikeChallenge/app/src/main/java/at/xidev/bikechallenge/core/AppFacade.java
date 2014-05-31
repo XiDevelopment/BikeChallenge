@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 import at.xidev.bikechallenge.model.Route;
+import at.xidev.bikechallenge.model.Statistic;
 import at.xidev.bikechallenge.model.User;
 import at.xidev.bikechallenge.persistence.DataFacade;
 import at.xidev.bikechallenge.view.LoginActivity;
@@ -166,9 +167,44 @@ public class AppFacade {
         return resp.equals("OK");
     }
 
-   /*Statistic getStatistic(User user){
-        return null;
-    }*/
+    /**
+     * Statistic of current user
+     *
+     * @return the statistic
+     */
+    public Statistic getStatistic() {
+        return getStatistic(this.user);
+    }
+
+    /**
+     * The statistic of the specified user
+     *
+     * @param user the user
+     * @return the statistic
+     */
+    public Statistic getStatistic(User user) {
+        // TODO test statistic obj
+        Statistic s = new Statistic();
+        s.setAvgDistance(20);
+        s.setAvgTime(200);
+        s.setEmission(20012);
+        s.setFuel(1232);
+        s.setLongestDistance(12322);
+        s.setTotalDistance(123212312);
+        s.setTotalTime(122322);
+
+        List<Float> l = new ArrayList<>();
+        l.add(22.3f);
+        l.add(2f);
+        l.add(232.7f);
+        l.add(120.3f);
+        l.add(122.65f);
+        l.add(2.8f);
+        l.add(212f);
+        s.setLast7Days(l);
+
+        return s;
+    }
 
     private void sortFriendList(SortBy sortBy) {
         switch (sortBy) {

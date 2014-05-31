@@ -1,6 +1,4 @@
-package at.xidev.bikechallenge.model;
-
-// Generated 23.04.2014 16:22:23 by Hibernate Tools 3.4.0.CR1
+package at.xidev.bikechallenge.model;// Generated 23.04.2014 16:22:23 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 
@@ -9,60 +7,60 @@ import java.util.Date;
  */
 public class Route implements java.io.Serializable {
 
-	private Integer id;
-	private float distance;
-	private Date starttime;
-	private Date stoptime;
-	private String userId;
+    private Integer id;
+    private float distance;
+    private Date startTime;
+    private Date stopTime;
+    private int userId;
 
-	public Route() {
-	}
+    public Route() {
+    }
 
-	public Route(float distance, Date starttime, Date stoptime, String userId) {
-		this.distance = distance;
-		this.starttime = starttime;
-		this.stoptime = stoptime;
-		this.userId = userId;
-	}
+    public Route(float distance, Date startTime, Date stopTime, int userId) {
+        this.distance = distance;
+        this.startTime = startTime;
+        this.stopTime = stopTime;
+        this.userId = userId;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public float getDistance() {
-		return this.distance;
-	}
+    public float getDistance() {
+        return this.distance;
+    }
 
-	public void setDistance(float distance) {
-		this.distance = distance;
-	}
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
 
-	public Date getStarttime() {
-		return this.starttime;
-	}
+    public Date getStartTime() {
+        return this.startTime;
+    }
 
-	public void setStarttime(Date starttime) {
-		this.starttime = starttime;
-	}
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
 
-	public Date getStoptime() {
-		return this.stoptime;
-	}
+    public Date getStopTime() {
+        return this.stopTime;
+    }
 
-	public void setStoptime(Date stoptime) {
-		this.stoptime = stoptime;
-	}
+    public void setStopTime(Date stopTime) {
+        this.stopTime = stopTime;
+    }
 
-	public String getUserId() {
-		return this.userId;
-	}
+    public int getUserId() {
+        return this.userId;
+    }
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
 }

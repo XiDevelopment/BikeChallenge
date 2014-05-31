@@ -8,7 +8,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -29,6 +28,9 @@ import com.jjoe64.graphview.LineGraphView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import at.xidev.bikechallenge.core.AppFacade;
+import at.xidev.bikechallenge.model.Statistic;
 
 
 /**
@@ -110,52 +112,30 @@ public class FragmentCharts extends Fragment {
         task.execute();
     }
 
-    private void reloadList(boolean stasticObj) {
+    private void reloadList(Statistic statistic) {
+        if (statistic == null)
+            return;
+
         List<ChartCategory> expandableElements = new ArrayList<>();
+
         ChartCategory category = new ChartCategory();
-        category.name = "Test1";
-        category.elems.add(new ChartElement("name1", "value1"));
-        category.elems.add(new ChartElement("name2", "value2"));
-        category.elems.add(new ChartElement("name3", "value3"));
+        category.name = "Economy";
+        category.elements.add(new ChartElement("Estimated Emission savings:", "" + statistic.getEmission()));
+        category.elements.add(new ChartElement("Estimated fuel savings:", "" + statistic.getFuel()));
         expandableElements.add(category);
 
         category = new ChartCategory();
-        category.name = "Test2";
-        category.elems.add(new ChartElement("name1", "value1"));
-        category.elems.add(new ChartElement("name2", "value2"));
+        category.name = "Time";
+        category.elements.add(new ChartElement("Average time tracking:", "" + statistic.getAvgTime()));
+        category.elements.add(new ChartElement("Total time tracking:", "" + statistic.getTotalTime()));
         expandableElements.add(category);
 
         category = new ChartCategory();
-        category.name = "Test3";
-        category.elems.add(new ChartElement("name1", "value1"));
-        category.elems.add(new ChartElement("name2", "value2"));
-        category.elems.add(new ChartElement("name3", "value3"));
-        category.elems.add(new ChartElement("name2", "value2"));
-        category.elems.add(new ChartElement("name3", "value3"));
-        category.elems.add(new ChartElement("name2", "value2"));
-        category.elems.add(new ChartElement("name3", "value3"));
-        expandableElements.add(category);
-
-        category = new ChartCategory();
-        category.name = "Test4";
-        category.elems.add(new ChartElement("name1", "value1"));
-        category.elems.add(new ChartElement("name2", "value2"));
-        expandableElements.add(category);
-
-        category = new ChartCategory();
-        category.name = "Test5 ()";
-        category.elems.add(new ChartElement("Normal", "120 Points"));
-        ChartElement elem = new ChartElement();
-        elem.name = "Diagram Test";
-        elem.values.add(5f);
-        elem.values.add(1f);
-        elem.values.add(4f);
-        elem.values.add(8f);
-        elem.values.add(12f);
-        elem.values.add(6f);
-        elem.isDiagram = true;
-        category.elems.add(elem);
-        category.elems.add(new ChartElement("Test", "100"));
+        category.name = "Distances";
+        category.elements.add(new ChartElement("Average distance:", "" + statistic.getAvgDistance()));
+        category.elements.add(new ChartElement("Longest distance:", "" + statistic.getLongestDistance()));
+        category.elements.add(new ChartElement("Total distance:", "" + statistic.getTotalDistance()));
+        category.elements.add(new ChartElement("Distances of last 7 days:", statistic.getLast7Days()));
         expandableElements.add(category);
 
         chartsExpandableListAdapter.setElements(expandableElements);
@@ -163,11 +143,11 @@ public class FragmentCharts extends Fragment {
 
     private class ChartCategory {
         String name;
-        List<ChartElement> elems;
+        List<ChartElement> elements;
 
         ChartCategory() {
             super();
-            elems = new ArrayList<>();
+            elements = new ArrayList<>();
         }
     }
 
@@ -177,15 +157,16 @@ public class FragmentCharts extends Fragment {
         List<Float> values;
         boolean isDiagram = false;
 
-        ChartElement() {
-            super();
-            values = new ArrayList<>();
-        }
-
         ChartElement(String name, String value) {
-            this();
             this.name = name;
             this.value = value;
+            this.isDiagram = false;
+        }
+
+        ChartElement(String name, List<Float> values) {
+            this.name = name;
+            this.values = values;
+            this.isDiagram = true;
         }
     }
 
@@ -228,7 +209,7 @@ public class FragmentCharts extends Fragment {
          */
         @Override
         public int getChildrenCount(int groupPosition) {
-            return elements.get(groupPosition).elems.size();
+            return elements.get(groupPosition).elements.size();
         }
 
         /**
@@ -252,7 +233,7 @@ public class FragmentCharts extends Fragment {
          */
         @Override
         public Object getChild(int groupPosition, int childPosition) {
-            return elements.get(groupPosition).elems.get(childPosition);
+            return elements.get(groupPosition).elements.get(childPosition);
         }
 
         /**
@@ -282,7 +263,7 @@ public class FragmentCharts extends Fragment {
          */
         @Override
         public long getChildId(int groupPosition, int childPosition) {
-            return elements.get(groupPosition).elems.get(childPosition).hashCode();
+            return elements.get(groupPosition).elements.get(childPosition).hashCode();
         }
 
         /**
@@ -343,37 +324,37 @@ public class FragmentCharts extends Fragment {
          */
         @Override
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-            ChartElement child = elements.get(groupPosition).elems.get(childPosition);
+            ChartElement child = elements.get(groupPosition).elements.get(childPosition);
 
             View v;
             if (child.isDiagram) {
                 v = inflater.inflate(R.layout.fragment_charts_expandable_child_diagram, parent, false);
 
-                // init example series data
-                GraphViewSeries exampleSeries = new GraphViewSeries(new GraphView.GraphViewData[]{
-                        new GraphViewData(1, 2.0d)
-                        , new GraphViewData(2, 1.5d)
-                        , new GraphViewData(3, 2.5d)
-                        , new GraphViewData(4, 1.0d)
-                });
+                // Set text view
+                TextView tv = (TextView) v.findViewById(R.id.tv_charts_expandable_child_name);
+                tv.setText(child.name);
 
-                GraphView graphView = new LineGraphView(
-                        context // context
-                        , "GraphViewDemo" // heading
-                );
+                // init data
+                GraphViewData[] graphData = new GraphViewData[child.values.size()];
+                for (int i = 0; i < child.values.size(); i++)
+                    graphData[i] = new GraphViewData(i + 1, child.values.get(i));
+                GraphViewSeries graphSeries = new GraphViewSeries(graphData);
 
-                graphView.addSeries(exampleSeries); // data#
-                graphView.setHorizontalLabels(new String[]{"2 days ago", "yesterday", "today", "tomorrow"});
+                // init graph, with empty title
+                GraphView graphView = new LineGraphView(context, "");
+
+                // add data
+                graphView.addSeries(graphSeries);
+
+                // Set labels and style
+                //graphView.setHorizontalLabels(new String[]{"2 days ago", "yesterday", "today", "tomorrow"});
                 graphView.getGraphViewStyle().setGridColor(context.getResources().getColor(R.color.transparent));
                 graphView.getGraphViewStyle().setHorizontalLabelsColor(context.getResources().getColor(R.color.black));
+                graphView.getGraphViewStyle().setVerticalLabelsColor(context.getResources().getColor(R.color.black));
 
+                // Add to view
                 LinearLayout layout = (LinearLayout) v.findViewById(R.id.charts_expandable_diagram_container);
                 layout.addView(graphView);
-
-                // Add Test TV
-                TextView tv = new TextView(context);
-                tv.setText("TEST");
-                layout.addView(tv);
             } else {
                 v = inflater.inflate(R.layout.fragment_charts_expandable_child, parent, false);
                 TextView tv1 = (TextView) v.findViewById(R.id.tv_charts_expandable_child_name);
@@ -401,16 +382,16 @@ public class FragmentCharts extends Fragment {
     /**
      * Task to get Statistics object
      */
-    private class TaskGetStatistic extends AsyncTask<Void, Void, Boolean> {
+    private class TaskGetStatistic extends AsyncTask<Void, Void, Statistic> {
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Statistic doInBackground(Void... params) {
             // TODO just for test
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return false;
+            return AppFacade.getInstance().getStatistic();
         }
 
         @Override
@@ -419,8 +400,8 @@ public class FragmentCharts extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
-            reloadList(false);
+        protected void onPostExecute(Statistic statistic) {
+            reloadList(statistic);
             showProgress(false);
             swipeLayout.setRefreshing(false);
         }
