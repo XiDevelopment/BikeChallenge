@@ -510,8 +510,8 @@ public class FragmentDrive extends Fragment {
                     //fill route with information
                     Route route = new Route();
                     route.setDistance(distance);
-                    route.setStarttime(startTimeDate);
-                    route.setStoptime(endTimeDate);
+                    route.setStartTime(startTimeDate);
+                    route.setStopTime(endTimeDate);
                     route.setUserId(AppFacade.getInstance().getUser().getId());
 
                     //save route
