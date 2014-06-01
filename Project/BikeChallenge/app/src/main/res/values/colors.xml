@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="white">#FFFFFF</color>
+    <color name="gray">#88000000</color>
+    <color name="transparent">#0000</color>
+    <color name="black">#000</color>
+
     <color name="drive_background">#AEFF99</color>
     <color name="social_background">#FFC243</color>
     <color name="charts_background">#7E7DB2</color>
 
+    <color name="dark_transparent">#5000</color>
+
+    <color name="friends_request_background">#2000</color>
     <color name="social_list_button">#FFFFFF</color>
     <color name="social_list_button_pressed">#CCCCCC</color>
     <color name="social_list_button_self_stroke">#FF0000</color>

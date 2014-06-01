@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="social_score">Points</string>
+    <string name="social_rank">Rank</string>
+
+    <!-- fragment_social.xml -->
+    <string name="social_new_requests">You have new friend requests from:</string>
+
+    <!-- GetList -->
+    <string name="social_list_error">There was an error while loading your friend list</string>
+
+    <!-- AddFriendDialog -->
+    <string name="social_add_title">Send a friend request</string>
+    <string name="social_add_message">Username of friend:</string>
+    <string name="social_add_button_ok">Search</string>
+    <string name="social_add_button_cancel">Cancel</string>
+    <string name="social_add_successful">Friend request sent to</string>
+    <string name="social_add_not_successful">Could not send a request to</string>
+
+    <!-- DeleteFriendDialog -->
+    <string name="social_delete_message_start">Remove</string>
+    <string name="social_delete_button_ok">Yes</string>
+    <string name="social_delete_button_cancel">No</string>
+    <string name="social_delete_successful">removed</string>
+    <string name="social_delete_not_successful">not removed</string>
+
+    <!-- Answer Request -->
+    <string name="social_request_ok">accepted</string>
+    <string name="social_request_cancel">rejected</string>
+    <string name="social_request_error">There was an error...</string>
+
+</resources>

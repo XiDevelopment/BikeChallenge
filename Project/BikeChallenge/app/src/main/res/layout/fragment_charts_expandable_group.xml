@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/default_margin">
+
+    <TextView
+        android:id="@+id/tv_charts_expandable_group"
+        android:background="@drawable/friends_list_item_background"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_item_height"
+        android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/charts_group_text_size" />
+</RelativeLayout>

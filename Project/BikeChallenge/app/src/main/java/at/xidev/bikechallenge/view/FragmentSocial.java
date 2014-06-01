@@ -1,12 +1,17 @@
 package at.xidev.bikechallenge.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,8 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
 
 import at.xidev.bikechallenge.core.AppFacade;
 import at.xidev.bikechallenge.model.User;
@@ -35,10 +43,15 @@ public class FragmentSocial extends Fragment {
     }
 
     // OnClick Listener
-    FriendsListListener fListener;
+    private FriendsListListener fListener;
 
-    LayoutInflater inflater;
-    LinearLayout friendsListContainer;
+    private LayoutInflater inflater;
+    private LinearLayout friendsListContainer;
+    private LinearLayout friendsRequestContainer;
+    private LinearLayout friendsRequestListContainer;
+
+    private View friendsProgressView;
+    private SwipeRefreshLayout swipeLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,24 +67,50 @@ public class FragmentSocial extends Fragment {
         // Initialize OnClick Listener
         fListener = new FriendsListListener();
 
-        // Initialize friends list
+        // Initialize friends view and progress view
+        friendsProgressView = view.findViewById(R.id.friends_progress);
+
+        // Initialize friend list
         // Get Parent
         friendsListContainer = (LinearLayout) view.findViewById(R.id.friends_list);
+        friendsRequestContainer = (LinearLayout) view.findViewById(R.id.friends_request_container);
+        friendsRequestListContainer = (LinearLayout) view.findViewById(R.id.friends_request_list);
 
-        // Load Friendlist into LinearLayout
+        // Load friend list into LinearLayout
         reloadFriendsList();
+        reloadRequestList();
+
+        // Setup swipe refresh
+        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.social_swipe_container);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reloadFriendsList();
+                reloadRequestList();
+            }
+        });
+        swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         return view;
     }
 
     private void reloadFriendsList() {
+        // setup task und execute, true is for friend list
+        TaskGetList friendListTask = new TaskGetList(true);
+        friendListTask.execute();
+    }
+
+    private void reloadFriendsList(List<User> friends) {
         // Clear previous items
         friendsListContainer.removeAllViewsInLayout();
 
         // Add Items
         boolean isUserAdded = false;
         int rankCounter = 0;
-        for (User friend : AppFacade.getInstance().getFriends()) {
+        for (User friend : friends) {
             // if new friend has less score then user, put user first, then add friend
             if (!isUserAdded && friend.getScore() < AppFacade.getInstance().getUser().getScore()) {
                 rankCounter++;
@@ -91,8 +130,8 @@ public class FragmentSocial extends Fragment {
             // Set values
             friendView.setTag(friend.getName());
             name.setText(friend.getName());
-            score.setText(friend.getScore().toString() + " Punkte");
-            rank.setText("Rank: " + rankCounter);
+            score.setText(friend.getScore().toString() + " " + getResources().getString(R.string.social_score));
+            rank.setText(getResources().getString(R.string.social_rank) + ": " + rankCounter);
             //image.setImageDrawable(curFriend.getImage());
 
             // Setup listeners
@@ -103,10 +142,61 @@ public class FragmentSocial extends Fragment {
             friendsListContainer.addView(friendView);
         }
 
-        // if User not allready added, add to list
+        // if User not already added, add to list
         if (!isUserAdded) {
             rankCounter++;
             friendsListContainer.addView(getUserView(rankCounter));
+        }
+    }
+
+    private void reloadRequestList() {
+        // setup task und execute, false is for Invite List
+        TaskGetList requestListTask = new TaskGetList(false);
+        requestListTask.execute();
+    }
+
+    private void reloadInviteList(List<User> requests) {
+        // get invites
+
+        if (requests == null || requests.size() <= 0) {
+            // Hide Invite List
+            friendsRequestContainer.setVisibility(View.GONE);
+        } else {
+            // Clear previous items
+            friendsRequestListContainer.removeAllViewsInLayout();
+
+            for (final User user : requests) {
+                // Get views
+                View requestView = inflater.inflate(R.layout.fragment_social_request_item, friendsRequestListContainer, false);
+                TextView rName = (TextView) requestView.findViewById(R.id.friend_request_name);
+                RelativeLayout rAccept = (RelativeLayout) requestView.findViewById(R.id.friend_request_accept);
+                RelativeLayout rDecline = (RelativeLayout) requestView.findViewById(R.id.friend_request_decline);
+
+                // Set values
+                rName.setText(user.getName());
+
+                // Add click listeners
+                rAccept.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TaskAnswerRequest answerTask = new TaskAnswerRequest(user);
+                        answerTask.execute(true);
+                    }
+                });
+                rDecline.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TaskAnswerRequest answerTask = new TaskAnswerRequest(user);
+                        answerTask.execute(false);
+                    }
+                });
+
+                // Add to friend list
+                friendsRequestListContainer.addView(requestView);
+            }
+
+            // Display invite list
+            friendsRequestContainer.setVisibility(View.VISIBLE);
         }
     }
 
@@ -122,8 +212,8 @@ public class FragmentSocial extends Fragment {
         // Set values
         userView.setTag(user.getName());
         name.setText(user.getName());
-        score.setText(user.getScore().toString() + " Points");
-        rank.setText("Rank: " + rankCounter);
+        score.setText(user.getScore().toString() + " " + getResources().getString(R.string.social_score));
+        rank.setText(getResources().getString(R.string.social_rank) + ": " + rankCounter);
         //image.setImageDrawable(user.getImage());
 
         // return view
@@ -135,6 +225,7 @@ public class FragmentSocial extends Fragment {
         inflater.inflate(R.menu.social, menu);
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -142,6 +233,9 @@ public class FragmentSocial extends Fragment {
         int id = item.getItemId();
         if (id == R.id.action_social_add) {
             new AddFriendDialogFragment().show(getFragmentManager(), "addFriend");
+        } else if (id == R.id.action_social_refresh) {
+            reloadFriendsList();
+            reloadRequestList();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -169,27 +263,21 @@ public class FragmentSocial extends Fragment {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-            builder.setTitle("Search a friend");
-            builder.setMessage("Name or Email:");
+            builder.setTitle(getResources().getString(R.string.social_add_title));
+            builder.setMessage(getResources().getString(R.string.social_add_message));
 
             // Set an EditText view to get user input
             final EditText input = new EditText(getActivity());
             builder.setView(input);
 
-            builder.setPositiveButton("Search", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(getResources().getString(R.string.social_add_button_ok), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    String value = input.getText().toString();
-
-                    boolean requestSend = AppFacade.getInstance().requestFriend(value);
-                    if (requestSend) {
-                        Toast.makeText(getActivity(), "Friend request sent to " + value, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getActivity(), "Could not send a request to " + value, Toast.LENGTH_SHORT).show();
-                    }
+                    TaskAddFriend task = new TaskAddFriend();
+                    task.execute(input.getText().toString());
                 }
             });
 
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(getResources().getString(R.string.social_add_button_cancel), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     dismiss();
                 }
@@ -201,6 +289,10 @@ public class FragmentSocial extends Fragment {
 
     private class DetailFriendDialogFragment extends DialogFragment {
         User friend;
+
+        public DetailFriendDialogFragment() {
+            // empty constructor necessary
+        }
 
         public DetailFriendDialogFragment(User friend) {
             this.friend = friend;
@@ -217,12 +309,12 @@ public class FragmentSocial extends Fragment {
             View view = inflater.inflate(R.layout.fragment_social_detail, null);
 
             // Setup Values
-            TextView name = (TextView) view.findViewById(R.id.friend_detail_name);
-            TextView points = (TextView) view.findViewById(R.id.friend_detail_points);
-            TextView km = (TextView) view.findViewById(R.id.friend_detail_km);
-            name.setText(friend.getName());
-            points.setText(friend.getScore() + " Points"); // TODO Strings
-            km.setText(friend.getScore() / 20 + " km"); // TODO Strings
+            //TextView name = (TextView) view.findViewById(R.id.friend_detail_name);
+            // TextView points = (TextView) view.findViewById(R.id.friend_detail_points);
+            //TextView km = (TextView) view.findViewById(R.id.friend_detail_km);
+            //name.setText(friend.getName());
+            //points.setText(friend.getScore() + " Points"); // TODO Strings
+            //km.setText(friend.getScore() / 20 + " km"); // TODO Stringspass
 
             // Build
             builder.setView(view);
@@ -234,36 +326,199 @@ public class FragmentSocial extends Fragment {
     private class DeleteFriendDialogFragment extends DialogFragment {
         User friend;
         View friendView;
+        TaskRemoveFriend task;
 
         public DeleteFriendDialogFragment(User toDelete, View friendView) {
             this.friend = toDelete;
             this.friendView = friendView;
+            task = new TaskRemoveFriend();
         }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("Remove " + friend.getName() + "?") // TODO Strings
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            builder.setMessage(getResources().getString(R.string.social_delete_message_start) + " " + friend.getName() + "?")
+                    .setPositiveButton(getResources().getString(R.string.social_delete_button_ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            // Try to remove from FriendsLists
-                            if (AppFacade.getInstance().removeFriend(friend)) {
-                                // if successful reload friends
-                                reloadFriendsList();
-                                Toast.makeText(getActivity(), friend.getName() + " removed!", Toast.LENGTH_SHORT).show(); // TODO Strings
-                            } else {
-                                Toast.makeText(getActivity(), friend.getName() + " not removed!", Toast.LENGTH_SHORT).show(); // TODO Strings
-                            }
+                            task.execute(friend);
                         }
                     })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(getResources().getString(R.string.social_delete_button_cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // User cancelled the dialog
                         }
                     });
             // Create the AlertDialog object and return it
             return builder.create();
+        }
+
+        // TODO
+        private class TaskGetRoutes extends AsyncTask<User, Void, Boolean> {
+            @Override
+            protected Boolean doInBackground(User... params) {
+                return null;
+            }
+        }
+    }
+
+    private class TaskGetList extends AsyncTask<Void, Void, List<User>> {
+        boolean type = true;
+
+        /**
+         * @param type true for friend list, false for request list
+         */
+        protected TaskGetList(boolean type) {
+            this.type = type;
+        }
+
+        @Override
+        protected List<User> doInBackground(Void... params) {
+            if (type)
+                return AppFacade.getInstance().getFriends();
+            else
+                return AppFacade.getInstance().getFriendRequests();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
+        protected void onPostExecute(List<User> friends) {
+            if (friends == null)
+                Toast.makeText(getActivity(), getResources().getString(R.string.social_list_error), Toast.LENGTH_SHORT).show();
+            else if (type)
+                reloadFriendsList(friends);
+            else
+                reloadInviteList(friends);
+            showProgress(false);
+            swipeLayout.setRefreshing(false);
+        }
+    }
+
+    private class TaskAnswerRequest extends AsyncTask<Boolean, Void, Boolean> {
+        User user;
+
+        // action = true for accept, false for decline
+        boolean action;
+
+        protected TaskAnswerRequest(User user) {
+            this.user = user;
+        }
+
+        @Override
+        protected Boolean doInBackground(Boolean... params) {
+            action = params[0];
+            if (action)
+                return AppFacade.getInstance().acceptFriend(user);
+            else
+                return AppFacade.getInstance().declineFriend(user);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                if (action) {
+                    // Successful and Accept Request
+                    reloadFriendsList();
+                    Toast.makeText(getActivity(), user.getName() + " " + getResources().getString(R.string.social_request_ok) + "!", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Successful and Decline Request
+                    Toast.makeText(getActivity(), user.getName() + " " + getResources().getString(R.string.social_request_cancel) + "!", Toast.LENGTH_SHORT).show(); // TODO strings
+                }
+                reloadRequestList();
+            } else {
+                // TODO maybe better error handling
+                // Not successful -> error
+                Toast.makeText(getActivity(), getResources().getString(R.string.social_request_error), Toast.LENGTH_SHORT).show();
+            }
+            showProgress(false);
+        }
+    }
+
+    private class TaskRemoveFriend extends AsyncTask<User, Void, Boolean> {
+        User friend;
+
+        @Override
+        protected Boolean doInBackground(User... params) {
+            friend = params[0];
+            return AppFacade.getInstance().removeFriend(friend);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                // if successful reload friends
+                reloadFriendsList();
+                Toast.makeText(getActivity(), friend.getName() + " " + getResources().getString(R.string.social_delete_successful) + "!", Toast.LENGTH_SHORT).show(); // TODO strings
+            } else {
+                Toast.makeText(getActivity(), friend.getName() + " " + getResources().getString(R.string.social_delete_not_successful) + "!", Toast.LENGTH_SHORT).show(); // TODO strings
+            }
+            showProgress(false);
+        }
+    }
+
+    private class TaskAddFriend extends AsyncTask<String, Void, Boolean> {
+        String name;
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            name = params[0];
+            return AppFacade.getInstance().requestFriend(name);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                Toast.makeText(getActivity(), getResources().getString(R.string.social_add_successful) + " " + name, Toast.LENGTH_SHORT).show(); // TODO strings
+            } else {
+                Toast.makeText(getActivity(), getResources().getString(R.string.social_add_not_successful) + " " + name, Toast.LENGTH_SHORT).show(); // TODO strings
+            }
+            showProgress(false);
+        }
+    }
+
+    /**
+     * Shows the progress UI.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            // TODO why two times setVisibility()? Shouldn't be animate() sufficient?
+            friendsProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            friendsProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    friendsProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            friendsProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 }

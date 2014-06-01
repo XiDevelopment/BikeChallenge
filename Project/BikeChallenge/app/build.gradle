@@ -35,4 +35,5 @@ dependencies {
     compile 'com.google.android.gms:play-services:4.3.23'
     compile 'com.android.support:support-v4:19.+'
     compile 'com.google.code.gson:gson:2.2.+'
+    compile files('libs/graphview-3.1.jar')
 }

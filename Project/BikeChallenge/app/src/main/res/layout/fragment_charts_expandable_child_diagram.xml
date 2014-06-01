@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="1dp">
+
+    <LinearLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/charts_diagram_height"
+        android:padding="@dimen/default_margin"
+        android:orientation="vertical"
+        android:id="@+id/charts_expandable_diagram_container">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/charts_item_text_size"
+            android:id="@+id/tv_charts_expandable_child_name"
+            android:layout_marginBottom="@dimen/default_margin"/>
+    </LinearLayout>
+</RelativeLayout>
