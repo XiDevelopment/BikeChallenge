@@ -364,6 +364,7 @@ public class FragmentSocial extends Fragment {
 
     private class TaskGetList extends AsyncTask<Void, Void, List<User>> {
         boolean type = true;
+        boolean hasConnection = true;
 
         /**
          * @param type true for friend list, false for request list
@@ -374,10 +375,19 @@ public class FragmentSocial extends Fragment {
 
         @Override
         protected List<User> doInBackground(Void... params) {
-            if (type)
-                return AppFacade.getInstance().getFriends();
-            else
-                return AppFacade.getInstance().getFriendRequests();
+            List<User> result = null;
+            
+            try {
+                if (type)
+                    result = AppFacade.getInstance().getFriends();
+                else
+                    result = AppFacade.getInstance().getFriendRequests();
+            } catch(Exception ex) {
+                hasConnection = false;
+                result = null;
+            }
+                
+            return result;
         }
 
         @Override
@@ -388,7 +398,10 @@ public class FragmentSocial extends Fragment {
         @Override
         protected void onPostExecute(List<User> friends) {
             if (friends == null)
-                Toast.makeText(getActivity(), getResources().getString(R.string.social_list_error), Toast.LENGTH_SHORT).show();
+                if(hasConnection)
+                    Toast.makeText(getActivity(), getResources().getString(R.string.social_list_error), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
             else if (type)
                 reloadFriendsList(friends);
             else
@@ -412,14 +425,19 @@ public class FragmentSocial extends Fragment {
         @Override
         protected Boolean doInBackground(Boolean... params) {
             action = params[0];
+            Boolean result = false;
+            
             try {
                 if (action)
-                    return AppFacade.getInstance().acceptFriend(user);
+                    result = AppFacade.getInstance().acceptFriend(user);
                 else
-                    return AppFacade.getInstance().declineFriend(user);
+                    result = AppFacade.getInstance().declineFriend(user);
             } catch {Exception ex) {
                 hasConnection = false;
+                result = false;
             }
+            
+            return result;
         }
 
         @Override
@@ -464,6 +482,7 @@ public class FragmentSocial extends Fragment {
                 result = AppFacade.getInstance().removeFriend(friend);
             } catch (Exception ex) {
                 hasConnection = false;
+                result = false;
             }
             
             return result; 
@@ -504,6 +523,7 @@ public class FragmentSocial extends Fragment {
                 result = AppFacade.getInstance().requestFriend(name);
             } catch (Exception ex) {
                 hasConnection = false;
+                result = false;
             }
             
             return result;
