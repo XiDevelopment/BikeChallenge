@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.List;
 
 import at.xidev.bikechallenge.core.AppFacade;
@@ -244,16 +245,24 @@ public class FragmentSocial extends Fragment {
     private class FriendsListListener implements View.OnClickListener, View.OnLongClickListener {
         @Override
         public void onClick(View v) {
-            DetailFriendDialogFragment detailsDialog =
-                    new DetailFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()));
-            detailsDialog.show(getFragmentManager(), "detailFriend");
+            try {
+                DetailFriendDialogFragment detailsDialog =
+                        new DetailFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()));
+                detailsDialog.show(getFragmentManager(), "detailFriend");
+            } catch (IOException ex) {
+                Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
+            }
         }
 
         @Override
         public boolean onLongClick(View v) {
-            DeleteFriendDialogFragment deleteDialog =
-                    new DeleteFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()), v);
-            deleteDialog.show(getFragmentManager(), "deleteFriend");
+            try {
+                DeleteFriendDialogFragment deleteDialog =
+                        new DeleteFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()), v);
+                deleteDialog.show(getFragmentManager(), "deleteFriend");
+            } catch (IOException ex) {
+                Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
+            }
             return true;
         }
     }
@@ -364,6 +373,7 @@ public class FragmentSocial extends Fragment {
 
     private class TaskGetList extends AsyncTask<Void, Void, List<User>> {
         boolean type = true;
+        boolean hasConnection = true;
 
         /**
          * @param type true for friend list, false for request list
@@ -374,10 +384,19 @@ public class FragmentSocial extends Fragment {
 
         @Override
         protected List<User> doInBackground(Void... params) {
-            if (type)
-                return AppFacade.getInstance().getFriends();
-            else
-                return AppFacade.getInstance().getFriendRequests();
+            List<User> result = null;
+            
+            try {
+                if (type)
+                    result = AppFacade.getInstance().getFriends();
+                else
+                    result = AppFacade.getInstance().getFriendRequests();
+            } catch(Exception ex) {
+                hasConnection = false;
+                result = null;
+            }
+                
+            return result;
         }
 
         @Override
@@ -388,7 +407,10 @@ public class FragmentSocial extends Fragment {
         @Override
         protected void onPostExecute(List<User> friends) {
             if (friends == null)
-                Toast.makeText(getActivity(), getResources().getString(R.string.social_list_error), Toast.LENGTH_SHORT).show();
+                if(hasConnection)
+                    Toast.makeText(getActivity(), getResources().getString(R.string.social_list_error), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
             else if (type)
                 reloadFriendsList(friends);
             else
@@ -400,6 +422,7 @@ public class FragmentSocial extends Fragment {
 
     private class TaskAnswerRequest extends AsyncTask<Boolean, Void, Boolean> {
         User user;
+        boolean hasConnection = true;
 
         // action = true for accept, false for decline
         boolean action;
@@ -411,10 +434,19 @@ public class FragmentSocial extends Fragment {
         @Override
         protected Boolean doInBackground(Boolean... params) {
             action = params[0];
-            if (action)
-                return AppFacade.getInstance().acceptFriend(user);
-            else
-                return AppFacade.getInstance().declineFriend(user);
+            Boolean result = false;
+            
+            try {
+                if (action)
+                    result = AppFacade.getInstance().acceptFriend(user);
+                else
+                    result = AppFacade.getInstance().declineFriend(user);
+            } catch (IOException ex) {
+                hasConnection = false;
+                result = false;
+            }
+            
+            return result;
         }
 
         @Override
@@ -437,7 +469,10 @@ public class FragmentSocial extends Fragment {
             } else {
                 // TODO maybe better error handling
                 // Not successful -> error
-                Toast.makeText(getActivity(), getResources().getString(R.string.social_request_error), Toast.LENGTH_SHORT).show();
+                if(hasConnection)
+                    Toast.makeText(getActivity(), getResources().getString(R.string.social_request_error), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
             }
             showProgress(false);
         }
@@ -445,11 +480,21 @@ public class FragmentSocial extends Fragment {
 
     private class TaskRemoveFriend extends AsyncTask<User, Void, Boolean> {
         User friend;
+        boolean hasConnection = true;
 
         @Override
         protected Boolean doInBackground(User... params) {
             friend = params[0];
-            return AppFacade.getInstance().removeFriend(friend);
+            
+            Boolean result = false;
+            try {
+                result = AppFacade.getInstance().removeFriend(friend);
+            } catch (IOException ex) {
+                hasConnection = false;
+                result = false;
+            }
+            
+            return result; 
         }
 
         @Override
@@ -464,7 +509,10 @@ public class FragmentSocial extends Fragment {
                 reloadFriendsList();
                 Toast.makeText(getActivity(), friend.getName() + " " + getResources().getString(R.string.social_delete_successful) + "!", Toast.LENGTH_SHORT).show(); // TODO strings
             } else {
-                Toast.makeText(getActivity(), friend.getName() + " " + getResources().getString(R.string.social_delete_not_successful) + "!", Toast.LENGTH_SHORT).show(); // TODO strings
+                if(hasConnection)
+                    Toast.makeText(getActivity(), friend.getName() + " " + getResources().getString(R.string.social_delete_not_successful) + "!", Toast.LENGTH_SHORT).show(); // TODO strings
+                else
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
             }
             showProgress(false);
         }
@@ -472,11 +520,22 @@ public class FragmentSocial extends Fragment {
 
     private class TaskAddFriend extends AsyncTask<String, Void, Boolean> {
         String name;
+        boolean hasConnection = true;
 
         @Override
         protected Boolean doInBackground(String... params) {
             name = params[0];
-            return AppFacade.getInstance().requestFriend(name);
+            
+            Boolean result = false;
+            
+            try {
+                result = AppFacade.getInstance().requestFriend(name);
+            } catch (IOException ex) {
+                hasConnection = false;
+                result = false;
+            }
+            
+            return result;
         }
 
         @Override
@@ -489,7 +548,10 @@ public class FragmentSocial extends Fragment {
             if (result) {
                 Toast.makeText(getActivity(), getResources().getString(R.string.social_add_successful) + " " + name, Toast.LENGTH_SHORT).show(); // TODO strings
             } else {
-                Toast.makeText(getActivity(), getResources().getString(R.string.social_add_not_successful) + " " + name, Toast.LENGTH_SHORT).show(); // TODO strings
+                if(hasConnection)
+                    Toast.makeText(getActivity(), getResources().getString(R.string.social_add_not_successful) + " " + name, Toast.LENGTH_SHORT).show(); // TODO strings
+                else
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
             }
             showProgress(false);
         }
