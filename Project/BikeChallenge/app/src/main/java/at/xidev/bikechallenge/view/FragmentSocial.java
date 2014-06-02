@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.List;
 
 import at.xidev.bikechallenge.core.AppFacade;
@@ -244,16 +245,24 @@ public class FragmentSocial extends Fragment {
     private class FriendsListListener implements View.OnClickListener, View.OnLongClickListener {
         @Override
         public void onClick(View v) {
-            DetailFriendDialogFragment detailsDialog =
-                    new DetailFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()));
-            detailsDialog.show(getFragmentManager(), "detailFriend");
+            try {
+                DetailFriendDialogFragment detailsDialog =
+                        new DetailFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()));
+                detailsDialog.show(getFragmentManager(), "detailFriend");
+            } catch (IOException ex) {
+                Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
+            }
         }
 
         @Override
         public boolean onLongClick(View v) {
-            DeleteFriendDialogFragment deleteDialog =
-                    new DeleteFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()), v);
-            deleteDialog.show(getFragmentManager(), "deleteFriend");
+            try {
+                DeleteFriendDialogFragment deleteDialog =
+                        new DeleteFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()), v);
+                deleteDialog.show(getFragmentManager(), "deleteFriend");
+            } catch (IOException ex) {
+                Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
+            }
             return true;
         }
     }
@@ -432,7 +441,7 @@ public class FragmentSocial extends Fragment {
                     result = AppFacade.getInstance().acceptFriend(user);
                 else
                     result = AppFacade.getInstance().declineFriend(user);
-            } catch {Exception ex) {
+            } catch (IOException ex) {
                 hasConnection = false;
                 result = false;
             }
@@ -480,7 +489,7 @@ public class FragmentSocial extends Fragment {
             Boolean result = false;
             try {
                 result = AppFacade.getInstance().removeFriend(friend);
-            } catch (Exception ex) {
+            } catch (IOException ex) {
                 hasConnection = false;
                 result = false;
             }
@@ -521,7 +530,7 @@ public class FragmentSocial extends Fragment {
             
             try {
                 result = AppFacade.getInstance().requestFriend(name);
-            } catch (Exception ex) {
+            } catch (IOException ex) {
                 hasConnection = false;
                 result = false;
             }

@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.util.List;
 
+import at.xidev.bikechallenge.model.Statistic;
 import at.xidev.bikechallenge.model.User;
 import at.xidev.bikechallenge.model.Route;
 
@@ -149,21 +150,40 @@ public class DataFacade {
         String answer;
         if(accept)
             answer = "accept";
-        answer = "deny";
+        answer = "refuse";
 
         resp = RESTClient.post("","friend/"+username+"/request/"+friend+"/"+answer);
         return resp;
     }
 
     /**
-     * Gets the statistics from the server.
-     * @return
+     * Gets the statistics from the server from the currently user logged in.
+     * @return a object in form of Statistic
+     * @throws IOException
      */
-    public String getStatistics() throws IOException {
+    public Statistic getStatistics() throws IOException {
+       return this.getStatistics(this.username);
+    }
+
+    /**
+     * Gets the statistics from the given user.
+     * @param username username of the user to get statistics for
+     * @return a object in form of Statistic
+     * @throws IOException
+     */
+    public Statistic getStatistics(String username) throws IOException {
         String resp = "Error";
         resp = RESTClient.get("/statistic/"+username);
-        /*if(!resp.equals("Error"))
-            return gson.fromJson(resp, Statistics.class); */
+        if(!resp.equals("Error"))
+            return gson.fromJson(resp, Statistic.class);
+        return null;
+    }
+
+    public List<User> getRequests() throws IOException {
+        String resp = "Error";
+        resp = RESTClient.get("/friend/"+this.username+"/pending");
+        if(!resp.equals("Error"))
+            return gson.fromJson(resp,new TypeToken<List<User>>(){}.getType());
         return null;
     }
 }

@@ -20,12 +20,14 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.LineGraphView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -383,15 +385,16 @@ public class FragmentCharts extends Fragment {
      * Task to get Statistics object
      */
     private class TaskGetStatistic extends AsyncTask<Void, Void, Statistic> {
+        boolean hasConnection = true;
+
         @Override
         protected Statistic doInBackground(Void... params) {
-            // TODO just for test
             try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                return AppFacade.getInstance().getStatistic();
+            } catch (IOException ex) {
+                hasConnection = false;
             }
-            return AppFacade.getInstance().getStatistic();
+            return null;
         }
 
         @Override
@@ -401,7 +404,11 @@ public class FragmentCharts extends Fragment {
 
         @Override
         protected void onPostExecute(Statistic statistic) {
-            reloadList(statistic);
+            if (hasConnection)
+                reloadList(statistic);
+            else
+                Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
+
             showProgress(false);
             swipeLayout.setRefreshing(false);
         }

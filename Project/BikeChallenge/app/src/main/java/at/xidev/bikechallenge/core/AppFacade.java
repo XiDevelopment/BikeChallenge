@@ -21,39 +21,19 @@ import at.xidev.bikechallenge.view.LoginActivity;
  * Created by int3r on 14.04.2014.
  */
 public class AppFacade {
-    public enum SortBy {
-        Name,
-        Score,
-        Km,
-    }
-
     private static AppFacade ourInstance = new AppFacade();
+    private User user;
 
     public static AppFacade getInstance() {
         return ourInstance;
     }
 
-    private User user;
-    private List<User> friends;
-
-    private AppFacade() {
-        this.friends = new ArrayList<User>();
-        // TODO get from database
-        Random rnd = new Random();
-        for (int i = 0; i < 10; i++) {
-            friends.add(new User("Test" + i, null, rnd.nextInt(999999), null));
-        }
-
-        // Sort by Points
-        sortFriendList(SortBy.Score);
-    }
-
     /**
-     * Login
+     * Logs the user at the server in with the credentials and returns his user object.
      *
-     * @param username
-     * @param password
-     * @return true if successful
+     * @param username username to log in
+     * @param password password to log in
+     * @return true if successful, false otherwise
      * @throws IOException
      */
     public boolean login(String username, String password) throws IOException {
@@ -62,11 +42,21 @@ public class AppFacade {
         return user != null;
     }
 
+    /**
+     * Registers an user at the server.
+     * @param user user object to register at the server
+     * @return true if successful, false otherwise
+     * @throws IOException
+     */
     public boolean register(User user) throws IOException {
         String resp = DataFacade.getInstance().registerUser(user);
         return resp.equals("OK");
     }
 
+    /**
+     * Logs the current user out with removing the loggedIn state from the Preferences.
+     * @param context context of the app
+     */
     public void logout(Context context) {
         SharedPreferences settings = context.getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
@@ -74,11 +64,21 @@ public class AppFacade {
         editor.commit();
     }
 
+    /**
+     * Checks if the user is already logged into the app.
+     * @param context context of the app
+     * @return true if logged in, false otherwise
+     */
     public boolean isLoggedIn(Context context) {
         SharedPreferences settings = context.getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         return settings.getBoolean("loggedIn", false);
     }
 
+    /**
+     * Gets the credentials out of the preferences.
+     * @param context context of the app
+     * @return a list of Strings with the order: username, password
+     */
     public List<String> getLoggedInCredentials(Context context) {
         SharedPreferences settings = context.getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         List<String> list = new ArrayList<String>();
@@ -87,126 +87,158 @@ public class AppFacade {
         return list;
     }
 
+    /**
+     * Returns the current logged in user.
+     * @return user object of current user
+     */
     public User getUser() {
         return user;
     }
 
+    /**NOT YET IMPLEMENTED
+     * Returns the profile picture of an user.
+     * @param user user to get the picture of
+     * @return a drawable of the profile picture
+     */
     public Drawable getAvatar(User user) {
         return null;
     }
 
+    /**NOT YET IMPLEMENTED
+     * Uploads a profile picture to the server.
+     * @param avatar picture to upload
+     * @return true if successful, false otherwise
+     */
     public boolean setAvatar(Drawable avatar) {
         return false;
     }
 
-    public User getFriend(String username) {
-        for (User u : friends)
+    /**
+     * Returns an user object given the specified username.
+     * @param username username of the user
+     * @return user object
+     * @throws IOException
+     */
+    public User getFriend(String username) throws IOException {
+        List<User> list = DataFacade.getInstance().getFriends();
+        for (User u : list)
             if (u.getName().equals(username))
                 return u;
 
         return null;
     }
 
-    public List<User> getFriends() {
-        return friends;
+    /**
+     * Returns a list of user (friends) of the current user.
+     * @return a list of user objects
+     * @throws IOException
+     */
+    public List<User> getFriends() throws IOException {
+        return DataFacade.getInstance().getFriends();
     }
 
+    @Deprecated
     public List<User> getFriends(SortBy sortBy) {
         //List<User> user = DataFacade.getInstance().getFriends();
-        return friends;
+        return null;
     }
 
-    // TODO
-    public List<User> getFriendRequests() {
-        List<User> testList = new ArrayList<>();
-        testList.add(new User("test1", "bla", "bla"));
-        testList.add(new User("test2", "bla", "bla"));
-        return testList;
+
+    /**
+     * Returns all pending friend request from the current user.
+     * @return a list of user objects
+     * @throws IOException
+     */
+    public List<User> getFriendRequests() throws IOException {
+        List<User> list = DataFacade.getInstance().getRequests();
+        return list;
     }
 
-    // TODO
-    public boolean requestFriend(String username) {
-        //String resp = DataFacade.getInstance().addFriend(username);
-        //return resp.equals("OK");
-        return false;
+    /**
+     * Sends a request to an other user specified by the username.
+     * @param username username of the user
+     * @return true if successful, false otherwise
+     * @throws IOException
+     */
+    public boolean requestFriend(String username) throws IOException {
+        String resp = DataFacade.getInstance().addFriend(username);
+        return resp.equals("OK");
     }
 
-    // TODO javadoc
-    public boolean acceptFriend(User user) {
-        try {
-            String resp = DataFacade.getInstance().answerRequest(user.getName(), true);
-            return false; // TODO response
-        } catch (IOException e) {
-            return false;
-        }
+    /**
+     * Accepts a friend request from the given user.
+     * @param user user to accept the friend request
+     * @return true if successful, false otherwise
+     * @throws IOException
+     */
+    public boolean acceptFriend(User user) throws IOException {
+        String resp = DataFacade.getInstance().answerRequest(user.getName(), true);
+        return resp.equals("OK");
     }
 
-    // TODO javadoc
-    public boolean declineFriend(User user) {
-        try {
-            String resp = DataFacade.getInstance().answerRequest(user.getName(), false);
-            return false; // TODO response
-        } catch (IOException e) {
-            return false;
-        }
+    /**
+     * Declines a friend request from the given user.
+     * @param user user to refuse the friend request
+     * @return true if successful, false otherwise
+     * @throws IOException
+     */
+    public boolean declineFriend(User user) throws IOException {
+        String resp = DataFacade.getInstance().answerRequest(user.getName(), false);
+        return resp.equals("OK");
     }
 
-    public boolean removeFriend(User user) {
-        // TODO server
-
-        friends.remove(user);
-        return true;
+    /**
+     * Removes a friend from the friendlist.
+     * @param user user to delete from the friendlist
+     * @return true if successful, false otherwise
+     * @throws IOException
+     */
+    public boolean removeFriend(User user) throws IOException {
+        return this.declineFriend(user);
     }
 
+    /**
+     * Returns all Routes from the specified user.
+     * @param user user to get routes from
+     * @return a list of route objects
+     * @throws IOException
+     */
     public List<Route> getRoutes(User user) throws IOException {
         return DataFacade.getInstance().getRoutes();
     }
 
+    /**
+     * Uploads a route to the server.
+     * @param route route object to save
+     * @return true if successful, false otherwise
+     * @throws IOException
+     */
     public boolean saveRoute(Route route) throws IOException {
         String resp = DataFacade.getInstance().saveRoute(route);
         return resp.equals("OK");
     }
 
     /**
-     * Statistic of current user
+     * Returns the statistics from the current user.
      *
-     * @return the statistic
+     * @return a statistic object
      */
-    public Statistic getStatistic() {
-        return getStatistic(this.user);
+    public Statistic getStatistic() throws IOException {
+        return DataFacade.getInstance().getStatistics();
     }
 
     /**
-     * The statistic of the specified user
+     * Returns the statistics from the specified user.
      *
-     * @param user the user
-     * @return the statistic
+     * @param user the user to get statistics from
+     * @return a statistic object
      */
-    public Statistic getStatistic(User user) {
-        // TODO test statistic obj
-        Statistic s = new Statistic();
-        s.setAvgDistance(20);
-        s.setAvgTime(200);
-        s.setEmission(20012);
-        s.setFuel(1232);
-        s.setLongestDistance(12322);
-        s.setTotalDistance(123212312);
-        s.setTotalTime(122322);
-
-        List<Float> l = new ArrayList<>();
-        l.add(22.3f);
-        l.add(2f);
-        l.add(232.7f);
-        l.add(120.3f);
-        l.add(122.65f);
-        l.add(2.8f);
-        l.add(212f);
-        s.setLast7Days(l);
-
-        return s;
+    public Statistic getStatistic(User user) throws IOException {
+        return DataFacade.getInstance().getStatistics(user.getName());
     }
 
-    private void sortFriendList(SortBy sortBy) {
+    @Deprecated
+    private void sortFriendList(List<User> friends, SortBy sortBy) {
         switch (sortBy) {
             case Name:
                 Collections.sort(friends, new Comparator<User>() {
@@ -228,8 +260,15 @@ public class AppFacade {
                 });
                 break;
             case Km:
-                // TODO implement
+
                 break;
         }
+    }
+
+    @Deprecated
+    public enum SortBy {
+        Name,
+        Score,
+        Km,
     }
 }
