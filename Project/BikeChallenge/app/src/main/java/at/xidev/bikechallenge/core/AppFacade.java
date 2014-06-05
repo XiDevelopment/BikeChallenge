@@ -87,6 +87,15 @@ public class AppFacade {
         return list;
     }
 
+    public void putLoggedInCredentials(Context context, String username, String password) {
+        SharedPreferences settings = context.getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("username", username);
+        editor.putString("password",password);
+        editor.putBoolean("loggedIn",true);
+        editor.commit();
+    }
+
     /**
      * Returns the current logged in user.
      * @return user object of current user
@@ -235,6 +244,55 @@ public class AppFacade {
      */
     public Statistic getStatistic(User user) throws IOException {
         return DataFacade.getInstance().getStatistics(user.getName());
+    }
+
+    /**
+     * Format milliseconds to elapsed time format
+     *
+     * @param milisDiff time difference in milliseconds
+     * @return Human readable string representation - eg. 2 days, 14 hours, 5 minutes
+     */
+    public String formatTimeElapsedSinceMillisecond(long milisDiff) {
+        if (milisDiff < 1000) {
+            return "0 second";
+        }
+
+        String formattedTime = "";
+        long secondInMillis = 1000;
+        long minuteInMillis = secondInMillis * 60;
+        long hourInMillis = minuteInMillis * 60;
+        long dayInMillis = hourInMillis * 24;
+        long weekInMillis = dayInMillis * 7;
+        long monthInMillis = dayInMillis * 30;
+
+        int timeElapsed[] = new int[6];
+        // Define time units - plural cases are handled inside loop
+        String timeElapsedText[] = {"s", "m", "h", "d", "w", "m"};
+        timeElapsed[5] = (int) (milisDiff / monthInMillis); // months
+        milisDiff = milisDiff % monthInMillis;
+        timeElapsed[4] = (int) (milisDiff / weekInMillis); // weeks
+        milisDiff = milisDiff % weekInMillis;
+        timeElapsed[3] = (int) (milisDiff / dayInMillis); // days
+        milisDiff = milisDiff % dayInMillis;
+        timeElapsed[2] = (int) (milisDiff / hourInMillis); // hours
+        milisDiff = milisDiff % hourInMillis;
+        timeElapsed[1] = (int) (milisDiff / minuteInMillis); // minutes
+        milisDiff = milisDiff % minuteInMillis;
+        timeElapsed[0] = (int) (milisDiff / secondInMillis); // seconds
+
+        // Only adds 3 significant high valued units
+        for (int i = (timeElapsed.length - 1), j = 0; i >= 0 && j < 3; i--) {
+            // loop from high to low time unit
+            if (timeElapsed[i] > 0) {
+                formattedTime += ((j > 0) ? ", " : "")
+                        + timeElapsed[i]
+                        + " " + timeElapsedText[i]
+                        + ((timeElapsed[i] > 1) ? "s" : "");
+                ++j;
+            }
+        } // end for - build string
+
+        return formattedTime;
     }
 
     @Deprecated

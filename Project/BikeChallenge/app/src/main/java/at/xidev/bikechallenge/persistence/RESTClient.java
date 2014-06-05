@@ -3,12 +3,16 @@ package at.xidev.bikechallenge.persistence;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
@@ -34,6 +38,7 @@ public class RESTClient {
 
     private static HttpClient client;
     private static HttpContext context;
+    private static int timeout = 5000;
 
     /**
      * Executes a HTTP-GET request to the server and the relative path given.
@@ -41,8 +46,13 @@ public class RESTClient {
      * @return the answer from the request, a String of a JSON object
      * @throws IOException if the reader is closed or another I/O exception occurs
      */
-    public static String get(String relPath) throws IOException {
-        client = new DefaultHttpClient();
+    public static String get(String relPath) throws IOException, ClientProtocolException {
+        HttpParams params = new BasicHttpParams();
+        HttpConnectionParams.setSoTimeout(params, timeout);
+        HttpConnectionParams.setConnectionTimeout(params, timeout);
+
+
+        client = new DefaultHttpClient(params);
         context = new BasicHttpContext();
         HttpGet get = new HttpGet(SERVER_IP + relPath);
 
@@ -65,7 +75,11 @@ public class RESTClient {
      * @throws IOException if the reader is closed or another I/O exception occurs
      */
     public static String post(String json, String relPath) throws IOException {
-        client = new DefaultHttpClient();
+        HttpParams params = new BasicHttpParams();
+        HttpConnectionParams.setSoTimeout(params, timeout);
+        HttpConnectionParams.setConnectionTimeout(params, timeout);
+
+        client = new DefaultHttpClient(params);
         context = new BasicHttpContext();
         HttpPost post = new HttpPost(SERVER_IP + relPath);
 
@@ -94,7 +108,11 @@ public class RESTClient {
      */
     public static String delete(String relPath) throws IOException {
         String resp = "";
-        client = new DefaultHttpClient();
+        HttpParams params = new BasicHttpParams();
+        HttpConnectionParams.setSoTimeout(params, timeout);
+        HttpConnectionParams.setConnectionTimeout(params, timeout);
+
+        client = new DefaultHttpClient(params);
         context = new BasicHttpContext();
 
         Log.d(TAG, "DELETE");

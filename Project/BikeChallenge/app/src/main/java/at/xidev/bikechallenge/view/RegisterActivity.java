@@ -5,11 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,8 +18,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.IOException;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.HttpHostConnectException;
+
+import java.net.SocketTimeoutException;
 
 import at.xidev.bikechallenge.core.AppFacade;
 import at.xidev.bikechallenge.model.User;
@@ -27,7 +31,7 @@ import at.xidev.bikechallenge.tools.Sha1;
 
 
 /**
- * A login screen that offers login via email/password.
+ * A registration screen that offers registration via username/email/password.
  */
 public class RegisterActivity extends Activity {
 
@@ -51,7 +55,7 @@ public class RegisterActivity extends Activity {
         setContentView(R.layout.activity_register);
         setupActionBar();
 
-        // Set up the login form.
+        // Set up the register form.
         mUsernameView = (EditText) findViewById(R.id.username);
         mEmailView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -77,6 +81,13 @@ public class RegisterActivity extends Activity {
 
         mLoginFormView = findViewById(R.id.register_form);
         mProgressView = findViewById(R.id.register_progress);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mAuthTask != null)
+            mAuthTask.cancel(true);
     }
 
     /**
@@ -217,6 +228,7 @@ public class RegisterActivity extends Activity {
     public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
 
         private final User mUser;
+        private Boolean noConnection = false;
 
         UserRegisterTask(User user) {
             mUser = user;
@@ -224,12 +236,20 @@ public class RegisterActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            String resp = "";
 
             try {
                 return AppFacade.getInstance().register(mUser);
-            } catch (IOException e) {
-                //TODO: exception handling
+            } catch (SocketTimeoutException ste) {
+                Log.e("Login", "socket timeout");
+                noConnection = true;
+            } catch (HttpHostConnectException e) {
+                Log.e("Login", "no Host Connection");
+                noConnection = true;
+                e.printStackTrace();
+            } catch (ConnectTimeoutException e) {
+                Log.e("Login", "connect timeout");
+                noConnection = true;
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return false;
@@ -242,16 +262,16 @@ public class RegisterActivity extends Activity {
 
             if (success) {
                 //save username and encrypted password
-                SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("username", mUser.getName());
-                editor.putString("password", mUser.getPassword());
-                editor.putBoolean("loggedIn", true);
-                editor.commit();
+                AppFacade.getInstance().putLoggedInCredentials(getApplicationContext(), mUser.getName(), mUser.getPassword());
                 finish();
             } else {
-                mUsernameView.setError(getString(R.string.reg_error_invalid_username));
-                mUsernameView.requestFocus();
+                if (noConnection) {
+                    Toast.makeText(getApplicationContext(), R.string.error_no_connection, Toast.LENGTH_LONG).show();
+
+                } else {
+                    mUsernameView.setError(getString(R.string.reg_error_invalid_username));
+                    mUsernameView.requestFocus();
+                }
             }
         }
 

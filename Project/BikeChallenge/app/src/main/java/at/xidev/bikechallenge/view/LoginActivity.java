@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,12 +21,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.HttpHost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.net.SocketTimeoutException;
 
 import at.xidev.bikechallenge.core.AppFacade;
 import at.xidev.bikechallenge.model.User;
@@ -35,7 +32,7 @@ import at.xidev.bikechallenge.tools.Sha1;
 
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via username/password.
 
  */
 public class LoginActivity extends Activity {
@@ -43,7 +40,6 @@ public class LoginActivity extends Activity {
      * final String for the SharedPreferences name
      */
     public static final String PREFS_NAME = "SettingsPrefs";
-    public static final String INTENT_USER = "UserObject";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -102,23 +98,13 @@ public class LoginActivity extends Activity {
 
         if (AppFacade.getInstance().isLoggedIn(this)) {
             showProgress(true);
+            Log.v("Login",AppFacade.getInstance().getLoggedInCredentials(this).get(0) +
+                    AppFacade.getInstance().getLoggedInCredentials(this).get(1));
             mAuthTask = new UserLoginTask(AppFacade.getInstance().getLoggedInCredentials(this).get(0),
                     AppFacade.getInstance().getLoggedInCredentials(this).get(1));
             mAuthTask.execute((Void) null);
         }
     }
-
-    /*
-    private void populateAutoComplete() {
-        if (VERSION.SDK_INT >= 14) {
-            // Use ContactsContract.Profile (API 14+)
-            getLoaderManager().initLoader(0, null, this);
-        } else if (VERSION.SDK_INT >= 8) {
-            // Use AccountManager (API 8+)
-            new SetupEmailAutoCompleteTask().execute(null, null);
-        }
-    }
-    */
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -126,11 +112,6 @@ public class LoginActivity extends Activity {
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
-        InputMethodManager inputManager = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                InputMethodManager.HIDE_NOT_ALWAYS);
         if (mAuthTask != null) {
             return;
         }
@@ -140,6 +121,7 @@ public class LoginActivity extends Activity {
         // Reset errors.
         mUsernameView.setError(null);
         mPasswordView.setError(null);
+
 
         // Store values at the time of the login attempt.
         String username = mUsernameView.getText().toString();
@@ -170,25 +152,19 @@ public class LoginActivity extends Activity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+
+            InputMethodManager inputManager = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+
             showProgress(true);
-            //TODO: password hashen
+
             password = Sha1.getHash(password);
             mAuthTask = new UserLoginTask(username, password);
             mAuthTask.execute((Void) null);
         }
-    }
-
-    private String sha1(String s) {
-        MessageDigest digest = null;
-        try {
-            digest = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        digest.reset();
-        byte[] data = digest.digest(s.getBytes());
-        return String.format("%0" + (data.length*2) + "X", new BigInteger(1, data));
     }
 
     private boolean isPasswordValid(String password) {
@@ -247,9 +223,7 @@ public class LoginActivity extends Activity {
         private final String mUsername;
         private final String mPassword;
         private boolean noConnection = false;
-        private String resp = "";
         private User user = null;
-        private Thread t;
 
         UserLoginTask(String username, String password) {
             mUsername = username;
@@ -259,28 +233,21 @@ public class LoginActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                //TODO: maybe move that into AppFACADE
-                 t = new Thread() {
-                    public void run() {
-                        try {
-                            sleep(30000);
-                        } catch (InterruptedException e) {
-
-                        }
-                        if(mAuthTask != null)
-                            mAuthTask.cancel(true);
-                    }
-                };
-                t.start();
-                AppFacade.getInstance().login(mUsername, mPassword);
-                user = AppFacade.getInstance().getUser();
+                if(AppFacade.getInstance().login(mUsername, mPassword))
+                    user = AppFacade.getInstance().getUser();
+            } catch(SocketTimeoutException ste) {
+                Log.e("Login", "socket timeout");
+                noConnection = true;
             }
             catch(HttpHostConnectException e) {
+                Log.e("Login", "no Host Connection");
                 noConnection = true;
-                //Toast.makeText(getApplicationContext(), R.string.error_no_connection, Toast.LENGTH_LONG).show();
+            }
+            catch(ConnectTimeoutException e) {
+                Log.e("Login", "connect timeout");
+                noConnection = true;
             }
             catch (Exception e) {
-                //TODO: exception handling
                 e.printStackTrace();
             }
             return user != null;
@@ -292,12 +259,7 @@ public class LoginActivity extends Activity {
 
             if (success) {
                 //save username and encrypted password
-                SharedPreferences settings = getSharedPreferences(PREFS_NAME,0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("username", mUsername);
-                editor.putString("password", mPassword);
-                editor.putBoolean("loggedIn", true);
-                editor.commit();
+                AppFacade.getInstance().putLoggedInCredentials(getApplicationContext(), mUsername, mPassword);
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
@@ -306,9 +268,8 @@ public class LoginActivity extends Activity {
             } else {
                 showProgress(false);
                 if(noConnection) {
-                    Button mUsernameSignInButton = (Button) findViewById(R.id.login_sign_in_button);
-                    mUsernameSignInButton.setError(getString(R.string.error_no_connection));
-                    mUsernameSignInButton.requestFocus();
+                    Toast.makeText(getApplicationContext(), R.string.error_no_connection, Toast.LENGTH_LONG).show();
+
                 } else {
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
                     mPasswordView.requestFocus();
