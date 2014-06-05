@@ -122,7 +122,7 @@ public class FragmentCharts extends Fragment {
 
         ChartCategory category = new ChartCategory();
         category.name = "Economy";
-        category.elements.add(new ChartElement("Estimated Emission savings:", "" + statistic.getEmission()));
+        category.elements.add(new ChartElement("Estimated Emission savings:", "" + statistic.getEmissions()));
         category.elements.add(new ChartElement("Estimated fuel savings:", "" + statistic.getFuel()));
         expandableElements.add(category);
 
@@ -137,7 +137,7 @@ public class FragmentCharts extends Fragment {
         category.elements.add(new ChartElement("Average distance:", "" + statistic.getAvgDistance()));
         category.elements.add(new ChartElement("Longest distance:", "" + statistic.getLongestDistance()));
         category.elements.add(new ChartElement("Total distance:", "" + statistic.getTotalDistance()));
-        category.elements.add(new ChartElement("Distances of last 7 days:", statistic.getLast7Days()));
+        category.elements.add(new ChartElement("Distances of last 7 days:", statistic.getLast7DaysDistances()));
         expandableElements.add(category);
 
         chartsExpandableListAdapter.setElements(expandableElements);
@@ -156,7 +156,7 @@ public class FragmentCharts extends Fragment {
     private class ChartElement {
         String name;
         String value;
-        List<Float> values;
+        List<Double> values;
         boolean isDiagram = false;
 
         ChartElement(String name, String value) {
@@ -165,7 +165,7 @@ public class FragmentCharts extends Fragment {
             this.isDiagram = false;
         }
 
-        ChartElement(String name, List<Float> values) {
+        ChartElement(String name, List<Double> values) {
             this.name = name;
             this.values = values;
             this.isDiagram = true;
