@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,7 +23,6 @@ import android.widget.Toast;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
 
-import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import at.xidev.bikechallenge.core.AppFacade;
@@ -57,7 +55,7 @@ public class RegisterActivity extends Activity {
         setContentView(R.layout.activity_register);
         setupActionBar();
 
-        // Set up the login form.
+        // Set up the register form.
         mUsernameView = (EditText) findViewById(R.id.username);
         mEmailView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -88,7 +86,7 @@ public class RegisterActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        if(mAuthTask != null)
+        if (mAuthTask != null)
             mAuthTask.cancel(true);
     }
 
@@ -241,21 +239,17 @@ public class RegisterActivity extends Activity {
 
             try {
                 return AppFacade.getInstance().register(mUser);
-            }
-            catch(SocketTimeoutException ste) {
+            } catch (SocketTimeoutException ste) {
                 Log.e("Login", "socket timeout");
                 noConnection = true;
-            }
-            catch(HttpHostConnectException e) {
+            } catch (HttpHostConnectException e) {
                 Log.e("Login", "no Host Connection");
                 noConnection = true;
                 e.printStackTrace();
-            }
-            catch(ConnectTimeoutException e) {
+            } catch (ConnectTimeoutException e) {
                 Log.e("Login", "connect timeout");
                 noConnection = true;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return false;
@@ -268,15 +262,10 @@ public class RegisterActivity extends Activity {
 
             if (success) {
                 //save username and encrypted password
-                SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("username", mUser.getName());
-                editor.putString("password", mUser.getPassword());
-                editor.putBoolean("loggedIn", true);
-                editor.commit();
+                AppFacade.getInstance().putLoggedInCredentials(getApplicationContext(), mUser.getName(), mUser.getPassword());
                 finish();
             } else {
-                if(noConnection) {
+                if (noConnection) {
                     Toast.makeText(getApplicationContext(), R.string.error_no_connection, Toast.LENGTH_LONG).show();
 
                 } else {

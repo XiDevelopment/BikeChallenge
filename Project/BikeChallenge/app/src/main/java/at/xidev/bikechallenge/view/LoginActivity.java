@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,14 +21,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.HttpHost;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
 
-import java.math.BigInteger;
 import java.net.SocketTimeoutException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import at.xidev.bikechallenge.core.AppFacade;
 import at.xidev.bikechallenge.model.User;
@@ -103,6 +98,8 @@ public class LoginActivity extends Activity {
 
         if (AppFacade.getInstance().isLoggedIn(this)) {
             showProgress(true);
+            Log.v("Login",AppFacade.getInstance().getLoggedInCredentials(this).get(0) +
+                    AppFacade.getInstance().getLoggedInCredentials(this).get(1));
             mAuthTask = new UserLoginTask(AppFacade.getInstance().getLoggedInCredentials(this).get(0),
                     AppFacade.getInstance().getLoggedInCredentials(this).get(1));
             mAuthTask.execute((Void) null);
@@ -115,11 +112,6 @@ public class LoginActivity extends Activity {
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
-        InputMethodManager inputManager = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                InputMethodManager.HIDE_NOT_ALWAYS);
         if (mAuthTask != null) {
             return;
         }
@@ -160,6 +152,13 @@ public class LoginActivity extends Activity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+
+            InputMethodManager inputManager = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+
             showProgress(true);
 
             password = Sha1.getHash(password);
@@ -260,12 +259,7 @@ public class LoginActivity extends Activity {
 
             if (success) {
                 //save username and encrypted password
-                SharedPreferences settings = getSharedPreferences(PREFS_NAME,0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("username", mUsername);
-                editor.putString("password", mPassword);
-                editor.putBoolean("loggedIn", true);
-                editor.commit();
+                AppFacade.getInstance().putLoggedInCredentials(getApplicationContext(), mUsername, mPassword);
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
