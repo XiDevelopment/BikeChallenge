@@ -1,162 +1,140 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    tools:context="at.xidev.bikechallenge.app.MainActivity$PlaceholderFragment"
-    android:orientation="vertical"
-    android:background="#AEFF99" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="@dimen/default_margin"
+    tools:context="at.xidev.bikechallenge.view.FragmentDrive"
+    android:background="@color/drive_background">
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:id="@+id/tracking_view"
-        android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:visibility="gone"
-        android:layout_marginBottom="10dp"  >
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_distance"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textSize="40dp"
-            android:layout_weight="1"
-            android:background="#ffffffff"
-            android:text="@string/distance"/>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#ffffffff"
-            android:layout_marginBottom="10dp" >
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
-                android:id="@+id/tv_speed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:textSize="30dp"
-                android:layout_weight="1"
-                android:layout_marginLeft="10dp"
-                android:text="@string/speed"/>
+                android:id="@+id/tv_distance"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:gravity="center_horizontal"
+                android:textSize="40sp"
+                android:background="@color/white"
+                android:text="@string/distance" />
 
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="wrap_content"
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/speedAndTime_view"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:textSize="30dp"
-                android:layout_weight="1"
-                android:text="@string/time"
-                android:layout_marginRight="10dp" />
+                android:background="@color/white"
+                android:layout_marginBottom="10dp">
 
+                <TextView
+                    android:id="@+id/tv_speed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="left"
+                    android:textSize="30sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/speed" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_height="50dp"
+                    android:gravity="right"
+                    android:textSize="30sp"
+                    android:text="@string/time"
+                    android:layout_marginRight="10dp" />
+            </RelativeLayout>
         </LinearLayout>
-
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/map"
             android:layout_width="match_parent"
-            android:layout_height="260dp"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_weight="1"
-            tools:layout="@layout/abc_simple_decor" />
-
-    </LinearLayout>
-
-
-
-
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="match_parent"
+            android:layout_marginTop="120dp"
+            android:layout_marginBottom="85dp"
+            android:name="com.google.android.gms.maps.SupportMapFragment" />
+    </RelativeLayout>
+h
+    <RelativeLayout
         android:id="@+id/start_view"
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:visibility="visible" >
+        android:visibility="visible">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="horizontal"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="93dp"
-            android:layout_weight="1"
+            android:layout_height="300dp"
+            android:layout_centerInParent="true"
             android:background="#ffffffff"
-            android:layout_marginBottom="10dp" >
+            android:layout_marginBottom="10dp">
 
             <ImageView
                 android:id="@+id/iv_user"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_gravity="left"
+                android:contentDescription="User Image"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerInParent="true"
+                android:layout_alignParentTop="true"
                 android:scaleType="fitStart"
-                android:gravity="left"
-                android:layout_weight="1"
                 android:src="@drawable/ic_action_person" />
 
             <TextView
                 android:id="@+id/tv_userpoints"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:textSize="35dp"
-                android:layout_weight="1"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:textSize="40sp"
                 android:text="0 points"
                 android:paddingBottom="0dp" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
         <TextView
             android:id="@+id/tv_lastachievements"
+            android:visibility="gone"
             android:layout_width="fill_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:textSize="15dp"
-            android:layout_weight="1"
+            android:textSize="15sp"
             android:text="Last Achievements"
             android:background="#ffffffff"
             android:layout_marginBottom="10dp" />
 
         <TextView
             android:id="@+id/tv_challenges"
+            android:visibility="gone"
             android:layout_width="fill_parent"
-            android:layout_height="140dp"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textSize="15dp"
-            android:layout_weight="1"
             android:text="Challenges"
             android:background="#ffffffff"
             android:layout_marginBottom="10dp" />
 
-    </LinearLayout>
-
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" >
+    </RelativeLayout>
 
     <Button
         android:id="@+id/button_start"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_height="@dimen/default_item_height"
+        android:layout_width="fill_parent"
+        android:layout_alignParentBottom="true"
         android:text="start"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:background="@drawable/green_button"
-        android:layout_weight="1"
         android:onClick="startButtonMain" />
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</RelativeLayout>
