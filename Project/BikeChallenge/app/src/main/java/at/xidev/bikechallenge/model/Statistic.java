@@ -1,79 +1,159 @@
 package at.xidev.bikechallenge.model;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class Statistic implements Serializable {
-    private float totalDistance;
-    private float longestDistance;
-    private float avgDistance;
-    private List<Float> last7Days;
-    private float totalTime;
-    private float avgTime;
-    private float emission;
-    private float fuel;
+public class Statistic {
+    private int score;
+    private double emissions;
+    private double fuel;
+    private double avgDistance;
+    private double longestDistance;
+    private double totalDistance;
+    private double avgTime;
+    private long longestTime;
+    private long totalTime;
+    private List<Double> last7DaysDistances;
+    private List<Long> last7DaysTimes;
+    private double globalEmissions;
+    private double globalFuel;
+    private double globalTime;
+    private double globalDistance;
 
-    public float getTotalDistance() {
-        return totalDistance;
-    }
-
-    public void setTotalDistance(float totalDistance) {
-        this.totalDistance = totalDistance;
-    }
-
-    public float getLongestDistance() {
-        return longestDistance;
-    }
-
-    public void setLongestDistance(float longestDistance) {
-        this.longestDistance = longestDistance;
-    }
-
-    public float getAvgDistance() {
-        return avgDistance;
-    }
-
-    public void setAvgDistance(float avgDistance) {
+    public Statistic(int score, double emissions, double fuel, double avgDistance, double longestDistance, double totalDistance, double avgTime, long longestTime, long totalTime, List<Double> last7DaysDistances, List<Long> last7DaysTimes, double globalEmissions, double globalFuel, double globalTime, double globalDistance) {
+        this.score = score;
+        this.emissions = emissions;
+        this.fuel = fuel;
         this.avgDistance = avgDistance;
-    }
-
-    public List<Float> getLast7Days() {
-        return last7Days;
-    }
-
-    public void setLast7Days(List<Float> last7Days) {
-        this.last7Days = last7Days;
-    }
-
-    public float getTotalTime() {
-        return totalTime;
-    }
-
-    public void setTotalTime(float totalTime) {
-        this.totalTime = totalTime;
-    }
-
-    public float getAvgTime() {
-        return avgTime;
-    }
-
-    public void setAvgTime(float avgTime) {
+        this.longestDistance = longestDistance;
+        this.totalDistance = totalDistance;
         this.avgTime = avgTime;
+        this.longestTime = longestTime;
+        this.totalTime = totalTime;
+        this.last7DaysDistances = last7DaysDistances;
+        this.last7DaysTimes = last7DaysTimes;
+        this.globalEmissions = globalEmissions;
+        this.globalFuel = globalFuel;
+        this.globalTime = globalTime;
+        this.globalDistance = globalDistance;
     }
 
-    public float getEmission() {
-        return emission;
+    public int getScore() {
+        return score;
     }
 
-    public void setEmission(float emission) {
-        this.emission = emission;
+    public void setScore(int score) {
+        this.score = score;
     }
 
-    public float getFuel() {
+    public double getEmissions() {
+        return emissions;
+    }
+
+    public void setEmissions(double emissions) {
+        this.emissions = emissions;
+    }
+
+    public double getFuel() {
         return fuel;
     }
 
-    public void setFuel(float fuel) {
+    public void setFuel(double fuel) {
         this.fuel = fuel;
+    }
+
+    public double getAvgDistance() {
+        return avgDistance;
+    }
+
+    public void setAvgDistance(double avgDistance) {
+        this.avgDistance = avgDistance;
+    }
+
+    public double getLongestDistance() {
+        return longestDistance;
+    }
+
+    public void setLongestDistance(double longestDistance) {
+        this.longestDistance = longestDistance;
+    }
+
+    public double getTotalDistance() {
+        return totalDistance;
+    }
+
+    public void setTotalDistance(double totalDistance) {
+        this.totalDistance = totalDistance;
+    }
+
+    public double getAvgTime() {
+        return avgTime;
+    }
+
+    public void setAvgTime(double avgTime) {
+        this.avgTime = avgTime;
+    }
+
+    public long getLongestTime() {
+        return longestTime;
+    }
+
+    public void setLongestTime(long longestTime) {
+        this.longestTime = longestTime;
+    }
+
+    public long getTotalTime() {
+        return totalTime;
+    }
+
+    public void setTotalTime(long totalTime) {
+        this.totalTime = totalTime;
+    }
+
+    public List<Double> getLast7DaysDistances() {
+        return last7DaysDistances;
+    }
+
+    public void setLast7DaysDistances(List<Double> last7DaysDistances) {
+        this.last7DaysDistances = last7DaysDistances;
+    }
+
+    public List<Long> getLast7DaysTimes() {
+        return last7DaysTimes;
+    }
+
+    public void setLast7DaysTimes(List<Long> last7DaysTimes) {
+        this.last7DaysTimes = last7DaysTimes;
+    }
+
+    public double getGlobalEmissions() {
+        return globalEmissions;
+    }
+
+    public void setGlobalEmissions(double globalEmissions) {
+        this.globalEmissions = globalEmissions;
+    }
+
+    public double getGlobalFuel() {
+        return globalFuel;
+    }
+
+    public void setGlobalFuel(double globalFuel) {
+        this.globalFuel = globalFuel;
+    }
+
+    public double getGlobalTime() {
+        return globalTime;
+    }
+
+    public void setGlobalTime(double globalTime) {
+        this.globalTime = globalTime;
+    }
+
+    public double getGlobalDistance() {
+        return globalDistance;
+    }
+
+    public void setGlobalDistance(double globalDistance) {
+        this.globalDistance = globalDistance;
     }
 }

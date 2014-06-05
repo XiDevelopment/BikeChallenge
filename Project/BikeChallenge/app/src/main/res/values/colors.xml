@@ -5,6 +5,7 @@
     <color name="transparent">#0000</color>
     <color name="black">#000</color>
 
+
     <color name="drive_background">#AEFF99</color>
     <color name="social_background">#FFC243</color>
     <color name="charts_background">#7E7DB2</color>
@@ -15,4 +16,6 @@
     <color name="social_list_button">#FFFFFF</color>
     <color name="social_list_button_pressed">#CCCCCC</color>
     <color name="social_list_button_self_stroke">#FF0000</color>
+    <color name="social_detail_graph1">#00B03C</color>
+    <color name="social_detail_graph2">#083970</color>
 </resources>

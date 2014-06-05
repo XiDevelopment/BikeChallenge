@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,10 +25,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.LineGraphView;
+
 import java.io.IOException;
 import java.util.List;
 
 import at.xidev.bikechallenge.core.AppFacade;
+import at.xidev.bikechallenge.model.Statistic;
 import at.xidev.bikechallenge.model.User;
 
 /**
@@ -245,29 +251,21 @@ public class FragmentSocial extends Fragment {
     private class FriendsListListener implements View.OnClickListener, View.OnLongClickListener {
         @Override
         public void onClick(View v) {
-            try {
-                DetailFriendDialogFragment detailsDialog =
-                        new DetailFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()));
-                detailsDialog.show(getFragmentManager(), "detailFriend");
-            } catch (IOException ex) {
-                Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
-            }
+            DetailFriendDialogFragment detailsDialog =
+                    new DetailFriendDialogFragment((String) v.getTag());
+            detailsDialog.show(getFragmentManager(), "detailFriend");
         }
 
         @Override
         public boolean onLongClick(View v) {
-            try {
-                DeleteFriendDialogFragment deleteDialog =
-                        new DeleteFriendDialogFragment(AppFacade.getInstance().getFriend((String) v.getTag()), v);
-                deleteDialog.show(getFragmentManager(), "deleteFriend");
-            } catch (IOException ex) {
-                Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
-            }
+            DeleteFriendDialogFragment deleteDialog =
+                    new DeleteFriendDialogFragment((String) v.getTag(), v);
+            deleteDialog.show(getFragmentManager(), "deleteFriend");
             return true;
         }
     }
 
-    private class AddFriendDialogFragment extends DialogFragment {
+    public class AddFriendDialogFragment extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -296,14 +294,14 @@ public class FragmentSocial extends Fragment {
         }
     }
 
-    private class DetailFriendDialogFragment extends DialogFragment {
-        User friend;
+    public class DetailFriendDialogFragment extends DialogFragment {
+        String friend;
 
         public DetailFriendDialogFragment() {
             // empty constructor necessary
         }
 
-        public DetailFriendDialogFragment(User friend) {
+        public DetailFriendDialogFragment(String friend) {
             this.friend = friend;
         }
 
@@ -317,13 +315,9 @@ public class FragmentSocial extends Fragment {
             // Pass null as the parent view because its going in the dialog layout
             View view = inflater.inflate(R.layout.fragment_social_detail, null);
 
-            // Setup Values
-            //TextView name = (TextView) view.findViewById(R.id.friend_detail_name);
-            // TextView points = (TextView) view.findViewById(R.id.friend_detail_points);
-            //TextView km = (TextView) view.findViewById(R.id.friend_detail_km);
-            //name.setText(friend.getName());
-            //points.setText(friend.getScore() + " Points"); // TODO Strings
-            //km.setText(friend.getScore() / 20 + " km"); // TODO Stringspass
+            // Setup values via Task
+            TaskGetFriendDetails task = new TaskGetFriendDetails(view, friend);
+            task.execute();
 
             // Build
             builder.setView(view);
@@ -332,25 +326,24 @@ public class FragmentSocial extends Fragment {
     }
 
 
-    private class DeleteFriendDialogFragment extends DialogFragment {
-        User friend;
+    public class DeleteFriendDialogFragment extends DialogFragment {
+        String friendName;
         View friendView;
-        TaskRemoveFriend task;
 
-        public DeleteFriendDialogFragment(User toDelete, View friendView) {
-            this.friend = toDelete;
+        public DeleteFriendDialogFragment(String toDelete, View friendView) {
+            this.friendName = toDelete;
             this.friendView = friendView;
-            task = new TaskRemoveFriend();
         }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(getResources().getString(R.string.social_delete_message_start) + " " + friend.getName() + "?")
+            builder.setMessage(getResources().getString(R.string.social_delete_message_start) + " " + friendName + "?")
                     .setPositiveButton(getResources().getString(R.string.social_delete_button_ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            task.execute(friend);
+                            TaskRemoveFriend task = new TaskRemoveFriend();
+                            task.execute(friendName);
                         }
                     })
                     .setNegativeButton(getResources().getString(R.string.social_delete_button_cancel), new DialogInterface.OnClickListener() {
@@ -385,17 +378,17 @@ public class FragmentSocial extends Fragment {
         @Override
         protected List<User> doInBackground(Void... params) {
             List<User> result = null;
-            
+
             try {
                 if (type)
                     result = AppFacade.getInstance().getFriends();
                 else
                     result = AppFacade.getInstance().getFriendRequests();
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 hasConnection = false;
                 result = null;
             }
-                
+
             return result;
         }
 
@@ -407,7 +400,7 @@ public class FragmentSocial extends Fragment {
         @Override
         protected void onPostExecute(List<User> friends) {
             if (friends == null)
-                if(hasConnection)
+                if (hasConnection)
                     Toast.makeText(getActivity(), getResources().getString(R.string.social_list_error), Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
@@ -435,7 +428,7 @@ public class FragmentSocial extends Fragment {
         protected Boolean doInBackground(Boolean... params) {
             action = params[0];
             Boolean result = false;
-            
+
             try {
                 if (action)
                     result = AppFacade.getInstance().acceptFriend(user);
@@ -445,7 +438,7 @@ public class FragmentSocial extends Fragment {
                 hasConnection = false;
                 result = false;
             }
-            
+
             return result;
         }
 
@@ -463,13 +456,12 @@ public class FragmentSocial extends Fragment {
                     Toast.makeText(getActivity(), user.getName() + " " + getResources().getString(R.string.social_request_ok) + "!", Toast.LENGTH_SHORT).show();
                 } else {
                     // Successful and Decline Request
-                    Toast.makeText(getActivity(), user.getName() + " " + getResources().getString(R.string.social_request_cancel) + "!", Toast.LENGTH_SHORT).show(); // TODO strings
+                    Toast.makeText(getActivity(), user.getName() + " " + getResources().getString(R.string.social_request_cancel) + "!", Toast.LENGTH_SHORT).show();
                 }
                 reloadRequestList();
             } else {
-                // TODO maybe better error handling
                 // Not successful -> error
-                if(hasConnection)
+                if (hasConnection)
                     Toast.makeText(getActivity(), getResources().getString(R.string.social_request_error), Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
@@ -478,23 +470,24 @@ public class FragmentSocial extends Fragment {
         }
     }
 
-    private class TaskRemoveFriend extends AsyncTask<User, Void, Boolean> {
-        User friend;
+    private class TaskRemoveFriend extends AsyncTask<String, Void, Boolean> {
+        String friendName;
         boolean hasConnection = true;
 
         @Override
-        protected Boolean doInBackground(User... params) {
-            friend = params[0];
-            
+        protected Boolean doInBackground(String... params) {
+            friendName = params[0];
+
             Boolean result = false;
             try {
+                User friend = AppFacade.getInstance().getFriend(friendName);
                 result = AppFacade.getInstance().removeFriend(friend);
             } catch (IOException ex) {
                 hasConnection = false;
                 result = false;
             }
-            
-            return result; 
+
+            return result;
         }
 
         @Override
@@ -507,10 +500,10 @@ public class FragmentSocial extends Fragment {
             if (result) {
                 // if successful reload friends
                 reloadFriendsList();
-                Toast.makeText(getActivity(), friend.getName() + " " + getResources().getString(R.string.social_delete_successful) + "!", Toast.LENGTH_SHORT).show(); // TODO strings
+                Toast.makeText(getActivity(), friendName + " " + getResources().getString(R.string.social_delete_successful) + "!", Toast.LENGTH_SHORT).show();
             } else {
-                if(hasConnection)
-                    Toast.makeText(getActivity(), friend.getName() + " " + getResources().getString(R.string.social_delete_not_successful) + "!", Toast.LENGTH_SHORT).show(); // TODO strings
+                if (hasConnection)
+                    Toast.makeText(getActivity(), friendName + " " + getResources().getString(R.string.social_delete_not_successful) + "!", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
             }
@@ -525,16 +518,15 @@ public class FragmentSocial extends Fragment {
         @Override
         protected Boolean doInBackground(String... params) {
             name = params[0];
-            
+
             Boolean result = false;
-            
+
             try {
                 result = AppFacade.getInstance().requestFriend(name);
             } catch (IOException ex) {
                 hasConnection = false;
                 result = false;
             }
-            
             return result;
         }
 
@@ -546,14 +538,102 @@ public class FragmentSocial extends Fragment {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                Toast.makeText(getActivity(), getResources().getString(R.string.social_add_successful) + " " + name, Toast.LENGTH_SHORT).show(); // TODO strings
+                Toast.makeText(getActivity(), getResources().getString(R.string.social_add_successful) + " " + name, Toast.LENGTH_SHORT).show();
             } else {
-                if(hasConnection)
-                    Toast.makeText(getActivity(), getResources().getString(R.string.social_add_not_successful) + " " + name, Toast.LENGTH_SHORT).show(); // TODO strings
+                if (hasConnection)
+                    Toast.makeText(getActivity(), getResources().getString(R.string.social_add_not_successful) + " " + name, Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
             }
             showProgress(false);
+        }
+    }
+
+    private class TaskGetFriendDetails extends AsyncTask<Void, Void, Pair<Statistic, Statistic>> {
+        View view;
+        String friendName;
+        boolean hasConnection = true;
+
+        protected TaskGetFriendDetails(View view, String friend) {
+            this.view = view;
+            this.friendName = friend;
+        }
+
+        @Override
+        protected Pair<Statistic, Statistic> doInBackground(Void... params) {
+            Pair<Statistic, Statistic> result;
+            try {
+                User friend = AppFacade.getInstance().getFriend(friendName);
+                Statistic sUser = AppFacade.getInstance().getStatistic();
+                Statistic sFriend = AppFacade.getInstance().getStatistic(friend);
+                result = new Pair<>(sUser, sFriend);
+            } catch (IOException ex) {
+                hasConnection = false;
+                result = null;
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            view.findViewById(R.id.friends_detail_container).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.friends_detail_progress).setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Pair<Statistic, Statistic> statistic) {
+            // Statistic objects of user and friend
+            Statistic sOwn = statistic.first;
+            Statistic sFriend = statistic.second;
+
+            // Init text views
+            TextView score = (TextView) view.findViewById(R.id.friend_detail_score);
+            TextView distance = (TextView) view.findViewById(R.id.friend_detail_distance);
+            TextView time = (TextView) view.findViewById(R.id.friend_detail_time);
+            TextView emission = (TextView) view.findViewById(R.id.friend_detail_emission);
+            LinearLayout container = (LinearLayout) view.findViewById(R.id.friends_detail_container);
+
+            // Set texts
+            score.setText(getResources().getString(R.string.social_detail_score) + sFriend.getScore() + getResources().getString(R.string.social_detail_score_val));
+            distance.setText(getResources().getString(R.string.social_detail_distance) + sFriend.getTotalDistance() + getResources().getString(R.string.social_detail_score_val));
+            time.setText(getResources().getString(R.string.social_detail_time) + AppFacade.getInstance().formatTimeElapsedSinceMillisecond(sFriend.getTotalTime()));
+            emission.setText(getResources().getString(R.string.social_detail_emission) + sFriend.getEmissions() + getResources().getString(R.string.social_detail_emission_val));
+
+            // Make Diagram
+            // Data for user
+            GraphView.GraphViewData[] graphData = new GraphView.GraphViewData[sOwn.getLast7DaysDistances().size()];
+            for (int i = 0; i < sOwn.getLast7DaysDistances().size(); i++)
+                graphData[i] = new GraphView.GraphViewData(i + 1, sOwn.getLast7DaysDistances().get(i));
+            GraphViewSeries graphSeriesUser = new GraphViewSeries("User", new GraphViewSeries.GraphViewSeriesStyle(getResources().getColor(R.color.social_detail_graph1), 7), graphData);
+
+            // Data for friend
+            graphData = new GraphView.GraphViewData[sFriend.getLast7DaysDistances().size()];
+            for (int i = 0; i < sFriend.getLast7DaysDistances().size(); i++)
+                graphData[i] = new GraphView.GraphViewData(i + 1, sFriend.getLast7DaysDistances().get(i));
+            GraphViewSeries graphSeriesFriend = new GraphViewSeries("Friend", new GraphViewSeries.GraphViewSeriesStyle(getResources().getColor(R.color.social_detail_graph2), 7), graphData);
+
+            // init graph, with empty title
+            GraphView graphView = new LineGraphView(getActivity(), "");
+
+            // add data
+            graphView.addSeries(graphSeriesUser);
+            graphView.addSeries(graphSeriesFriend);
+
+            // Set labels and style
+            graphView.setHorizontalLabels(new String[]{"-6", "-2", "-4", "-3", "-2", "-1", getResources().getString(R.string.social_detail_graph_today)});
+            graphView.getGraphViewStyle().setGridColor(getActivity().getResources().getColor(R.color.transparent));
+            graphView.getGraphViewStyle().setHorizontalLabelsColor(getActivity().getResources().getColor(R.color.black));
+            graphView.getGraphViewStyle().setVerticalLabelsColor(getActivity().getResources().getColor(R.color.black));
+            graphView.getGraphViewStyle().setNumHorizontalLabels(7);
+            graphView.setShowLegend(false);
+            graphView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 600));
+
+            // Add graph to view
+            container.addView(graphView);
+
+            // Finish
+            view.findViewById(R.id.friends_detail_container).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.friends_detail_progress).setVisibility(View.INVISIBLE);
         }
     }
 
