@@ -9,17 +9,17 @@ public class Statistic {
     private double avgDistance;
     private double longestDistance;
     private double totalDistance;
-    private double avgTime;
+    private long avgTime;
     private long longestTime;
     private long totalTime;
     private List<Double> last7DaysDistances;
     private List<Long> last7DaysTimes;
     private double globalEmissions;
     private double globalFuel;
-    private double globalTime;
+    private long globalTime;
     private double globalDistance;
 
-    public Statistic(int score, double emissions, double fuel, double avgDistance, double longestDistance, double totalDistance, double avgTime, long longestTime, long totalTime, List<Double> last7DaysDistances, List<Long> last7DaysTimes, double globalEmissions, double globalFuel, double globalTime, double globalDistance) {
+    public Statistic(int score, double emissions, double fuel, double avgDistance, double longestDistance, double totalDistance, long avgTime, long longestTime, long totalTime, List<Double> last7DaysDistances, List<Long> last7DaysTimes, double globalEmissions, double globalFuel, long globalTime, double globalDistance) {
         this.score = score;
         this.emissions = emissions;
         this.fuel = fuel;
@@ -85,11 +85,11 @@ public class Statistic {
         this.totalDistance = totalDistance;
     }
 
-    public double getAvgTime() {
+    public long getAvgTime() {
         return avgTime;
     }
 
-    public void setAvgTime(double avgTime) {
+    public void setAvgTime(long avgTime) {
         this.avgTime = avgTime;
     }
 
@@ -141,11 +141,11 @@ public class Statistic {
         this.globalFuel = globalFuel;
     }
 
-    public double getGlobalTime() {
+    public long getGlobalTime() {
         return globalTime;
     }
 
-    public void setGlobalTime(double globalTime) {
+    public void setGlobalTime(long globalTime) {
         this.globalTime = globalTime;
     }
 

@@ -128,10 +128,10 @@
                         android:background="@color/social_detail_graph2" />
 
                     <TextView
+                        android:id="@+id/friend_detail_graph_friend_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:text="@string/social_detail_graph_friend" />
+                        android:layout_margin="5dp" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
