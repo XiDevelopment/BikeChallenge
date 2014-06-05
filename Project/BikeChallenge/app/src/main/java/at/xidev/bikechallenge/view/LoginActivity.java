@@ -168,8 +168,7 @@ public class LoginActivity extends Activity {
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Maybe switch to register logic
-        return password.length() > 2;
+        return password.length() > 3;
     }
 
     private void register() {
