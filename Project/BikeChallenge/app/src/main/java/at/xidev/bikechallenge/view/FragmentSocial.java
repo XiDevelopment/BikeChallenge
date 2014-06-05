@@ -321,7 +321,7 @@ public class FragmentSocial extends Fragment {
             View view = inflater.inflate(R.layout.fragment_social_detail, null);
 
             // Setup values via Task
-            TaskGetFriendDetails task = new TaskGetFriendDetails(view, friend);
+            TaskGetFriendDetails task = new TaskGetFriendDetails(this, view, friend);
             task.execute();
 
             // Build
@@ -547,11 +547,13 @@ public class FragmentSocial extends Fragment {
     }
 
     private class TaskGetFriendDetails extends AsyncTask<Void, Void, Pair<Statistic, Statistic>> {
+        DialogFragment dialog;
         View view;
         String friendName;
         boolean hasConnection = true;
 
-        protected TaskGetFriendDetails(View view, String friend) {
+        protected TaskGetFriendDetails(DialogFragment dialog, View view, String friend) {
+            this.dialog = dialog;
             this.view = view;
             this.friendName = friend;
         }
@@ -560,9 +562,17 @@ public class FragmentSocial extends Fragment {
         protected Pair<Statistic, Statistic> doInBackground(Void... params) {
             Pair<Statistic, Statistic> result;
             try {
-                User friend = AppFacade.getInstance().getFriend(friendName);
                 Statistic sUser = AppFacade.getInstance().getStatistic();
-                Statistic sFriend = AppFacade.getInstance().getStatistic(friend);
+                Statistic sFriend;
+
+                if (!friendName.equals(AppFacade.getInstance().getUser().getName())) {
+                    User friend = AppFacade.getInstance().getFriend(friendName);
+                    sFriend = AppFacade.getInstance().getStatistic(friend);
+                } else {
+                    // sFriend also as sUser if users selects himself.
+                    sFriend = sUser;
+                }
+
                 result = new Pair<>(sUser, sFriend);
             } catch (IOException ex) {
                 hasConnection = false;
@@ -579,6 +589,16 @@ public class FragmentSocial extends Fragment {
 
         @Override
         protected void onPostExecute(Pair<Statistic, Statistic> statistic) {
+            // Check if error
+            if (statistic == null) {
+                if (hasConnection)
+                    Toast.makeText(getActivity(), getResources().getString(R.string.social_detail_error), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                return;
+            }
+
             // Statistic objects of user and friend
             Statistic sOwn = statistic.first;
             Statistic sFriend = statistic.second;

@@ -42,4 +42,5 @@
     <string name="social_detail_emission">Emissions:</string>
     <string name="social_detail_emission_val"> g CO\u00b2</string>
     <string name="social_detail_time">Time:</string>
+    <string name="social_detail_error">There was an error...</string>
 </resources>
