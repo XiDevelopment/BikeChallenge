@@ -29,4 +29,17 @@
     <string name="social_request_cancel">rejected</string>
     <string name="social_request_error">There was an error...</string>
 
+    <!-- Detail Friend Fragment -->
+    <string name="social_detail_graph_user">you</string>
+    <string name="social_detail_graph_friend">friend</string>
+    <string name="social_detail_graph_title">Comparison:</string>
+    <string name="social_detail_graph_today">today</string>
+    <string name="social_detail_rank">Rank: </string>
+    <string name="social_detail_score">Points: </string>
+    <string name="social_detail_score_val"></string>
+    <string name="social_detail_distance">Distance: </string>
+    <string name="social_detail_distance_val"> km</string>
+    <string name="social_detail_emission">Emissions: </string>
+    <string name="social_detail_emission_val"> g CO2</string>
+    <string name="social_detail_time">Time: </string>
 </resources>
