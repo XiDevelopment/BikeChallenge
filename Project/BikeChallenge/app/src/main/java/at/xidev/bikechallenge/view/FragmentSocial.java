@@ -25,11 +25,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.LineGraphView;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import at.xidev.bikechallenge.core.AppFacade;
@@ -223,6 +225,9 @@ public class FragmentSocial extends Fragment {
         rank.setText(getResources().getString(R.string.social_rank) + ": " + rankCounter);
         //image.setImageDrawable(user.getImage());
 
+        // Setup listeners
+        userView.setOnClickListener(fListener);
+
         // return view
         return userView;
     }
@@ -353,14 +358,6 @@ public class FragmentSocial extends Fragment {
                     });
             // Create the AlertDialog object and return it
             return builder.create();
-        }
-
-        // TODO
-        private class TaskGetRoutes extends AsyncTask<User, Void, Boolean> {
-            @Override
-            protected Boolean doInBackground(User... params) {
-                return null;
-            }
         }
     }
 
@@ -587,53 +584,78 @@ public class FragmentSocial extends Fragment {
             Statistic sFriend = statistic.second;
 
             // Init text views
+            TextView name = (TextView) view.findViewById(R.id.friend_detail_name);
+            TextView graph_name = (TextView) view.findViewById(R.id.friend_detail_graph_friend_name);
             TextView score = (TextView) view.findViewById(R.id.friend_detail_score);
             TextView distance = (TextView) view.findViewById(R.id.friend_detail_distance);
             TextView time = (TextView) view.findViewById(R.id.friend_detail_time);
             TextView emission = (TextView) view.findViewById(R.id.friend_detail_emission);
-            LinearLayout container = (LinearLayout) view.findViewById(R.id.friends_detail_container);
+            LinearLayout container = (LinearLayout) view.findViewById(R.id.friends_detail_graph_container);
 
             // Set texts
-            score.setText(getResources().getString(R.string.social_detail_score) + sFriend.getScore() + getResources().getString(R.string.social_detail_score_val));
-            distance.setText(getResources().getString(R.string.social_detail_distance) + sFriend.getTotalDistance() + getResources().getString(R.string.social_detail_score_val));
-            time.setText(getResources().getString(R.string.social_detail_time) + AppFacade.getInstance().formatTimeElapsedSinceMillisecond(sFriend.getTotalTime()));
-            emission.setText(getResources().getString(R.string.social_detail_emission) + sFriend.getEmissions() + getResources().getString(R.string.social_detail_emission_val));
+            DecimalFormat df = new DecimalFormat("0.00");
 
-            // Make Diagram
-            // Data for user
-            GraphView.GraphViewData[] graphData = new GraphView.GraphViewData[sOwn.getLast7DaysDistances().size()];
-            for (int i = 0; i < sOwn.getLast7DaysDistances().size(); i++)
-                graphData[i] = new GraphView.GraphViewData(i + 1, sOwn.getLast7DaysDistances().get(i));
-            GraphViewSeries graphSeriesUser = new GraphViewSeries("User", new GraphViewSeries.GraphViewSeriesStyle(getResources().getColor(R.color.social_detail_graph1), 7), graphData);
+            name.setText(friendName);
+            graph_name.setText(friendName);
+            score.setText(getResources().getString(R.string.social_detail_score) + " " + Math.round(sFriend.getScore()) + getResources().getString(R.string.social_detail_score_val));
+            distance.setText(getResources().getString(R.string.social_detail_distance) + " " + df.format(sFriend.getTotalDistance() / 1000.0) + " " + getResources().getString(R.string.social_detail_score_val) + getString(R.string.social_detail_distance_val));
+            time.setText(getResources().getString(R.string.social_detail_time) + " " + AppFacade.getInstance().formatTimeElapsedSinceMillisecond(sFriend.getTotalTime()));
+            emission.setText(getResources().getString(R.string.social_detail_emission) + " " + df.format(sFriend.getEmissions()) + " " + getResources().getString(R.string.social_detail_emission_val));
 
-            // Data for friend
-            graphData = new GraphView.GraphViewData[sFriend.getLast7DaysDistances().size()];
-            for (int i = 0; i < sFriend.getLast7DaysDistances().size(); i++)
-                graphData[i] = new GraphView.GraphViewData(i + 1, sFriend.getLast7DaysDistances().get(i));
-            GraphViewSeries graphSeriesFriend = new GraphViewSeries("Friend", new GraphViewSeries.GraphViewSeriesStyle(getResources().getColor(R.color.social_detail_graph2), 7), graphData);
+            // Check if dialog is for user or friend
+            if (friendName.equals(AppFacade.getInstance().getUser().getName())) {
+                // user does not need a comparison
+                container.setVisibility(View.GONE);
+            } else {
+                // Make Diagram
+                // Data for user
+                GraphView.GraphViewData[] graphData = new GraphView.GraphViewData[sOwn.getLast7DaysDistances().size()];
+                for (int i = 0; i < sOwn.getLast7DaysDistances().size(); i++)
+                    graphData[i] = new GraphView.GraphViewData(i + 1, sOwn.getLast7DaysDistances().get(i));
+                GraphViewSeries graphSeriesUser = new GraphViewSeries("User", new GraphViewSeries.GraphViewSeriesStyle(getResources().getColor(R.color.social_detail_graph1), (int) getResources().getDimension(R.dimen.charts_line_thickness)), graphData);
 
-            // init graph, with empty title
-            GraphView graphView = new LineGraphView(getActivity(), "");
+                // Data for friend
+                graphData = new GraphView.GraphViewData[sFriend.getLast7DaysDistances().size()];
+                for (int i = 0; i < sFriend.getLast7DaysDistances().size(); i++)
+                    graphData[i] = new GraphView.GraphViewData(i + 1, sFriend.getLast7DaysDistances().get(i));
+                GraphViewSeries graphSeriesFriend = new GraphViewSeries("Friend", new GraphViewSeries.GraphViewSeriesStyle(getResources().getColor(R.color.social_detail_graph2), (int) getResources().getDimension(R.dimen.charts_line_thickness)), graphData);
 
-            // add data
-            graphView.addSeries(graphSeriesUser);
-            graphView.addSeries(graphSeriesFriend);
+                // init graph, with empty title
+                GraphView graphView = new LineGraphView(getActivity(), "");
 
-            // Set labels and style
-            graphView.setHorizontalLabels(new String[]{"-6", "-2", "-4", "-3", "-2", "-1", getResources().getString(R.string.social_detail_graph_today)});
-            graphView.getGraphViewStyle().setGridColor(getActivity().getResources().getColor(R.color.transparent));
-            graphView.getGraphViewStyle().setHorizontalLabelsColor(getActivity().getResources().getColor(R.color.black));
-            graphView.getGraphViewStyle().setVerticalLabelsColor(getActivity().getResources().getColor(R.color.black));
-            graphView.getGraphViewStyle().setNumHorizontalLabels(7);
-            graphView.setShowLegend(false);
-            graphView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 600));
+                // add data
+                graphView.addSeries(graphSeriesUser);
+                graphView.addSeries(graphSeriesFriend);
 
-            // Add graph to view
-            container.addView(graphView);
+                // Set labels and style
+                graphView.setHorizontalLabels(new String[]{"-6", "-2", "-4", "-3", "-2", "-1", getResources().getString(R.string.social_detail_graph_today)});
+                graphView.getGraphViewStyle().setGridColor(getActivity().getResources().getColor(R.color.dark_transparent));
+                graphView.getGraphViewStyle().setHorizontalLabelsColor(getActivity().getResources().getColor(R.color.black));
+                graphView.getGraphViewStyle().setVerticalLabelsColor(getActivity().getResources().getColor(R.color.black));
+                graphView.getGraphViewStyle().setNumHorizontalLabels(7);
+                graphView.setShowLegend(false);
+                graphView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 600));
+                graphView.setCustomLabelFormatter(new CustomLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (!isValueX) {
+                            DecimalFormat df = new DecimalFormat("0.0");
+                            if (value < 100)
+                                return ((int) value) + "m";
+                            else
+                                return df.format(value / 1000) + "km";
+                        }
+                        return null; // let graphview generate X-axis label for us
+                    }
+                });
+
+                // Add graph to view
+                container.addView(graphView);
+            }
 
             // Finish
             view.findViewById(R.id.friends_detail_container).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.friends_detail_progress).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.friends_detail_progress).setVisibility(View.GONE);
         }
     }
 

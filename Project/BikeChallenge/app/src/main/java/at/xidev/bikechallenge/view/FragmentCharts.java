@@ -22,12 +22,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.LineGraphView;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,24 +122,39 @@ public class FragmentCharts extends Fragment {
 
         List<ChartCategory> expandableElements = new ArrayList<>();
 
+        DecimalFormat df = new DecimalFormat("0.00");
+
         ChartCategory category = new ChartCategory();
-        category.name = "Economy";
-        category.elements.add(new ChartElement("Estimated Emission savings:", "" + statistic.getEmissions()));
-        category.elements.add(new ChartElement("Estimated fuel savings:", "" + statistic.getFuel()));
+        category.name = getString(R.string.charts_economy);
+        category.elements.add(new ChartElement(getString(R.string.charts_economy_emissions), df.format(statistic.getEmissions()) + " " + getString(R.string.charts_emission_metric)));
+        category.elements.add(new ChartElement(getString(R.string.charts_economy_fuel), df.format(statistic.getFuel()) + " " + getString(R.string.charts_fuel_metric)));
         expandableElements.add(category);
 
         category = new ChartCategory();
-        category.name = "Time";
-        category.elements.add(new ChartElement("Average time tracking:", "" + statistic.getAvgTime()));
-        category.elements.add(new ChartElement("Total time tracking:", "" + statistic.getTotalTime()));
+        category.name = getString(R.string.charts_time);
+        category.elements.add(new ChartElement(getString(R.string.charts_time_avg), AppFacade.getInstance().formatTimeElapsedSinceMillisecond(statistic.getAvgTime())));
+        category.elements.add(new ChartElement(getString(R.string.charts_time_longest), AppFacade.getInstance().formatTimeElapsedSinceMillisecond(statistic.getLongestTime())));
+        category.elements.add(new ChartElement(getString(R.string.charts_time_total), AppFacade.getInstance().formatTimeElapsedSinceMillisecond(statistic.getTotalTime())));
+        List<Double> values = new ArrayList<>();
+        for (Long l : statistic.getLast7DaysTimes())
+            values.add(l.doubleValue());
+        category.elements.add(new ChartElement(getString(R.string.charts_time_last7days), values));
         expandableElements.add(category);
 
         category = new ChartCategory();
-        category.name = "Distances";
-        category.elements.add(new ChartElement("Average distance:", "" + statistic.getAvgDistance()));
-        category.elements.add(new ChartElement("Longest distance:", "" + statistic.getLongestDistance()));
-        category.elements.add(new ChartElement("Total distance:", "" + statistic.getTotalDistance()));
-        category.elements.add(new ChartElement("Distances of last 7 days:", statistic.getLast7DaysDistances()));
+        category.name = getString(R.string.charts_distances);
+        category.elements.add(new ChartElement(getString(R.string.charts_distances_avg), df.format(statistic.getAvgDistance() / 1000.0) + " " + getString(R.string.charts_distance_metric)));
+        category.elements.add(new ChartElement(getString(R.string.charts_distances_longest), df.format(statistic.getLongestDistance() / 1000.0) + " " + getString(R.string.charts_distance_metric)));
+        category.elements.add(new ChartElement(getString(R.string.charts_distances_total), df.format(statistic.getTotalDistance() / 1000.0) + " " + getString(R.string.charts_distance_metric)));
+        category.elements.add(new ChartElement(getString(R.string.charts_distances_last7days), statistic.getLast7DaysDistances()));
+        expandableElements.add(category);
+
+        category = new ChartCategory();
+        category.name = getString(R.string.charts_global);
+        category.elements.add(new ChartElement(getString(R.string.charts_global_emissions), df.format(statistic.getGlobalEmissions()) + " " + getString(R.string.charts_emission_metric)));
+        category.elements.add(new ChartElement(getString(R.string.charts_global_fuel), df.format(statistic.getGlobalFuel()) + " " + getString(R.string.charts_fuel_metric)));
+        category.elements.add(new ChartElement(getString(R.string.charts_global_time), AppFacade.getInstance().formatTimeElapsedSinceMillisecond(statistic.getGlobalTime())));
+        category.elements.add(new ChartElement(getString(R.string.charts_global_distance), df.format(statistic.getGlobalDistance() / 1000.0) + " " + getString(R.string.charts_distance_metric)));
         expandableElements.add(category);
 
         chartsExpandableListAdapter.setElements(expandableElements);
@@ -340,7 +357,7 @@ public class FragmentCharts extends Fragment {
                 GraphViewData[] graphData = new GraphViewData[child.values.size()];
                 for (int i = 0; i < child.values.size(); i++)
                     graphData[i] = new GraphViewData(i + 1, child.values.get(i));
-                GraphViewSeries graphSeries = new GraphViewSeries(graphData);
+                GraphViewSeries graphSeries = new GraphViewSeries("", new GraphViewSeries.GraphViewSeriesStyle(context.getResources().getColor(R.color.social_detail_graph1), (int) context.getResources().getDimension(R.dimen.charts_line_thickness)), graphData);
 
                 // init graph, with empty title
                 GraphView graphView = new LineGraphView(context, "");
@@ -349,10 +366,21 @@ public class FragmentCharts extends Fragment {
                 graphView.addSeries(graphSeries);
 
                 // Set labels and style
-                //graphView.setHorizontalLabels(new String[]{"2 days ago", "yesterday", "today", "tomorrow"});
-                graphView.getGraphViewStyle().setGridColor(context.getResources().getColor(R.color.transparent));
+                graphView.setHorizontalLabels(new String[]{"-6", "-2", "-4", "-3", "-2", "-1", getResources().getString(R.string.social_detail_graph_today)});
+                graphView.getGraphViewStyle().setGridColor(context.getResources().getColor(R.color.dark_transparent));
                 graphView.getGraphViewStyle().setHorizontalLabelsColor(context.getResources().getColor(R.color.black));
                 graphView.getGraphViewStyle().setVerticalLabelsColor(context.getResources().getColor(R.color.black));
+                graphView.getGraphViewStyle().setNumHorizontalLabels(7);
+                graphView.setCustomLabelFormatter(new CustomLabelFormatter() {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if (!isValueX) {
+                            DecimalFormat df = new DecimalFormat("0.0");
+                            return df.format(value / 1000);
+                        }
+                        return null; // let graphview generate X-axis label for us
+                    }
+                });
 
                 // Add to view
                 LinearLayout layout = (LinearLayout) v.findViewById(R.id.charts_expandable_diagram_container);

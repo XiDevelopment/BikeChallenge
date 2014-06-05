@@ -12,4 +12,5 @@
     <dimen name="charts_item_text_size">16sp</dimen>
     <dimen name="charts_diagram_height">250dp</dimen>
 
+    <dimen name="charts_line_thickness">3dp</dimen>
 </resources>

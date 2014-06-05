@@ -15,7 +15,7 @@
     <color name="friends_request_background">#2000</color>
     <color name="social_list_button">#FFFFFF</color>
     <color name="social_list_button_pressed">#CCCCCC</color>
-    <color name="social_list_button_self_stroke">#FF0000</color>
+    <color name="social_list_button_self_stroke">#66000000</color>
     <color name="social_detail_graph1">#00B03C</color>
     <color name="social_detail_graph2">#083970</color>
 </resources>

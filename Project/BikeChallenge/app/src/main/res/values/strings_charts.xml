@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- strings for economy tab -->
+    <string name="charts_economy">Economy</string>
+    <string name="charts_economy_emissions">Estimated emission savings:</string>
+    <string name="charts_economy_fuel">Estimated fuel savings:</string>
+
+    <!-- strings for time tab -->
+    <string name="charts_time">Time</string>
+    <string name="charts_time_avg">Average time tracking:</string>
+    <string name="charts_time_longest">Longest trip time:</string>
+    <string name="charts_time_total">Total time tracking:</string>
+    <string name="charts_time_last7days">Times of the last 7 days:</string>
+
+    <!-- strings for distance tab -->
+    <string name="charts_distances">Distances</string>
+    <string name="charts_distances_avg">Average distance:"</string>
+    <string name="charts_distances_longest">Longest distance:</string>
+    <string name="charts_distances_total">Total distance:</string>
+    <string name="charts_distances_last7days">Distances of last 7 days:</string>
+
+    <!-- strings for global tab -->
+    <string name="charts_global">Global</string>
+    <string name="charts_global_emissions">Estimated emission savings:</string>
+    <string name="charts_global_fuel">Estimated fuel savings:</string>
+    <string name="charts_global_time">Total time tracked:</string>
+    <string name="charts_global_distance">Distance traveled:</string>
+
+    <!-- metric strings -->
+    <string name="charts_distance_metric">km</string>
+    <string name="charts_emission_metric">g CO\u00b2</string>
+    <string name="charts_fuel_metric">Euro</string>
+</resources>

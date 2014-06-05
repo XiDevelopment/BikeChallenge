@@ -19,68 +19,53 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/friend_detail_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp" />
+
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_margin">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/friend_detail_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="24sp" />
-
-                <ImageView
-                    android:id="@+id/friend_detail_image"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:background="@drawable/ic_action_person" />
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/friend_detail_image"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:background="@drawable/ic_action_person" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="150dp"
                 android:layout_alignParentEnd="true"
+                android:gravity="end"
                 android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="22sp"
-                    android:text="Rank: 2" />
 
                 <TextView
                     android:id="@+id/friend_detail_score"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/default_margin"
-                    android:text="1200 Points" />
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/friend_detail_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/default_margin"
-                    android:text="1200 Minutes" />
+                    android:layout_marginTop="@dimen/default_margin" />
 
                 <TextView
                     android:id="@+id/friend_detail_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/default_margin"
-                    android:text="1200 km" />
+                    android:layout_marginTop="@dimen/default_margin" />
 
                 <TextView
                     android:id="@+id/friend_detail_emission"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/default_margin"
-                    android:text="1200 co2" />
+                    android:layout_marginTop="@dimen/default_margin" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -128,10 +113,10 @@
                         android:background="@color/social_detail_graph2" />
 
                     <TextView
+                        android:id="@+id/friend_detail_graph_friend_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:text="@string/social_detail_graph_friend" />
+                        android:layout_margin="5dp" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
