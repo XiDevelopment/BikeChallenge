@@ -178,7 +178,7 @@ public class RegisterActivity extends Activity {
 
     private boolean isPasswordValid(String password) {
         //contains a number: && password.matches("(.*\\d+)+(.*\\d*)*")
-        return password.length() > 2;
+        return password.length() > 3;
     }
 
     private boolean arePasswordsEqual(String pw1, String pw2) {
