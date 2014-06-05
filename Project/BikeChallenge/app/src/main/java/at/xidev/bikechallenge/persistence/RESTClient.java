@@ -56,7 +56,7 @@ public class RESTClient {
         context = new BasicHttpContext();
         HttpGet get = new HttpGet(SERVER_IP + relPath);
 
-        Log.d(TAG, "GET:");
+        Log.d(TAG, "GET: "+relPath);
 
         String resp = "";
         HttpResponse response = client.execute(get, context);
@@ -83,10 +83,12 @@ public class RESTClient {
         context = new BasicHttpContext();
         HttpPost post = new HttpPost(SERVER_IP + relPath);
 
-        Log.d(TAG, "POST:");
-        Log.d(TAG, json);
+        Log.d(TAG, "POST: "+relPath);
+        if(json != null) {
+            Log.d(TAG, json);
+            post.setEntity(new StringEntity(json));
+        }
 
-        post.setEntity(new StringEntity(json));
         post.setHeader("Content-type", "application/json");
 
         String resp = "";
@@ -115,7 +117,7 @@ public class RESTClient {
         client = new DefaultHttpClient(params);
         context = new BasicHttpContext();
 
-        Log.d(TAG, "DELETE");
+        Log.d(TAG, "DELETE: "+relPath);
 
         HttpDelete delete = new HttpDelete(SERVER_IP + relPath);
         HttpResponse response = client.execute(delete, context);
