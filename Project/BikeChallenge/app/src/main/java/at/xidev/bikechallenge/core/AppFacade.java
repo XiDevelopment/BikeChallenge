@@ -284,7 +284,7 @@ public class AppFacade {
         for (int i = (timeElapsed.length - 1), j = 0; i >= 0 && j < 3; i--) {
             // loop from high to low time unit
             if (timeElapsed[i] > 0) {
-                formattedTime += ((j > 0) ? ", " : "")
+                formattedTime += ((j > 0) ? " " : "")
                         + timeElapsed[i]
                         + " " + timeElapsedText[i];
                 ++j;

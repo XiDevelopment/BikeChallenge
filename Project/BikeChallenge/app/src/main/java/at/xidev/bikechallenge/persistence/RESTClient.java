@@ -38,7 +38,7 @@ public class RESTClient {
 
     private static HttpClient client;
     private static HttpContext context;
-    private static int timeout = 5000;
+    private static int timeout = 10000;
 
     /**
      * Executes a HTTP-GET request to the server and the relative path given.
