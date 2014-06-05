@@ -247,14 +247,14 @@ public class AppFacade {
     }
 
     /**
-     * Format milliseconds to elapsed time format
+     * Format milliseconds to elapsed time format.
      *
      * @param milisDiff time difference in milliseconds
      * @return Human readable string representation - eg. 2 days, 14 hours, 5 minutes
      */
     public String formatTimeElapsedSinceMillisecond(long milisDiff) {
         if (milisDiff < 1000) {
-            return "0 second";
+            return "0 seconds";
         }
 
         String formattedTime = "";
@@ -286,8 +286,7 @@ public class AppFacade {
             if (timeElapsed[i] > 0) {
                 formattedTime += ((j > 0) ? ", " : "")
                         + timeElapsed[i]
-                        + " " + timeElapsedText[i]
-                        + ((timeElapsed[i] > 1) ? "s" : "");
+                        + " " + timeElapsedText[i];
                 ++j;
             }
         } // end for - build string
