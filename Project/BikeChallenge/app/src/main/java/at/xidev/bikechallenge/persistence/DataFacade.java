@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import at.xidev.bikechallenge.model.Statistic;
@@ -45,7 +46,7 @@ public class DataFacade {
     public User getUser(String username, String password) throws IOException {
         String resp;
         // + "/" + password
-        resp = RESTClient.get("user/"+username);
+        resp = RESTClient.get("user/"+username+"?pw="+password);
         if(!resp.equals("Error")) {
             this.setUsername(username);
             this.password = password;
@@ -62,7 +63,7 @@ public class DataFacade {
      */
     public String registerUser(User user) throws IOException {
         String resp = "Error";
-        resp = RESTClient.post(gson.toJson(user, User.class), "user/" + user.getName());
+        resp = RESTClient.post(gson.toJson(user, User.class), "user/" + user.getName()+"?pw="+password);
 
         return resp;
     }
@@ -73,7 +74,7 @@ public class DataFacade {
      */
     public List<Route> getRoutes() throws IOException {
         String resp;
-        resp = RESTClient.get("route/" + username);
+        resp = RESTClient.get("route/" + username+"?pw="+password);
         if(!resp.equals("Error")) {
             return gson.fromJson(resp, new TypeToken<List<Route>>(){}.getType());
         }
@@ -87,7 +88,7 @@ public class DataFacade {
      */
     public Route getRoute(Integer routeId) throws IOException {
         String resp;
-        resp = RESTClient.get("route/"+username+"/"+routeId);
+        resp = RESTClient.get("route/"+username+"/"+routeId+"?pw="+password);
         if(!resp.equals("Error"))
             return gson.fromJson(resp, Route.class);
         return null;
@@ -100,7 +101,7 @@ public class DataFacade {
      */
     public String saveRoute(Route route) throws IOException {
         String resp = "Error";
-        resp = RESTClient.post(gson.toJson(route, Route.class), "route/"+username);
+        resp = RESTClient.post(gson.toJson(route, Route.class), "route/"+username+"?pw="+password);
         return resp;
     }
 
@@ -111,7 +112,7 @@ public class DataFacade {
      */
     public String deleteRoute(Integer routeId) throws IOException {
         String resp = "Error";
-        resp = RESTClient.delete("route/"+username+"/"+routeId);
+        resp = RESTClient.delete("route/"+username+"/"+routeId+"?pw="+password);
 
         return resp;
     }
@@ -122,7 +123,7 @@ public class DataFacade {
      */
     public List<User> getFriends() throws IOException {
         String resp;
-        resp = RESTClient.get("friend/" + username);
+        resp = RESTClient.get("friend/" + username+"?pw="+password);
         if(!resp.equals("Error"))
             return gson.fromJson(resp, new TypeToken<List<User>>(){}.getType());
         return null;
@@ -135,7 +136,7 @@ public class DataFacade {
      */
     public String addFriend(String friend) throws IOException {
         String resp = "Error";
-        resp = RESTClient.post("", "friend/"+username+"/request/"+friend);
+        resp = RESTClient.post(null, "friend/"+username+"/request/"+friend+"?pw="+password);
         return resp;
     }
 
@@ -150,9 +151,10 @@ public class DataFacade {
         String answer;
         if(accept)
             answer = "accept";
-        answer = "refuse";
+        else
+            answer = "refuse";
 
-        resp = RESTClient.post("","friend/"+username+"/request/"+friend+"/"+answer);
+        resp = RESTClient.post(null,"friend/"+username+"/request/"+friend+"/"+answer+"?pw="+password);
         return resp;
     }
 
@@ -173,7 +175,7 @@ public class DataFacade {
      */
     public Statistic getStatistics(String username) throws IOException {
         String resp = "Error";
-        resp = RESTClient.get("/statistic/"+username);
+        resp = RESTClient.get("/statistic/"+username+"?pw="+password);
         if(!resp.equals("Error"))
             return gson.fromJson(resp, Statistic.class);
         return null;
@@ -181,9 +183,9 @@ public class DataFacade {
 
     public List<User> getRequests() throws IOException {
         String resp = "Error";
-        resp = RESTClient.get("/friend/"+this.username+"/pending");
+        resp = RESTClient.get("/friend/"+this.username+"/pending"+"?pw="+password);
         if(!resp.equals("Error"))
             return gson.fromJson(resp,new TypeToken<List<User>>(){}.getType());
-        return null;
+        return new ArrayList<>();
     }
 }
