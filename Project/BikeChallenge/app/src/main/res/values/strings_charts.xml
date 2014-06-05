@@ -21,10 +21,10 @@
 
     <!-- strings for global tab -->
     <string name="charts_global">Global</string>
-    <string name="charts_global_emissions">Estimated emission savings of all users: </string>
-    <string name="charts_global_fuel">Estimated fuel savings of all users</string>
-    <string name="charts_global_time">Total time tracked by all users:</string>
-    <string name="charts_global_distance">Global distance traveled by all users:</string>
+    <string name="charts_global_emissions">Estimated emission savings:</string>
+    <string name="charts_global_fuel">Estimated fuel savings:</string>
+    <string name="charts_global_time">Total time tracked:</string>
+    <string name="charts_global_distance">Distance traveled:</string>
 
     <!-- metric strings -->
     <string name="charts_distance_metric">km</string>
