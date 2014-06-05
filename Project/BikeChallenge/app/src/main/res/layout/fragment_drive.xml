@@ -10,13 +10,13 @@
     <RelativeLayout
         android:id="@+id/tracking_view"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_distance"
@@ -64,29 +64,35 @@
             android:layout_marginBottom="85dp"
             android:name="com.google.android.gms.maps.SupportMapFragment" />
     </RelativeLayout>
-h
-    <RelativeLayout
-        android:id="@+id/start_view"
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible">
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical"
+    <ScrollView
+        android:id="@+id/start_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/white"
+        android:layout_marginBottom="85dp">
+
+        <LinearLayout
+            android:padding="@dimen/default_margin"
             android:layout_width="fill_parent"
-            android:layout_height="300dp"
-            android:layout_centerInParent="true"
-            android:background="#ffffffff"
-            android:layout_marginBottom="10dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="40sp"
+                android:text="int3ro" />
 
             <ImageView
                 android:id="@+id/iv_user"
                 android:contentDescription="User Image"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:layout_centerInParent="true"
-                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/default_margin"
                 android:scaleType="fitStart"
                 android:src="@drawable/ic_action_person" />
 
@@ -94,38 +100,12 @@ h
                 android:id="@+id/tv_userpoints"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:gravity="center"
-                android:textSize="40sp"
-                android:text="0 points"
-                android:paddingBottom="0dp" />
-
-        </RelativeLayout>
-
-
-        <TextView
-            android:id="@+id/tv_lastachievements"
-            android:visibility="gone"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textSize="15sp"
-            android:text="Last Achievements"
-            android:background="#ffffffff"
-            android:layout_marginBottom="10dp" />
-
-        <TextView
-            android:id="@+id/tv_challenges"
-            android:visibility="gone"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textSize="15dp"
-            android:text="Challenges"
-            android:background="#ffffffff"
-            android:layout_marginBottom="10dp" />
-
-    </RelativeLayout>
+                android:textSize="36sp"
+                android:layout_marginTop="@dimen/default_margin"
+                android:text="0 points" />
+        </LinearLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/button_start"
@@ -133,6 +113,7 @@ h
         android:layout_width="fill_parent"
         android:layout_alignParentBottom="true"
         android:text="start"
+        android:textSize="34sp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:background="@drawable/green_button"
