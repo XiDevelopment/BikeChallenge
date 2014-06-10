@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.ComponentName;
@@ -174,6 +175,15 @@ public class FragmentDrive extends Fragment {
         positionlist = new ArrayList<LatLng>();
 
         return rootView;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        TextView name = (TextView) getActivity().findViewById(R.id.tv_name);
+        ImageView picture = (ImageView) getActivity().findViewById(R.id.iv_user);
+        TextView score = (TextView) getActivity().findViewById(R.id.tv_userpoints);
+        name.setText(AppFacade.getInstance().getUser().getName());
+        score.setText(AppFacade.getInstance().getUser().getScore() + " points");
     }
 
 

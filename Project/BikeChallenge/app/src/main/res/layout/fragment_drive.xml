@@ -83,8 +83,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textSize="40sp"
-                android:text="int3ro" />
+                android:textSize="40sp" />
 
             <ImageView
                 android:id="@+id/iv_user"
@@ -102,8 +101,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="36sp"
-                android:layout_marginTop="@dimen/default_margin"
-                android:text="0 points" />
+                android:layout_marginTop="@dimen/default_margin"/>
         </LinearLayout>
     </ScrollView>
 
