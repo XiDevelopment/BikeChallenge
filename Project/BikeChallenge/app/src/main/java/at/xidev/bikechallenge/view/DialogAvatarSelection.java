@@ -55,7 +55,6 @@ public class DialogAvatarSelection extends DialogFragment {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 TaskUpdateAvatar task = new TaskUpdateAvatar(view, getDialog());
                 task.execute(position);
-                Toast.makeText(getActivity(), "DD:"+position, Toast.LENGTH_SHORT).show();
             }
         });
 
