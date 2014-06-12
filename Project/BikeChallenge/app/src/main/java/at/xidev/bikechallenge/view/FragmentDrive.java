@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -91,6 +92,7 @@ public class FragmentDrive extends Fragment {
     private String timeString;              //tracking time as String
     private String meterString;             //tracked meters as String
     private RouteDialogFragment detailsDialog;//dialog to show and save route
+    private View rootView;
 
 
     public static FragmentDrive newInstance() {
@@ -106,9 +108,23 @@ public class FragmentDrive extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_drive, container, false);
+        rootView = inflater.inflate(R.layout.fragment_drive, container, false);
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        ImageView iv = (ImageView) rootView.findViewById(R.id.iv_user);
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogAvatarSelection dialog = new DialogAvatarSelection(new DialogAvatarSelection.AvatarSelectionListener() {
+                    @Override
+                    public void onCloseDialog() {
+                        ((MainActivity) getActivity()).reloadData();
+                    }
+                });
+                dialog.show(getFragmentManager(), "Avatar Dialog");
+            }
+        });
 
         //checks if gps is enable
         gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -657,6 +673,22 @@ public class FragmentDrive extends Fragment {
     private String calculateAverageSpeedString(float dist, long time){
         int avSpeed = (int) ((dist/(time/1000))*3.6);
         return "" + avSpeed + getString(R.string.drive_speed_unit);
+    }
+
+    public void reload() {
+        User user = AppFacade.getInstance().getUser();
+
+        // Update name
+        TextView name = (TextView) rootView.findViewById(R.id.tv_name);
+        name.setText(user.getName());
+
+        // Update image
+        ImageView image = (ImageView) rootView.findViewById(R.id.iv_user);
+        image.setImageDrawable(AppFacade.getInstance().getAvatar(user.getAvatar(), getActivity()));
+
+        // Update score
+        TextView score = (TextView) rootView.findViewById(R.id.tv_userpoints);
+        score.setText(user.getScore() + " points");
     }
 
 

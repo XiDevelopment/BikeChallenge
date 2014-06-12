@@ -65,45 +65,43 @@
             android:name="com.google.android.gms.maps.SupportMapFragment" />
     </RelativeLayout>
 
-    <ScrollView
+    <RelativeLayout
         android:id="@+id/start_view"
+        android:padding="@dimen/default_margin"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:orientation="vertical"
         android:background="@color/white"
         android:layout_marginBottom="85dp">
 
-        <LinearLayout
-            android:padding="@dimen/default_margin"
+        <TextView
+            android:id="@+id/tv_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:gravity="center"
+            android:layout_marginTop="@dimen/default_margin"
+            android:textSize="40sp" />
 
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="40sp" />
+        <ImageView
+            android:id="@+id/iv_user"
+            android:contentDescription="@string/drive_user_image"
+            android:layout_centerInParent="true"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/default_margin"
+            android:scaleType="fitStart"
+            android:src="@drawable/ic_action_person" />
 
-            <ImageView
-                android:id="@+id/iv_user"
-                android:contentDescription="@string/drive_user_image"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/default_margin"
-                android:scaleType="fitStart"
-                android:src="@drawable/ic_action_person" />
-
-            <TextView
-                android:id="@+id/tv_userpoints"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="36sp"
-                android:layout_marginTop="@dimen/default_margin"/>
-        </LinearLayout>
-    </ScrollView>
+        <TextView
+            android:id="@+id/tv_userpoints"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:textSize="36sp"
+            android:layout_marginBottom="@dimen/default_margin" />
+    </RelativeLayout>
 
     <Button
         android:id="@+id/button_start"
