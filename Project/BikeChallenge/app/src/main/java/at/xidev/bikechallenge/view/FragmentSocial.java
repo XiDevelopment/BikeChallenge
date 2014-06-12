@@ -106,6 +106,11 @@ public class FragmentSocial extends Fragment {
         return view;
     }
 
+    public void reload() {
+        reloadFriendsList();
+        reloadRequestList();
+    }
+
     private void reloadFriendsList() {
         // setup task und execute, true is for friend list
         TaskGetList friendListTask = new TaskGetList(true);
@@ -567,7 +572,10 @@ public class FragmentSocial extends Fragment {
 
                 if (!friendName.equals(AppFacade.getInstance().getUser().getName())) {
                     User friend = AppFacade.getInstance().getFriend(friendName);
-                    sFriend = AppFacade.getInstance().getStatistic(friend);
+                    if(friend != null)
+                        sFriend = AppFacade.getInstance().getStatistic(friend);
+                    else
+                        return null;
                 } else {
                     // sFriend also as sUser if users selects himself.
                     sFriend = sUser;
@@ -591,8 +599,10 @@ public class FragmentSocial extends Fragment {
         protected void onPostExecute(Pair<Statistic, Statistic> statistic) {
             // Check if error
             if (statistic == null) {
-                if (hasConnection)
+                if (hasConnection) {
                     Toast.makeText(getActivity(), getResources().getString(R.string.social_detail_error), Toast.LENGTH_SHORT).show();
+                    reload();
+                }
                 else
                     Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
                 dialog.dismiss();

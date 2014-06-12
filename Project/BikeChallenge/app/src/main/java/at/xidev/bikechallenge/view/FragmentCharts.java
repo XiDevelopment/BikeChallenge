@@ -110,6 +110,10 @@ public class FragmentCharts extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    public void reload() {
+        reloadList();
+    }
+
     private void reloadList() {
         // setup task und execute
         TaskGetStatistic task = new TaskGetStatistic();

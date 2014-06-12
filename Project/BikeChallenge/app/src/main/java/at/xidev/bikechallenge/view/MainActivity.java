@@ -37,6 +37,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
      */
     ViewPager mViewPager;
     FragmentDrive fragmentDrive;
+    FragmentSocial fragmentSocial;
+    FragmentCharts fragmentCharts;
 
 
     @Override
@@ -125,15 +127,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
-    public void startButtonMain(View view) {
-        fragmentDrive.startButton(view);
-    }
-
-    public void stopButtonMain(View view) {
-        // TODO staudi
-        //fragmentDrive.stopButton(view);
-    }
-
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
@@ -148,6 +141,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 })
                 .setNegativeButton("No", null)
                 .show();
+    }
+
+    public void reloadData() {
+        fragmentSocial.reload();
+        fragmentCharts.reload();
     }
 
     /**
@@ -165,12 +163,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             // getItem is called to instantiate the fragment for the given page.
             switch (position) {
                 case 0:
-                    return FragmentSocial.newInstance();
+                    fragmentSocial = FragmentSocial.newInstance();
+                    return fragmentSocial;
                 case 1:
                     fragmentDrive = FragmentDrive.newInstance();
                     return fragmentDrive;
                 case 2:
-                    return FragmentCharts.newInstance();
+                    fragmentCharts = FragmentCharts.newInstance();
+                    return fragmentCharts;
                 default:
                     return null;
             }
@@ -195,8 +195,5 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             }
             return null;
         }
-
-
     }
-
 }
