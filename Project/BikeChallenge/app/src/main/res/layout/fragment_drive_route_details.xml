@@ -11,7 +11,7 @@
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="80dp"
         android:layout_marginTop="10dp">
 
         <TextView
@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="30dp"
-            android:text="Route committed!" />
+            android:text="Save route?" />
 
 
     </RelativeLayout>
@@ -37,14 +37,13 @@
 
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="40dp"
-                android:background="#CCC"
+                android:layout_height="25dp"
                 android:layout_marginBottom="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="30dp"
+                    android:textSize="20dp"
                     android:text="Distance" />
 
                 <TextView
@@ -52,21 +51,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:textSize="30dp"
+                    android:textSize="20dp"
                     android:text="0 m" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="40dp"
-                android:background="#CCC"
+                android:layout_height="25dp"
                 android:layout_marginBottom="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="30dp"
+                    android:textSize="20dp"
                     android:text="Time" />
 
                 <TextView
@@ -74,21 +72,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:textSize="30dp"
+                    android:textSize="20dp"
                     android:text="0:00:00" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="40dp"
-                android:background="#CCC"
+                android:layout_height="25dp"
                 android:layout_marginBottom="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="30dp"
+                    android:textSize="20dp"
                     android:text="Ø Speed" />
 
                 <TextView
@@ -96,8 +93,50 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:textSize="30dp"
+                    android:textSize="20dp"
                     android:text="0 km/h" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="25dp"
+                android:layout_marginBottom="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:text="CO2" />
+
+                <TextView
+                    android:id="@+id/tv_route_co2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:textSize="20dp"
+                    android:text="0 g" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="30dp"
+                android:layout_marginBottom="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:text="Points" />
+
+                <TextView
+                    android:id="@+id/tv_route_points"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:textSize="20dp"
+                    android:text="0" />
 
             </RelativeLayout>
 
