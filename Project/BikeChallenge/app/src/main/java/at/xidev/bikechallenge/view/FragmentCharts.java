@@ -366,7 +366,7 @@ public class FragmentCharts extends Fragment {
                 graphView.addSeries(graphSeries);
 
                 // Set labels and style
-                graphView.setHorizontalLabels(new String[]{"-6", "-2", "-4", "-3", "-2", "-1", getResources().getString(R.string.social_detail_graph_today)});
+                graphView.setHorizontalLabels(new String[]{"-6", "-5", "-4", "-3", "-2", "-1", getResources().getString(R.string.social_detail_graph_today)});
                 graphView.getGraphViewStyle().setGridColor(context.getResources().getColor(R.color.dark_transparent));
                 graphView.getGraphViewStyle().setHorizontalLabelsColor(context.getResources().getColor(R.color.black));
                 graphView.getGraphViewStyle().setVerticalLabelsColor(context.getResources().getColor(R.color.black));
