@@ -130,7 +130,12 @@ public class FragmentCharts extends Fragment {
 
         ChartCategory category = new ChartCategory();
         category.name = getString(R.string.charts_economy);
-        category.elements.add(new ChartElement(getString(R.string.charts_economy_emissions), df.format(statistic.getEmissions()) + " " + getString(R.string.charts_emission_metric)));
+        if (statistic.getEmissions() < 1000)
+            category.elements.add(new ChartElement(getString(R.string.charts_economy_emissions), df.format(statistic.getEmissions()) + " " + getString(R.string.charts_emission_metric)));
+        else if (statistic.getEmissions() < 1000000)
+            category.elements.add(new ChartElement(getString(R.string.charts_economy_emissions), df.format(statistic.getEmissions() / 1000) + " " + getString(R.string.charts_emission_metric_kg)));
+        else
+            category.elements.add(new ChartElement(getString(R.string.charts_economy_emissions), df.format(statistic.getEmissions() / 1000000) + " " + getString(R.string.charts_emission_metric_t)));
         category.elements.add(new ChartElement(getString(R.string.charts_economy_fuel), df.format(statistic.getFuel()) + " " + getString(R.string.charts_fuel_metric)));
         expandableElements.add(category);
 
@@ -155,7 +160,13 @@ public class FragmentCharts extends Fragment {
 
         category = new ChartCategory();
         category.name = getString(R.string.charts_global);
-        category.elements.add(new ChartElement(getString(R.string.charts_global_emissions), df.format(statistic.getGlobalEmissions()) + " " + getString(R.string.charts_emission_metric)));
+        category.elements.add(new ChartElement(getString(R.string.charts_global_desc), ""));
+        if (statistic.getGlobalEmissions() < 1000)
+            category.elements.add(new ChartElement(getString(R.string.charts_global_emissions), df.format(statistic.getGlobalEmissions()) + " " + getString(R.string.charts_emission_metric)));
+        else if (statistic.getGlobalEmissions() < 1000000)
+            category.elements.add(new ChartElement(getString(R.string.charts_global_emissions), df.format(statistic.getGlobalEmissions() / 1000.0) + " " + getString(R.string.charts_emission_metric_kg)));
+        else
+            category.elements.add(new ChartElement(getString(R.string.charts_global_emissions), df.format(statistic.getGlobalEmissions() / 1000000.0) + " " + getString(R.string.charts_emission_metric_t)));
         category.elements.add(new ChartElement(getString(R.string.charts_global_fuel), df.format(statistic.getGlobalFuel()) + " " + getString(R.string.charts_fuel_metric)));
         category.elements.add(new ChartElement(getString(R.string.charts_global_time), AppFacade.getInstance().formatTimeElapsedSinceMillisecond(statistic.getGlobalTime())));
         category.elements.add(new ChartElement(getString(R.string.charts_global_distance), df.format(statistic.getGlobalDistance() / 1000.0) + " " + getString(R.string.charts_distance_metric)));
