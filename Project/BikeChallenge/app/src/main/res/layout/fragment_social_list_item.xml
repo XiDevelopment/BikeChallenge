@@ -8,8 +8,10 @@
 
     <ImageView
         android:id="@+id/friend_image"
-        android:layout_width="@dimen/default_item_height"
-        android:layout_height="@dimen/default_item_height"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="@dimen/default_item_avatar_size"
+        android:layout_height="@dimen/default_item_avatar_size"
         android:background="@drawable/ic_action_person" />
 
     <TextView

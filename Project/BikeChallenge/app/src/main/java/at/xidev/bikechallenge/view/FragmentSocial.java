@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -138,14 +139,14 @@ public class FragmentSocial extends Fragment {
             TextView name = (TextView) friendView.findViewById(R.id.friend_name);
             TextView score = (TextView) friendView.findViewById(R.id.friend_score);
             TextView rank = (TextView) friendView.findViewById(R.id.friend_rank);
-            // ImageView image = (ImageView) friendView.findViewById(R.id.friend_image);
+            ImageView image = (ImageView) friendView.findViewById(R.id.friend_image);
 
             // Set values
             friendView.setTag(friend.getName());
             name.setText(friend.getName());
             score.setText(friend.getScore().toString() + " " + getResources().getString(R.string.social_score));
             rank.setText(getResources().getString(R.string.social_rank) + ": " + rankCounter);
-            //image.setImageDrawable(curFriend.getImage());
+            image.setImageDrawable(AppFacade.getInstance().getAvatar(friend.getAvatar(), getActivity()));
 
             // Setup listeners
             friendView.setOnClickListener(fListener);
@@ -220,14 +221,14 @@ public class FragmentSocial extends Fragment {
         TextView name = (TextView) userView.findViewById(R.id.user_name);
         TextView score = (TextView) userView.findViewById(R.id.user_score);
         TextView rank = (TextView) userView.findViewById(R.id.user_rank);
-        // ImageView image = (ImageView) friendView.findViewById(R.id.user_image);
+        ImageView image = (ImageView) userView.findViewById(R.id.user_image);
 
         // Set values
         userView.setTag(user.getName());
         name.setText(user.getName());
         score.setText(user.getScore().toString() + " " + getResources().getString(R.string.social_score));
         rank.setText(getResources().getString(R.string.social_rank) + ": " + rankCounter);
-        //image.setImageDrawable(user.getImage());
+        image.setImageDrawable(AppFacade.getInstance().getAvatar(user.getAvatar(), getActivity()));
 
         // Setup listeners
         userView.setOnClickListener(fListener);
@@ -552,6 +553,7 @@ public class FragmentSocial extends Fragment {
         DialogFragment dialog;
         View view;
         String friendName;
+        User friend;
         boolean hasConnection = true;
 
         protected TaskGetFriendDetails(DialogFragment dialog, View view, String friend) {
@@ -568,7 +570,7 @@ public class FragmentSocial extends Fragment {
                 Statistic sFriend;
 
                 if (!friendName.equals(AppFacade.getInstance().getUser().getName())) {
-                    User friend = AppFacade.getInstance().getFriend(friendName);
+                    friend = AppFacade.getInstance().getFriend(friendName);
                     if (friend != null)
                         sFriend = AppFacade.getInstance().getStatistic(friend);
                     else
@@ -576,6 +578,7 @@ public class FragmentSocial extends Fragment {
                 } else {
                     // sFriend also as sUser if users selects himself.
                     sFriend = sUser;
+                    friend = AppFacade.getInstance().getUser();
                 }
 
                 result = new Pair<>(sUser, sFriend);
@@ -618,6 +621,11 @@ public class FragmentSocial extends Fragment {
             TextView emission = (TextView) view.findViewById(R.id.friend_detail_emission);
             LinearLayout container = (LinearLayout) view.findViewById(R.id.friends_detail_graph_container);
 
+            // Init and set avatar
+            ImageView image = (ImageView) view.findViewById(R.id.friend_detail_image);
+            if (friend != null)
+                image.setImageDrawable(AppFacade.getInstance().getAvatar(friend.getAvatar(), getActivity()));
+
             // Set texts
             DecimalFormat df = new DecimalFormat("0.00");
 
@@ -654,7 +662,7 @@ public class FragmentSocial extends Fragment {
                 graphView.addSeries(graphSeriesFriend);
 
                 // Set labels and style
-                graphView.setHorizontalLabels(new String[]{"-6", "-2", "-4", "-3", "-2", "-1", getResources().getString(R.string.social_detail_graph_today)});
+                graphView.setHorizontalLabels(new String[]{"-6", "-5", "-4", "-3", "-2", "-1", getResources().getString(R.string.social_detail_graph_today)});
                 graphView.getGraphViewStyle().setGridColor(getActivity().getResources().getColor(R.color.dark_transparent));
                 graphView.getGraphViewStyle().setHorizontalLabelsColor(getActivity().getResources().getColor(R.color.black));
                 graphView.getGraphViewStyle().setVerticalLabelsColor(getActivity().getResources().getColor(R.color.black));

@@ -12,6 +12,7 @@ public class User implements java.io.Serializable {
     private String password;
     private Integer score;
     private String email;
+    private Integer avatar;
 
     public User() {
     }
@@ -22,11 +23,12 @@ public class User implements java.io.Serializable {
         this.email = email;
     }
 
-    public User(String name, String password, Integer score, String email) {
+    public User(String name, String password, Integer score, String email, Integer avatar) {
         this.name = name;
         this.password = password;
         this.score = score;
         this.email = email;
+        this.avatar = avatar;
     }
 
     public Integer getId() {
@@ -69,4 +71,11 @@ public class User implements java.io.Serializable {
         this.email = email;
     }
 
+    public Integer getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Integer avatar) {
+        this.avatar = avatar;
+    }
 }
