@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_avatar_title">Select an Avatar</string>
+
+    <string name="dialog_avatar_error_avatar">There was an error setting this avatar</string>
+    <string name="dialog_avatar_error_user">There was an error updating the user</string>
+</resources>

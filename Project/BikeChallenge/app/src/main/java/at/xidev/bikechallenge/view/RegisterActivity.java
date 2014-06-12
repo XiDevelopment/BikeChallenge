@@ -167,7 +167,7 @@ public class RegisterActivity extends Activity {
             // perform the user login attempt.
             password = Sha1.getHash(password);
             showProgress(true);
-            mAuthTask = new UserRegisterTask(new User(username, password, 0, email));
+            mAuthTask = new UserRegisterTask(new User(username, password, 0, email, 0));
             mAuthTask.execute((Void) null);
         }
     }

@@ -3,25 +3,27 @@ package at.xidev.bikechallenge.core;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 
 import at.xidev.bikechallenge.model.Route;
 import at.xidev.bikechallenge.model.Statistic;
 import at.xidev.bikechallenge.model.User;
 import at.xidev.bikechallenge.persistence.DataFacade;
 import at.xidev.bikechallenge.view.LoginActivity;
+import at.xidev.bikechallenge.view.R;
 
 /**
  * Created by int3r on 14.04.2014.
  */
 public class AppFacade {
     private static AppFacade ourInstance = new AppFacade();
+    public static final int NUM_AVATARS = 40;
     private User user;
 
     public static AppFacade getInstance() {
@@ -43,7 +45,16 @@ public class AppFacade {
     }
 
     /**
+     * Updates the current user object
+     */
+    public boolean updateUser() throws IOException {
+        user = DataFacade.getInstance().updateUser();
+        return user != null;
+    }
+
+    /**
      * Registers an user at the server.
+     *
      * @param user user object to register at the server
      * @return true if successful, false otherwise
      * @throws IOException
@@ -55,6 +66,7 @@ public class AppFacade {
 
     /**
      * Logs the current user out with removing the loggedIn state from the Preferences.
+     *
      * @param context context of the app
      */
     public void logout(Context context) {
@@ -66,6 +78,7 @@ public class AppFacade {
 
     /**
      * Checks if the user is already logged into the app.
+     *
      * @param context context of the app
      * @return true if logged in, false otherwise
      */
@@ -76,6 +89,7 @@ public class AppFacade {
 
     /**
      * Gets the credentials out of the preferences.
+     *
      * @param context context of the app
      * @return a list of Strings with the order: username, password
      */
@@ -91,39 +105,34 @@ public class AppFacade {
         SharedPreferences settings = context.getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("username", username);
-        editor.putString("password",password);
-        editor.putBoolean("loggedIn",true);
+        editor.putString("password", password);
+        editor.putBoolean("loggedIn", true);
         editor.commit();
     }
 
     /**
      * Returns the current logged in user.
+     *
      * @return user object of current user
      */
     public User getUser() {
         return user;
     }
 
-    /**NOT YET IMPLEMENTED
-     * Returns the profile picture of an user.
-     * @param user user to get the picture of
-     * @return a drawable of the profile picture
-     */
-    public Drawable getAvatar(User user) {
-        return null;
-    }
-
-    /**NOT YET IMPLEMENTED
-     * Uploads a profile picture to the server.
-     * @param avatar picture to upload
+    /**
+     * Sends the new profile picture id to the server.
+     *
+     * @param avatarId the id of the picture
      * @return true if successful, false otherwise
      */
-    public boolean setAvatar(Drawable avatar) {
-        return false;
+    public boolean setAvatar(Integer avatarId) throws IOException {
+        String resp = DataFacade.getInstance().setAvatar(avatarId);
+        return resp.equals("OK");
     }
 
     /**
      * Returns an user object given the specified username.
+     *
      * @param username username of the user
      * @return user object
      * @throws IOException
@@ -139,22 +148,24 @@ public class AppFacade {
 
     /**
      * Returns a list of user (friends) of the current user.
+     *
      * @return a list of user objects
      * @throws IOException
      */
     public List<User> getFriends() throws IOException {
-        return DataFacade.getInstance().getFriends();
+        return getFriends(SortBy.Score);
     }
 
-    @Deprecated
-    public List<User> getFriends(SortBy sortBy) {
-        //List<User> user = DataFacade.getInstance().getFriends();
-        return null;
+    public List<User> getFriends(SortBy sortBy) throws IOException {
+        List<User> friends = DataFacade.getInstance().getFriends();
+        friends = sortFriendList(friends, sortBy);
+        return friends;
     }
 
 
     /**
      * Returns all pending friend request from the current user.
+     *
      * @return a list of user objects
      * @throws IOException
      */
@@ -165,6 +176,7 @@ public class AppFacade {
 
     /**
      * Sends a request to an other user specified by the username.
+     *
      * @param username username of the user
      * @return true if successful, false otherwise
      * @throws IOException
@@ -176,6 +188,7 @@ public class AppFacade {
 
     /**
      * Accepts a friend request from the given user.
+     *
      * @param user user to accept the friend request
      * @return true if successful, false otherwise
      * @throws IOException
@@ -187,6 +200,7 @@ public class AppFacade {
 
     /**
      * Declines a friend request from the given user.
+     *
      * @param user user to refuse the friend request
      * @return true if successful, false otherwise
      * @throws IOException
@@ -198,6 +212,7 @@ public class AppFacade {
 
     /**
      * Removes a friend from the friendlist.
+     *
      * @param user user to delete from the friendlist
      * @return true if successful, false otherwise
      * @throws IOException
@@ -208,6 +223,7 @@ public class AppFacade {
 
     /**
      * Returns all Routes from the specified user.
+     *
      * @param user user to get routes from
      * @return a list of route objects
      * @throws IOException
@@ -218,6 +234,7 @@ public class AppFacade {
 
     /**
      * Uploads a route to the server.
+     *
      * @param route route object to save
      * @return true if successful, false otherwise
      * @throws IOException
@@ -294,8 +311,25 @@ public class AppFacade {
         return formattedTime;
     }
 
-    @Deprecated
-    private void sortFriendList(List<User> friends, SortBy sortBy) {
+    /**
+     * Returns the avatar of the specific id
+     *
+     * @param avatarId the avatar id
+     * @param context  the context of the application for resources
+     * @return a drawable avatar
+     */
+    public Drawable getAvatar(Integer avatarId, Context context) {
+        // Image ID must be between 1 and NUM_AVATARS
+        if (avatarId != null && avatarId >= 1 && avatarId <= NUM_AVATARS) {
+            int resID = context.getResources().getIdentifier("avatar" + avatarId, "drawable", context.getPackageName());
+            return context.getResources().getDrawable(resID);
+        } else {
+            // return default image
+            return context.getResources().getDrawable(R.drawable.ic_action_person);
+        }
+    }
+
+    private List<User> sortFriendList(List<User> friends, SortBy sortBy) {
         switch (sortBy) {
             case Name:
                 Collections.sort(friends, new Comparator<User>() {
@@ -316,16 +350,12 @@ public class AppFacade {
                     }
                 });
                 break;
-            case Km:
-
-                break;
         }
+        return friends;
     }
 
-    @Deprecated
     public enum SortBy {
         Name,
         Score,
-        Km,
     }
 }

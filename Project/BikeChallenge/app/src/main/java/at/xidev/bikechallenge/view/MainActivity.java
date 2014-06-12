@@ -144,6 +144,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     public void reloadData() {
         fragmentSocial.reload();
+        fragmentDrive.reload();
         fragmentCharts.reload();
     }
 
