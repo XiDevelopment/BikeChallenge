@@ -47,8 +47,7 @@ public class FragmentSocial extends Fragment {
     }
 
     public static FragmentSocial newInstance() {
-        FragmentSocial fragment = new FragmentSocial();
-        return fragment;
+        return new FragmentSocial();
     }
 
     // OnClick Listener
@@ -379,8 +378,7 @@ public class FragmentSocial extends Fragment {
 
         @Override
         protected List<User> doInBackground(Void... params) {
-            List<User> result = null;
-
+            List<User> result;
             try {
                 if (type)
                     result = AppFacade.getInstance().getFriends();
@@ -429,7 +427,7 @@ public class FragmentSocial extends Fragment {
         @Override
         protected Boolean doInBackground(Boolean... params) {
             action = params[0];
-            Boolean result = false;
+            Boolean result;
 
             try {
                 if (action)
@@ -480,7 +478,7 @@ public class FragmentSocial extends Fragment {
         protected Boolean doInBackground(String... params) {
             friendName = params[0];
 
-            Boolean result = false;
+            Boolean result;
             try {
                 User friend = AppFacade.getInstance().getFriend(friendName);
                 result = AppFacade.getInstance().removeFriend(friend);
@@ -521,8 +519,7 @@ public class FragmentSocial extends Fragment {
         protected Boolean doInBackground(String... params) {
             name = params[0];
 
-            Boolean result = false;
-
+            Boolean result;
             try {
                 result = AppFacade.getInstance().requestFriend(name);
             } catch (IOException ex) {
@@ -572,7 +569,7 @@ public class FragmentSocial extends Fragment {
 
                 if (!friendName.equals(AppFacade.getInstance().getUser().getName())) {
                     User friend = AppFacade.getInstance().getFriend(friendName);
-                    if(friend != null)
+                    if (friend != null)
                         sFriend = AppFacade.getInstance().getStatistic(friend);
                     else
                         return null;
@@ -602,8 +599,7 @@ public class FragmentSocial extends Fragment {
                 if (hasConnection) {
                     Toast.makeText(getActivity(), getResources().getString(R.string.social_detail_error), Toast.LENGTH_SHORT).show();
                     reload();
-                }
-                else
+                } else
                     Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
                 return;
@@ -700,7 +696,6 @@ public class FragmentSocial extends Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            // TODO why two times setVisibility()? Shouldn't be animate() sufficient?
             friendsProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             friendsProgressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
