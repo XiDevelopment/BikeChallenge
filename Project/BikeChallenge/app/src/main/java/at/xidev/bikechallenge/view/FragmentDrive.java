@@ -161,8 +161,11 @@ public class FragmentDrive extends Fragment {
         //move Camera to position
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(now, 18));
 
-        //new positionlist (for all positions)
+        //new position list (for all positions)
         positionlist = new ArrayList<>();
+
+        // reload user details
+        reload();
 
         return rootView;
     }
