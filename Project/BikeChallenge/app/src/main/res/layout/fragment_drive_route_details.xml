@@ -5,34 +5,34 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/friends_list_item_background"
-    android:padding="10dp">
+    android:padding="@dimen/default_margin">
 
 
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="70dp"
         android:layout_marginTop="10dp">
 
         <TextView
             android:id="@+id/tv_route_server"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:text="Save route?" />
+            android:textSize="28sp"
+            android:text="@string/drive_save_route_question" />
 
 
     </RelativeLayout>
 
     <ScrollView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/default_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:background="#FFF"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -43,16 +43,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:text="Distance" />
+                    android:textSize="20sp"
+                    android:text="@string/drive_distance" />
 
                 <TextView
                     android:id="@+id/tv_route_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:textSize="20dp"
-                    android:text="0 m" />
+                    android:textSize="20sp"
+                    android:text="@string/drive_empty"/>
 
             </RelativeLayout>
 
@@ -64,16 +64,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:text="Time" />
+                    android:textSize="20sp"
+                    android:text="@string/drive_time" />
 
                 <TextView
                     android:id="@+id/tv_route_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:textSize="20dp"
-                    android:text="0:00:00" />
+                    android:textSize="20sp"
+                    android:text="@string/drive_empty" />
 
             </RelativeLayout>
 
@@ -85,16 +85,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:text="Ø Speed" />
+                    android:textSize="20sp"
+                    android:text="@string/drive_avspeed" />
 
                 <TextView
                     android:id="@+id/tv_route_avspeed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:textSize="20dp"
-                    android:text="0 km/h" />
+                    android:textSize="20sp"
+                    android:text="@string/drive_empty" />
 
             </RelativeLayout>
 
@@ -106,16 +106,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:text="CO2" />
+                    android:textSize="20sp"
+                    android:text="@string/drive_co2" />
 
                 <TextView
                     android:id="@+id/tv_route_co2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:textSize="20dp"
-                    android:text="0 g" />
+                    android:textSize="20sp"
+                    android:text="@string/drive_empty" />
 
             </RelativeLayout>
 
@@ -127,16 +127,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:text="Points" />
+                    android:textSize="20sp"
+                    android:text="@string/drive_points" />
 
                 <TextView
                     android:id="@+id/tv_route_points"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:textSize="20dp"
-                    android:text="0" />
+                    android:textSize="20sp"
+                    android:text="@string/drive_empty" />
 
             </RelativeLayout>
 
