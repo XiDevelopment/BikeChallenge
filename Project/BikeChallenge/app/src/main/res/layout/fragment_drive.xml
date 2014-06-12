@@ -114,6 +114,5 @@
         android:textSize="34sp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:background="@drawable/green_button"
-        android:onClick="startButtonMain" />
+        android:background="@drawable/green_button" />
 </RelativeLayout>

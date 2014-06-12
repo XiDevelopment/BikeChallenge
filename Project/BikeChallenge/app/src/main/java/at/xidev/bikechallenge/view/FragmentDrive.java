@@ -50,6 +50,7 @@ import org.apache.http.conn.HttpHostConnectException;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.ArrayList;
 
@@ -77,6 +78,8 @@ public class FragmentDrive extends Fragment {
     private TextView textViewRouteDistance;
     private TextView textViewRouteTime;
     private TextView textViewRouteAVSpeed;
+    private TextView textViewRouteCO2;
+    private TextView textViewRoutePoints;
     private Button startButton;             //start/stop button
     private Handler handler;                //handler (for stopwatch)
     private Runnable runnableStopwatch;     //runnable (for stopwatch)
@@ -145,6 +148,12 @@ public class FragmentDrive extends Fragment {
         textViewSpeed = (TextView) rootView.findViewById(R.id.tv_speed);
         //routeDetailsView = inflater.inflate(R.layout.fragment_drive_route_details, null);
         startButton = (Button) rootView.findViewById(R.id.button_start);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startButton(view);
+            }
+        });
         //textViewRouteDistance = (TextView) routeDetailsView.findViewById(R.id.tv_route_distance);
         //textViewRouteTime = (TextView) routeDetailsView.findViewById(R.id.tv_route_time);
         //textViewRouteAVSpeed = (TextView) routeDetailsView.findViewById(R.id.tv_route_avspeed);
@@ -229,7 +238,7 @@ public class FragmentDrive extends Fragment {
                 trackingView.setVisibility(View.VISIBLE);
 
                 //toast message: started
-                Toast.makeText(view.getContext(), getString(R.string.started), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(view.getContext(), getString(R.string.started), Toast.LENGTH_SHORT).show();
 
 
                 //Notification (tracking notification if app is not in foreground)
@@ -286,34 +295,34 @@ public class FragmentDrive extends Fragment {
                             if ((positionlist.size() < 4)) {
                                 if (location.getAccuracy() < 11.0) {
                                     trackingStart = true; //start it
-                                    Toast.makeText(getActivity(), "1acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getActivity(), "1acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(getActivity(), "not1acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getActivity(), "not1acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
                                     textViewDistance.setTextSize(20);
                                     textViewDistance.setText("waiting for better GPS accuracy...");
                                 }
                             } else if (positionlist.size() < 7) {
                                 if (location.getAccuracy() < 14.0) {
                                     trackingStart = true; //start it
-                                    Toast.makeText(getActivity(), "2acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getActivity(), "2acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(getActivity(), "not2acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getActivity(), "not2acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
                                 }
                             } else if (positionlist.size() < 10) {
                                 if (location.getAccuracy() < 19.0) {
                                     trackingStart = true; //start it
-                                    Toast.makeText(getActivity(), "3acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getActivity(), "3acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(getActivity(), "not3acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getActivity(), "not3acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(getActivity(), "4acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getActivity(), "4acc: " + location.getAccuracy() + " - " + positionlist.size(), Toast.LENGTH_SHORT).show();
                                 trackingStart = true; //start it (anyway)
                             }
 
                             //start tracking (if position is accurate)
                             if (trackingStart == true) {
-                                Toast.makeText(getActivity(), "5start: " + location.getAccuracy(), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getActivity(), "5start: " + location.getAccuracy(), Toast.LENGTH_SHORT).show();
                                 textViewDistance.setTextSize(40);
                                 //delete imprecise positions (only add newest)
                                 positionlist.clear();
@@ -486,6 +495,7 @@ public class FragmentDrive extends Fragment {
                         //transmit route to server.......
 
 
+
                     } else {
                         //stoped tracking before gps was ready
                         textViewDistance.setTextSize(40);
@@ -504,23 +514,33 @@ public class FragmentDrive extends Fragment {
 
                     //transmit rout to server test (also with 0m)
 
-                    //fill route with information
-                    Route route = new Route();
-                    route.setDistance(distance);
-                    route.setStartTime(startTimeDate);
-                    route.setStopTime(endTimeDate);
-                    route.setUserId(AppFacade.getInstance().getUser().getId());
+
+
+
+
+
 
                     //save route
-                    mSaveRouteTask = new SaveRouteTask(route);
-                    mSaveRouteTask.execute((Void) null);
+                    //mSaveRouteTask = new SaveRouteTask(route);
+                    //mSaveRouteTask.execute((Void) null);
+
                     //display route info
-                    Toast.makeText(getActivity(), "std: " + startTimeDate + " - etd: " + endTimeDate + " dist: " + distance + " userID: " + AppFacade.getInstance().getUser().getId(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getActivity(), "std: " + startTimeDate + " - etd: " + endTimeDate + " dist: " + distance + " userID: " + AppFacade.getInstance().getUser().getId(), Toast.LENGTH_LONG).show();
 
 
-                    //problem: second show ...
-                    detailsDialog = new RouteDialogFragment(route);
-                    detailsDialog.show(getFragmentManager(), "Route");
+
+                    //save route to server
+                    if (distance > 0) {
+                        //fill route with information
+                        Route route = new Route();
+                        route.setDistance(distance);
+                        route.setStartTime(startTimeDate);
+                        route.setStopTime(endTimeDate);
+                        route.setUserId(AppFacade.getInstance().getUser().getId());
+
+                        detailsDialog = new RouteDialogFragment(route);
+                        detailsDialog.show(getFragmentManager(), "Route");
+                    }
 
 
                     //set speed to 0
@@ -675,15 +695,21 @@ public class FragmentDrive extends Fragment {
 
     private class RouteDialogFragment extends DialogFragment {
         //User friend;
+        Route rou;
         String dist;
         String tim;
         String avss;
+        String co;
+        String poi;
+        DecimalFormat df = new DecimalFormat("0.00");
 
         public RouteDialogFragment(Route route) {
             this.dist = getDistanceString();
             this.tim = getRideTimeString (route.getStopTime().getTime() - route.getStartTime().getTime());
             this.avss = calculateAverageSpeedString(route.getDistance(), (route.getStopTime().getTime() - route.getStartTime().getTime()));
-            //this.avss = "" + ( (int) ((route.getDistance() / ((route.getStopTime().getTime() - route.getStartTime().getTime()) / 1000 )) * 3.6 )) + getString(R.string.speed_unit);
+            this.co = "" + df.format(route.getDistance() * 0.185) + " g";
+            this.poi = "" + ((int)(route.getDistance() / 200));
+            this.rou = route;
         }
 
 
@@ -714,14 +740,39 @@ public class FragmentDrive extends Fragment {
             textViewRouteDistance = (TextView) view.findViewById(R.id.tv_route_distance);
             textViewRouteTime = (TextView) view.findViewById(R.id.tv_route_time);
             textViewRouteAVSpeed = (TextView) view.findViewById(R.id.tv_route_avspeed);
+            textViewRouteCO2 = (TextView) view.findViewById(R.id.tv_route_co2);
+            textViewRoutePoints = (TextView) view.findViewById(R.id.tv_route_points);
 
             textViewRouteDistance.setText(this.dist);
             textViewRouteTime.setText(this.tim);
             textViewRouteAVSpeed.setText(this.avss);
+            textViewRouteCO2.setText(this.co);
+            textViewRoutePoints.setText(this.poi);
 
 
             // Build
             builder.setView(view);
+            builder.setNegativeButton("Delete route", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+
+            builder.setPositiveButton("Save route", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    //save route
+                    mSaveRouteTask = new SaveRouteTask(rou);
+                    mSaveRouteTask.execute((Void) null);
+                }
+            });
+
+
+
+
+
+
+
+
             return builder.create();
         }
     }
