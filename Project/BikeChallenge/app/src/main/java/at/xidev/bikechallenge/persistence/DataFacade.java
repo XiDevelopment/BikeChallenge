@@ -89,6 +89,7 @@ public class DataFacade {
     }
 
     public String setAvatar(Integer avatarId) throws IOException {
+        // TODO this is not working..., data on server doesn't change
         String resp = "Error";
         resp = RESTClient.post(gson.toJson(avatarId, Integer.class), "user/" + username + "/" + avatarId + "?pw=" + password);
         return resp;

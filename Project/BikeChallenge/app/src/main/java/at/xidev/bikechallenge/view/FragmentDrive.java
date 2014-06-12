@@ -1,8 +1,5 @@
 package at.xidev.bikechallenge.view;
 
-import at.xidev.bikechallenge.core.AppFacade;
-import at.xidev.bikechallenge.model.Route;
-import at.xidev.bikechallenge.model.User;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -32,18 +29,23 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.SupportMapFragment;
-import org.apache.http.conn.HttpHostConnectException;
-import java.text.DecimalFormat;
-import java.util.Date;
-import java.util.ArrayList;
 
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import at.xidev.bikechallenge.core.AppFacade;
+import at.xidev.bikechallenge.model.Route;
+import at.xidev.bikechallenge.model.User;
 
 
 /**
@@ -169,6 +171,7 @@ public class FragmentDrive extends Fragment {
 
         return rootView;
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -496,6 +499,8 @@ public class FragmentDrive extends Fragment {
         private User user = null;
         private Thread t;
 
+        private boolean hasConnection = true;
+
         SaveRouteTask(Route route) {
             mRoute = route;
         }
@@ -503,40 +508,26 @@ public class FragmentDrive extends Fragment {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                t = new Thread() {
-                    public void run() {
-                        try {
-                            sleep(30000);
-                        } catch (InterruptedException e) {
-                            Log.e("Drive", "timeout");
-                        }
-                        if (mSaveRouteTask != null)
-                            mSaveRouteTask.cancel(true);
-                    }
-                };
-                t.start();
-
                 //save route
                 AppFacade.getInstance().saveRoute(mRoute);
 
-            } catch (HttpHostConnectException e) {
-                Log.e("Drive", "no Host Connection");
-            } catch (Exception e) {
-                e.printStackTrace();
+                //update user
+                AppFacade.getInstance().updateUser();
+
+            } catch (IOException e) {
+                Log.e("Drive", e.getMessage());
+                hasConnection = false;
             }
             return user != null;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mSaveRouteTask = null;
+            if (hasConnection)
+                ((MainActivity) getActivity()).reloadData();
+            else
+                Toast.makeText(getActivity(), getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
         }
-
-        @Override
-        protected void onCancelled() {
-            mSaveRouteTask = null;
-        }
-
     }
 
     @SuppressWarnings({"deprecation"})
@@ -571,10 +562,10 @@ public class FragmentDrive extends Fragment {
 
         public RouteDialogFragment(Route route) {
             this.distance = getDistanceString();
-            this.time = getDriveTimeString (route.getStopTime().getTime() - route.getStartTime().getTime());
+            this.time = getDriveTimeString(route.getStopTime().getTime() - route.getStartTime().getTime());
             this.avspeed = calculateAverageSpeedString(route.getDistance(), (route.getStopTime().getTime() - route.getStartTime().getTime()));
             this.co2 = "" + df.format(route.getDistance() * 0.185) + "g";
-            this.points = "" + ((int)(route.getDistance() / 200));
+            this.points = "" + ((int) (route.getDistance() / 200));
             this.route = route;
         }
 
@@ -658,13 +649,13 @@ public class FragmentDrive extends Fragment {
 
         timeString += h;
         timeString += ":";
-        if(min < 10){
+        if (min < 10) {
             timeString += "0";
         }
 
         timeString += min;
         timeString += ":";
-        if(sec < 10){
+        if (sec < 10) {
             timeString += "0";
         }
 
@@ -673,8 +664,8 @@ public class FragmentDrive extends Fragment {
         return timeString;
     }
 
-    private String calculateAverageSpeedString(float dist, long time){
-        int avSpeed = (int) ((dist/(time/1000))*3.6);
+    private String calculateAverageSpeedString(float dist, long time) {
+        int avSpeed = (int) ((dist / (time / 1000)) * 3.6);
         return "" + avSpeed + getString(R.string.drive_speed_unit);
     }
 
