@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="drive_distance">Distance</string>
+    <string name="drive_time">Time</string>
+    <string name="drive_speed">Speed</string>
+    <string name="drive_avspeed">Ø Speed</string>
+    <string name="drive_co2">CO2</string>
+    <string name="drive_points">Points</string>
+    <string name="drive_user_image">User Image</string>
+    <string name="drive_distance_unit1">m</string>
+    <string name="drive_distance_unit2">km</string>
+    <string name="drive_speed_unit">km/h</string>
+    <string name="drive_points_unit">points</string>
+    <string name="drive_comma">,</string>
+    <string name="drive_turn_on_gps_question">Turn on GPS?</string>
+    <string name="drive_please_turn_on_gps">please turn on GPS</string>
+    <string name="drive_searching_for_gps">searching for GPS&#8230;</string>
+    <string name="drive_waiting_for_better_gps_accuracy">waiting for better GPS accuracy&#8230;</string>
+    <string name="drive_stop_tracking_question">Stop tracking?</string>
+    <string name="drive_stop_tracking">YES</string>
+    <string name="drive_continue_tracking">NO</string>
+    <string name="drive_yes">YES</string>
+    <string name="drive_no">NO</string>
+    <string name="drive_start">start</string>
+    <string name="drive_stop">stop</string>
+    <string name="drive_currently_tracking">currently tracking&#8230;</string>
+    <string name="drive_route">Route</string>
+    <string name="drive_save_route_question">Save route?</string>
+    <string name="drive_delete_route">Delete route</string>
+    <string name="drive_save_route">Save route</string>
+    <string name="drive_empty_time">0:00:00</string>
+    <string name="drive_empty">0 </string>
+
+</resources>
