@@ -6,8 +6,12 @@
     <string name="title_section_social">Social</string>
     <string name="title_section_charts">Charts</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="action_log_out">Log out</string>
+
+    <string name="closing_BikeChallenge">Closing BikeChallenge</string>
+    <string name="close_BikeChallenge_question">Are you sure you want to close BikeChallenge?</string>
+    <string name="close_BikeChallenge_yes">Yes</string>
+    <string name="close_BikeChallenge_no">No</string>
 
 
 </resources>

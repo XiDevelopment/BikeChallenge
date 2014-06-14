@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_avatar_title">Avatar auswählen</string>
+
+    <string name="dialog_avatar_error_avatar">Es gab einen Fehler bei der Avatar auswahl</string>
+    <string name="dialog_avatar_error_user">Es gab einen Fehler beim aktualisieren des Benutzers</string>
+</resources>

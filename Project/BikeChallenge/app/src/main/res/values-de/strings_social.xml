@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="social_score">Punkte</string>
+    <string name="social_rank">Rang</string>
+
+    <!-- fragment_social.xml -->
+    <string name="social_new_requests">Sie haben eine Freundschaftsanfrage von:</string>
+
+    <!-- GetList -->
+    <string name="social_list_error">Es gab einen Fehler beim laden ihrer Freundeliste</string>
+
+    <!-- AddFriendDialog -->
+    <string name="social_add_title">Freundschaftsanfrage senden</string>
+    <string name="social_add_message">Benutzername des Freundes:</string>
+    <string name="social_add_button_ok">Suchen</string>
+    <string name="social_add_button_cancel">Abbrechen</string>
+    <string name="social_add_successful">Freundschaftsanfrage gesendet an</string>
+    <string name="social_add_not_successful">Anfrage konnte nicht gesendet werden an</string>
+
+    <!-- DeleteFriendDialog -->
+    <string name="social_delete_message_start">Entfernen</string>
+    <string name="social_delete_button_ok">Ja</string>
+    <string name="social_delete_button_cancel">Nein</string>
+    <string name="social_delete_successful">entfernt</string>
+    <string name="social_delete_not_successful">nicht entfernt</string>
+
+    <!-- Answer Request -->
+    <string name="social_request_ok">angenommen</string>
+    <string name="social_request_cancel">abgelehnt</string>
+    <string name="social_request_error">Es gab einen Fehler&#8230;</string>
+
+    <!-- Detail Friend Fragment -->
+    <string name="social_detail_graph_user">Du</string>
+    <string name="social_detail_graph_friend">Freund</string>
+    <string name="social_detail_graph_title">Vergleich:</string>
+    <string name="social_detail_graph_today">heute</string>
+    <string name="social_detail_rank">Rang:</string>
+    <string name="social_detail_score">Punkte:</string>
+    <string name="social_detail_score_val"></string>
+    <string name="social_detail_distance">Entfernungen:</string>
+    <string name="social_detail_distance_val"> km</string>
+    <string name="social_detail_emission">Emissionen:</string>
+    <string name="social_detail_emission_val"> g CO2</string>
+    <string name="social_detail_time">Zeit:</string>
+    <string name="social_detail_error">Es gab einen Fehler&#8230;</string>
+</resources>
