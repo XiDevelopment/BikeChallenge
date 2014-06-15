@@ -19,7 +19,10 @@ import at.xidev.bikechallenge.view.LoginActivity;
 import at.xidev.bikechallenge.view.R;
 
 /**
- * Created by int3r on 14.04.2014.
+ * This class is an interface to the application layer.
+ * It manages the SharedPreferences and provides functionality based upon the DataFacade.
+ * @author Adrian Marxer, Rick Spiegl / XiDev
+ * @see at.xidev.bikechallenge.persistence.DataFacade
  */
 public class AppFacade {
     private static AppFacade ourInstance = new AppFacade();
@@ -95,7 +98,7 @@ public class AppFacade {
      */
     public List<String> getLoggedInCredentials(Context context) {
         SharedPreferences settings = context.getSharedPreferences(LoginActivity.PREFS_NAME, 0);
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add(settings.getString("username", ""));
         list.add(settings.getString("password", ""));
         return list;
@@ -156,6 +159,12 @@ public class AppFacade {
         return getFriends(SortBy.Score);
     }
 
+    /**
+     * Returns a list of friends sorted by the given enum.
+     * @param sortBy the enum value to sort by
+     * @return a sorted list of user
+     * @throws IOException
+     */
     public List<User> getFriends(SortBy sortBy) throws IOException {
         List<User> friends = DataFacade.getInstance().getFriends();
         friends = sortFriendList(friends, sortBy);

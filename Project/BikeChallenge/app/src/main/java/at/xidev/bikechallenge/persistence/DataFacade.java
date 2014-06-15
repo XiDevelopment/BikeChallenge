@@ -14,7 +14,7 @@ import at.xidev.bikechallenge.model.Statistic;
 import at.xidev.bikechallenge.model.User;
 
 /**
- * This class provides functionalities to communicate with the server.
+ * This class provides functionality to communicate with the server.
  * For that it uses the class RESTClient. With the first use of login
  * the username is saved for further calls.
  *
@@ -88,10 +88,15 @@ public class DataFacade {
         return resp;
     }
 
+    /**
+     * Saves the selected avatarId on the server. Returns the response from the query.
+     * @param avatarId selected avatarId
+     * @return the response from the request
+     * @throws IOException
+     */
     public String setAvatar(Integer avatarId) throws IOException {
-        // TODO this is not working..., data on server doesn't change
         String resp = "Error";
-        resp = RESTClient.post(gson.toJson(avatarId, Integer.class), "user/" + username + "/" + avatarId + "?pw=" + password);
+        resp = RESTClient.post(null, "user/" + username + "/" + avatarId + "?pw=" + password);
         return resp;
     }
 
@@ -219,6 +224,12 @@ public class DataFacade {
         return null;
     }
 
+    /**
+     * Gets all friend requests from the server.
+     *
+     * @return a list with users that sent me a friend request
+     * @throws IOException
+     */
     public List<User> getRequests() throws IOException {
         String resp = "Error";
         resp = RESTClient.get("/friend/" + this.username + "/pending" + "?pw=" + password);

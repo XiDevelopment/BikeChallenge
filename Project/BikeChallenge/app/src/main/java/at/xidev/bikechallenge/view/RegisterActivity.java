@@ -32,6 +32,7 @@ import at.xidev.bikechallenge.tools.Sha1;
 
 /**
  * A registration screen that offers registration via username/email/password.
+ * @author Rick Spiegl / XiDev
  */
 public class RegisterActivity extends Activity {
 

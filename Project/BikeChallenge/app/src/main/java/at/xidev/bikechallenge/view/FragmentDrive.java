@@ -708,9 +708,9 @@ public class FragmentDrive extends Fragment {
         // Update score
         TextView score = (TextView) rootView.findViewById(R.id.tv_userpoints);
         if (user.getScore() == 1) {
-            score.setText(user.getScore() + getString(R.string.drive_point));
+            score.setText(user.getScore() +" " + getString(R.string.drive_point));
         } else{
-            score.setText(user.getScore() + getString(R.string.drive_points));
+            score.setText(user.getScore() +" " + getString(R.string.drive_points));
         }
     }
 
