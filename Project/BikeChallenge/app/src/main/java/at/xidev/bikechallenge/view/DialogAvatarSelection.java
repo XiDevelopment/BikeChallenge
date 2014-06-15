@@ -48,12 +48,17 @@ public class DialogAvatarSelection extends DialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         final View view = inflater.inflate(R.layout.dialog_avatar_selection, null);
 
+        // Get grid view and set adapter
         GridView gridview = (GridView) view.findViewById(R.id.dialog_avatar_grid_view);
         gridview.setAdapter(new ImageAdapter(getActivity()));
 
+        // Save DialogFragment for anonymous inner class
+        final DialogFragment df = this;
+
+        // Set onClickListener for grid view
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                TaskUpdateAvatar task = new TaskUpdateAvatar(view, getDialog());
+                TaskUpdateAvatar task = new TaskUpdateAvatar(view, df);
                 task.execute(position);
             }
         });
@@ -65,6 +70,7 @@ public class DialogAvatarSelection extends DialogFragment {
 
     @Override
     public void onDismiss(DialogInterface dialog) {
+        // Notify listeners that dialog has finished
         listener.onCloseDialog();
     }
 
@@ -103,15 +109,15 @@ public class DialogAvatarSelection extends DialogFragment {
                 imageView = new ImageView(mContext);
 
                 // size of element
-                int dimen = 100;
+                int size = 100;
                 // conversion to DisplayPoints
-                dimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dimen, getResources().getDisplayMetrics());
+                size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, getResources().getDisplayMetrics());
 
                 int padding = 10;
                 padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, padding, getResources().getDisplayMetrics());
 
                 // set attributes
-                imageView.setLayoutParams(new GridView.LayoutParams(dimen, dimen));
+                imageView.setLayoutParams(new GridView.LayoutParams(size, size));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setPadding(padding, padding, padding, padding);
             } else {
@@ -125,13 +131,13 @@ public class DialogAvatarSelection extends DialogFragment {
 
     private class TaskUpdateAvatar extends AsyncTask<Integer, Void, Void> {
         View view;
-        Dialog dialog;
+        DialogFragment dialog;
 
         boolean isAvatar = false;
         boolean isUser = false;
         boolean isConnection = true;
 
-        protected TaskUpdateAvatar(View view, Dialog dialog) {
+        protected TaskUpdateAvatar(View view, DialogFragment dialog) {
             this.view = view;
             this.dialog = dialog;
         }

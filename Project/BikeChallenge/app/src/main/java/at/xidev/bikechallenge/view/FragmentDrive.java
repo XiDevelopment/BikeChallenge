@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -118,13 +119,24 @@ public class FragmentDrive extends Fragment {
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // DialogFragment.show() will take care of adding the fragment
+                // in a transaction.  We also want to remove any currently showing
+                // dialog, so make our own transaction and take care of that here.
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag("AvatarDialog");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
+
+                // Create and show the dialog.
                 DialogAvatarSelection dialog = new DialogAvatarSelection(new DialogAvatarSelection.AvatarSelectionListener() {
                     @Override
                     public void onCloseDialog() {
                         ((MainActivity) getActivity()).reloadData();
                     }
                 });
-                dialog.show(getFragmentManager(), "Avatar Dialog");
+                dialog.show(getFragmentManager(), "AvatarDialog");
             }
         });
 
