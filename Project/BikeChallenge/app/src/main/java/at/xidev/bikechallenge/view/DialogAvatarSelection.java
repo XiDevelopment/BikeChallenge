@@ -109,15 +109,15 @@ public class DialogAvatarSelection extends DialogFragment {
                 imageView = new ImageView(mContext);
 
                 // size of element
-                int dimen = 100;
+                int size = 100;
                 // conversion to DisplayPoints
-                dimen = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dimen, getResources().getDisplayMetrics());
+                size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, getResources().getDisplayMetrics());
 
                 int padding = 10;
                 padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, padding, getResources().getDisplayMetrics());
 
                 // set attributes
-                imageView.setLayoutParams(new GridView.LayoutParams(dimen, dimen));
+                imageView.setLayoutParams(new GridView.LayoutParams(size, size));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setPadding(padding, padding, padding, padding);
             } else {

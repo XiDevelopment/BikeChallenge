@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -180,7 +181,7 @@ public class FragmentSocial extends Fragment {
             friendsRequestListContainer.removeAllViewsInLayout();
 
             for (final User user : requests) {
-                // Get views
+                // Get views'
                 View requestView = inflater.inflate(R.layout.fragment_social_request_item, friendsRequestListContainer, false);
                 TextView rName = (TextView) requestView.findViewById(R.id.friend_request_name);
                 RelativeLayout rAccept = (RelativeLayout) requestView.findViewById(R.id.friend_request_accept);
@@ -249,6 +250,17 @@ public class FragmentSocial extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_social_add) {
+            // DialogFragment.show() will take care of adding the fragment
+            // in a transaction.  We also want to remove any currently showing
+            // dialog, so make our own transaction and take care of that here.
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            Fragment prev = getFragmentManager().findFragmentByTag("addFriend");
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+
+            // Create and show the dialog.
             new AddFriendDialogFragment().show(getFragmentManager(), "addFriend");
         } else if (id == R.id.action_social_refresh) {
             reloadFriendsList();
@@ -261,6 +273,17 @@ public class FragmentSocial extends Fragment {
     private class FriendsListListener implements View.OnClickListener, View.OnLongClickListener {
         @Override
         public void onClick(View v) {
+            // DialogFragment.show() will take care of adding the fragment
+            // in a transaction.  We also want to remove any currently showing
+            // dialog, so make our own transaction and take care of that here.
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            Fragment prev = getFragmentManager().findFragmentByTag("detailFriend");
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+
+            // Create and show the dialog.
             DetailFriendDialogFragment detailsDialog =
                     new DetailFriendDialogFragment((String) v.getTag());
             detailsDialog.show(getFragmentManager(), "detailFriend");
@@ -268,6 +291,17 @@ public class FragmentSocial extends Fragment {
 
         @Override
         public boolean onLongClick(View v) {
+            // DialogFragment.show() will take care of adding the fragment
+            // in a transaction.  We also want to remove any currently showing
+            // dialog, so make our own transaction and take care of that here.
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            Fragment prev = getFragmentManager().findFragmentByTag("deleteFriend");
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+
+            // Create and show the dialog.
             DeleteFriendDialogFragment deleteDialog =
                     new DeleteFriendDialogFragment((String) v.getTag(), v);
             deleteDialog.show(getFragmentManager(), "deleteFriend");
@@ -550,14 +584,14 @@ public class FragmentSocial extends Fragment {
     }
 
     private class TaskGetFriendDetails extends AsyncTask<Void, Void, Pair<Statistic, Statistic>> {
-        DialogFragment dialog;
+        DialogFragment mDialog;
         View view;
         String friendName;
         User friend;
         boolean hasConnection = true;
 
         protected TaskGetFriendDetails(DialogFragment dialog, View view, String friend) {
-            this.dialog = dialog;
+            this.mDialog = dialog;
             this.view = view;
             this.friendName = friend;
         }
@@ -604,7 +638,7 @@ public class FragmentSocial extends Fragment {
                     reload();
                 } else
                     Toast.makeText(getActivity(), getResources().getString(R.string.error_no_connection), Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
+                mDialog.dismiss();
                 return;
             }
 
@@ -640,6 +674,34 @@ public class FragmentSocial extends Fragment {
             if (friendName.equals(AppFacade.getInstance().getUser().getName())) {
                 // user does not need a comparison
                 container.setVisibility(View.GONE);
+
+                // user maybe want to change his avatar from within his detail view
+                image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // DialogFragment.show() will take care of adding the fragment
+                        // in a transaction.  We also want to remove any currently showing
+                        // dialog, so make our own transaction and take care of that here.
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        Fragment prev = getFragmentManager().findFragmentByTag("AvatarDialog");
+                        if (prev != null) {
+                            ft.remove(prev);
+                        }
+                        ft.addToBackStack(null);
+
+                        // Create and show the dialog.
+                        final DialogAvatarSelection dialog = new DialogAvatarSelection(new DialogAvatarSelection.AvatarSelectionListener() {
+                            @Override
+                            public void onCloseDialog() {
+                                ((MainActivity) getActivity()).reloadData();
+
+                                // also dismiss detail friend dialog, so image is reloaded
+                                mDialog.dismiss();
+                            }
+                        });
+                        dialog.show(getFragmentManager(), "AvatarDialog");
+                    }
+                });
             } else {
                 // Make Diagram
                 // Data for user
