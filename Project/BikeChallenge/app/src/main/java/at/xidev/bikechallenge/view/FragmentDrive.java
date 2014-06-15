@@ -328,6 +328,7 @@ public class FragmentDrive extends Fragment {
                                 timeNew = System.currentTimeMillis();
                                 timeOld = timeNew;
 
+
                                 //Start Marker
                                 googleMap.addMarker(new MarkerOptions()
                                         .position(positionlist.get(0))
@@ -447,7 +448,7 @@ public class FragmentDrive extends Fragment {
                         //End Marker
                         googleMap.addMarker(new MarkerOptions()
                                 .position(positionlist.get(positionlist.size() - 1))
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ziel)));
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.finish)));
 
                         endTimeDate = new Date();
                         //stop stopwatch
