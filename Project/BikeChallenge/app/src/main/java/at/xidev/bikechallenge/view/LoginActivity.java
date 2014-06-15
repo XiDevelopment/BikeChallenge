@@ -33,7 +33,7 @@ import at.xidev.bikechallenge.tools.Sha1;
 
 /**
  * A login screen that offers login via username/password.
-
+ * @author Rick Spiegl / XiDev
  */
 public class LoginActivity extends Activity {
     /**
