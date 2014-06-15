@@ -24,8 +24,8 @@
     <string name="drive_continue_tracking">Nein</string>
     <string name="drive_yes">Ja</string>
     <string name="drive_no">Nein</string>
-    <string name="drive_start">starten</string>
-    <string name="drive_stop">beenden</string>
+    <string name="drive_start">Starten</string>
+    <string name="drive_stop">Beenden</string>
     <string name="drive_currently_tracking">Aufzeichnung läuft&#8230;</string>
     <string name="drive_route">Route</string>
     <string name="drive_save_route_question">Route speichern?</string>

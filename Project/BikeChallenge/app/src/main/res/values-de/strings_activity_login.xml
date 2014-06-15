@@ -9,7 +9,7 @@
     <string name="action_login_register">Registrieren</string>
 
     <string name="error_invalid_username">Benutzername ungültig</string>
-    <string name="error_invalid_password">Dieses Passwort ist ungültig (Mindestens 5 Zeichen und davon mindestens eine Zahl</string>
+    <string name="error_invalid_password">Dieses Passwort ist ungültig (Mindestens 4 Zeichen)</string>
     <string name="error_incorrect_password">Dieses Passwort ist falsch</string>
     <string name="error_field_required">Dies ist ein Pflichtfeld</string>
     <string name="error_no_connection">Es besteht keine Verbindung zum Server</string>

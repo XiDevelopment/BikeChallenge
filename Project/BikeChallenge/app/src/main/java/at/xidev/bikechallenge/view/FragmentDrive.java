@@ -191,9 +191,9 @@ public class FragmentDrive extends Fragment {
         TextView score = (TextView) getActivity().findViewById(R.id.tv_userpoints);
         name.setText(AppFacade.getInstance().getUser().getName());
         if (AppFacade.getInstance().getUser().getScore() == 1) {
-            score.setText(AppFacade.getInstance().getUser().getScore() + getString(R.string.drive_point));
+            score.setText(AppFacade.getInstance().getUser().getScore() + " " + getString(R.string.drive_point));
         } else{
-            score.setText(AppFacade.getInstance().getUser().getScore() + getString(R.string.drive_points));
+            score.setText(AppFacade.getInstance().getUser().getScore() + " " + getString(R.string.drive_points));
         }
     }
 
