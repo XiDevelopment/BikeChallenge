@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- strings for economy tab -->
+    <string name="charts_economy">Einsparung</string>
+    <string name="charts_economy_emissions">Geschätzte CO2 Einsparung:</string>
+    <string name="charts_economy_fuel">Geschätzte Treibstoff Einsparung:</string>
+
+    <!-- strings for times tab -->
+    <string name="charts_time">Zeiten</string>
+    <string name="charts_time_avg">Durchschnittliche Aufzeichnungsdauer:</string>
+    <string name="charts_time_longest">Längste Aufzeichnungsdauer:</string>
+    <string name="charts_time_total">Gesamte Aufzeichnungsdauer:</string>
+    <string name="charts_time_last7days">Zeiten der letzten 7 Tage:</string>
+
+    <!-- strings for distance tab -->
+    <string name="charts_distances">Entfernungen</string>
+    <string name="charts_distances_avg">Durchschnittliche Entfernung:"</string>
+    <string name="charts_distances_longest">Längste Entfernung:</string>
+    <string name="charts_distances_total">Gesamte Entfernung:</string>
+    <string name="charts_distances_last7days">Entfernungen der letzten 7 Tage:</string>
+
+    <!-- strings for global tab -->
+    <string name="charts_global">Alle Benutzer</string>
+    <string name="charts_global_desc">Dies sind die Werte für alle Benutzer zusammengezählt.</string>
+    <string name="charts_global_emissions">Geschätzte CO2 Einsparung:</string>
+    <string name="charts_global_fuel">Geschätzte Treibstoff Einsparung:</string>
+    <string name="charts_global_time">Gesamte Aufzeichnungsdauer:</string>
+    <string name="charts_global_distance">Gesamte Entfernung:</string>
+
+    <!-- metric strings -->
+    <string name="charts_distance_metric">km</string>
+    <string name="charts_emission_metric">g CO2</string>
+    <string name="charts_emission_metric_kg">kg CO2</string>
+    <string name="charts_emission_metric_t">t CO2</string>
+    <string name="charts_fuel_metric">Euro</string>
+</resources>

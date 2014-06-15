@@ -27,7 +27,7 @@
     <!-- Answer Request -->
     <string name="social_request_ok">accepted</string>
     <string name="social_request_cancel">rejected</string>
-    <string name="social_request_error">There was an error...</string>
+    <string name="social_request_error">There was an error&#8230;</string>
 
     <!-- Detail Friend Fragment -->
     <string name="social_detail_graph_user">you</string>
@@ -40,7 +40,7 @@
     <string name="social_detail_distance">Distance:</string>
     <string name="social_detail_distance_val"> km</string>
     <string name="social_detail_emission">Emissions:</string>
-    <string name="social_detail_emission_val"> g CO\u00b2</string>
+    <string name="social_detail_emission_val"> g CO2</string>
     <string name="social_detail_time">Time:</string>
-    <string name="social_detail_error">There was an error...</string>
+    <string name="social_detail_error">There was an error&#8230;</string>
 </resources>

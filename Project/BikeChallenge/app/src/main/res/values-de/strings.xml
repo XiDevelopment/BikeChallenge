@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">BikeChallenge</string>
+    <string name="title_section_drive">Fahren</string>
+    <string name="title_section_social">Freunde</string>
+    <string name="title_section_charts">Statistik</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_log_out">Abmelden</string>
+
+    <string name="closing_BikeChallenge">BikeChallenge beenden</string>
+    <string name="close_BikeChallenge_question">BikeChallenge wirklich beenden?</string>
+    <string name="close_BikeChallenge_yes">Ja</string>
+    <string name="close_BikeChallenge_no">Nein</string>
+
+</resources>

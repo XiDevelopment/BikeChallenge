@@ -5,8 +5,8 @@
     <string name="charts_economy_emissions">Estimated CO2 savings:</string>
     <string name="charts_economy_fuel">Estimated fuel savings:</string>
 
-    <!-- strings for time tab -->
-    <string name="charts_time">Time</string>
+    <!-- strings for times tab -->
+    <string name="charts_time">Times</string>
     <string name="charts_time_avg">Average time tracking:</string>
     <string name="charts_time_longest">Longest trip time:</string>
     <string name="charts_time_total">Total time tracking:</string>
@@ -29,7 +29,7 @@
 
     <!-- metric strings -->
     <string name="charts_distance_metric">km</string>
-    <string name="charts_emission_metric">g CO\u00b2</string>
+    <string name="charts_emission_metric">g CO2</string>
     <string name="charts_emission_metric_kg">kg CO2</string>
     <string name="charts_emission_metric_t">t CO2</string>
     <string name="charts_fuel_metric">Euro</string>

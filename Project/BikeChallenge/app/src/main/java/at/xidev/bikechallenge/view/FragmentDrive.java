@@ -49,7 +49,7 @@ import at.xidev.bikechallenge.model.User;
 
 
 /**
- * Created by Michael Staudacher on 06.05.2014.
+ * The tracking Screen
  */
 public class FragmentDrive extends Fragment {
     private LocationManager locationManager;//Manager (to get the locations)
@@ -151,7 +151,7 @@ public class FragmentDrive extends Fragment {
         textViewDistance = (TextView) rootView.findViewById(R.id.tv_distance);
         textViewTime = (TextView) rootView.findViewById(R.id.tv_time);
         textViewSpeed = (TextView) rootView.findViewById(R.id.tv_speed);
-        //routeDetailsView = inflater.inflate(R.layout.fragment_drive_route_details, null);
+        //start/stop button
         startButton = (Button) rootView.findViewById(R.id.button_start);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,7 +178,11 @@ public class FragmentDrive extends Fragment {
         TextView name = (TextView) getActivity().findViewById(R.id.tv_name);
         TextView score = (TextView) getActivity().findViewById(R.id.tv_userpoints);
         name.setText(AppFacade.getInstance().getUser().getName());
-        score.setText(AppFacade.getInstance().getUser().getScore() + getString(R.string.drive_points_unit));
+        if (AppFacade.getInstance().getUser().getScore() == 1) {
+            score.setText(AppFacade.getInstance().getUser().getScore() + getString(R.string.drive_point));
+        } else{
+            score.setText(AppFacade.getInstance().getUser().getScore() + getString(R.string.drive_points));
+        }
     }
 
 
@@ -228,7 +232,6 @@ public class FragmentDrive extends Fragment {
 
                 notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                //PendingIntent pendingIntent = PendingIntent.getActivity(ctx, NOT_USED, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 1, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
@@ -497,7 +500,6 @@ public class FragmentDrive extends Fragment {
 
         private final Route mRoute;
         private User user = null;
-        private Thread t;
 
         private boolean hasConnection = true;
 
@@ -558,14 +560,14 @@ public class FragmentDrive extends Fragment {
         String avspeed;
         String co2;
         String points;
-        DecimalFormat df = new DecimalFormat("0.00");
+
 
         public RouteDialogFragment(Route route) {
             this.distance = getDistanceString();
             this.time = getDriveTimeString(route.getStopTime().getTime() - route.getStartTime().getTime());
-            this.avspeed = calculateAverageSpeedString(route.getDistance(), (route.getStopTime().getTime() - route.getStartTime().getTime()));
-            this.co2 = "" + df.format(route.getDistance() * 0.185) + "g";
-            this.points = "" + ((int) (route.getDistance() / 200));
+            this.avspeed = getAverageSpeedString(route.getDistance(), (route.getStopTime().getTime() - route.getStartTime().getTime()));
+            this.co2 = getCO2String(route.getDistance());
+            this.points = getPointsString(route.getDistance());
             this.route = route;
         }
 
@@ -664,9 +666,20 @@ public class FragmentDrive extends Fragment {
         return timeString;
     }
 
-    private String calculateAverageSpeedString(float dist, long time) {
+    private String getCO2String(float distance){
+        DecimalFormat df = new DecimalFormat("0.00");
+        String co2String = "" + df.format(distance * 0.185) + getString(R.string.drive_co2_unit);
+        return co2String;
+    }
+
+    private String getAverageSpeedString(float dist, long time) {
         int avSpeed = (int) ((dist / (time / 1000)) * 3.6);
         return "" + avSpeed + getString(R.string.drive_speed_unit);
+    }
+
+    private String getPointsString(float distance){
+        String pointsString = "" + ((int) (distance / 200));
+        return pointsString;
     }
 
     public void reload() {
@@ -682,8 +695,11 @@ public class FragmentDrive extends Fragment {
 
         // Update score
         TextView score = (TextView) rootView.findViewById(R.id.tv_userpoints);
-        score.setText(user.getScore() + " points");
+        if (user.getScore() == 1) {
+            score.setText(user.getScore() + getString(R.string.drive_point));
+        } else{
+            score.setText(user.getScore() + getString(R.string.drive_points));
+        }
     }
-
 
 }

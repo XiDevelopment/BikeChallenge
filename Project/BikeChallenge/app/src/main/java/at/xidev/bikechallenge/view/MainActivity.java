@@ -130,15 +130,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public void onBackPressed() {
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle("Closing BikeChallenge")
-                .setMessage("Are you sure you want to close BikeChallenge?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setTitle(getString(R.string.closing_BikeChallenge))
+                .setMessage(getString(R.string.close_BikeChallenge_question))
+                .setPositiveButton(getString(R.string.close_BikeChallenge_yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
                     }
                 })
-                .setNegativeButton("No", null)
+                .setNegativeButton(getString(R.string.close_BikeChallenge_no), null)
                 .show();
     }
 

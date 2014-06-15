@@ -101,6 +101,17 @@
             android:gravity="center"
             android:textSize="36sp"
             android:layout_marginBottom="@dimen/default_margin" />
+
+        <TextView
+            android:id="@+id/tv_change_image"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/default_margin"
+            android:textSize="10sp"
+            android:text="@string/drive_change_image" />
+
     </RelativeLayout>
 
     <Button
