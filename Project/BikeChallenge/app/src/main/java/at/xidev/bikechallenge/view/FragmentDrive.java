@@ -561,7 +561,7 @@ public class FragmentDrive extends Fragment {
         lock.reenableKeyguard();
     }
 
-    /*
+    /**
      * Show detailed information of the route and allows to save the root
      */
     private class RouteDialogFragment extends DialogFragment {
