@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="social_score">Punkte</string>
+    <string name="social_score_one">Punkt</string>
     <string name="social_rank">Rang</string>
 
     <!-- fragment_social.xml -->
