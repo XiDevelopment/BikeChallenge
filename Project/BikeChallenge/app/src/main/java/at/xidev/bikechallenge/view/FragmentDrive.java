@@ -30,7 +30,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -38,25 +37,20 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 import at.xidev.bikechallenge.core.AppFacade;
 import at.xidev.bikechallenge.model.Route;
 import at.xidev.bikechallenge.model.User;
-
 
 /**
  * The tracking Screen
  */
 public class FragmentDrive extends Fragment {
     private LocationManager locationManager;//Manager (to get the locations)
-    private String positionProvider;        //GPS or Network Provider
     private boolean gpsEnabled = false;     //GPS allowed on Phone
-    private boolean networkEnabled = false; //Network Locaton allowed on Phone
     private float distance = 0f;            //distance of the current route
     private float tempDistance;             //distance between the last two gps coordinates
     private boolean isTracking = false;     //true if currently tracking
@@ -67,11 +61,6 @@ public class FragmentDrive extends Fragment {
     private TextView textViewDistance;      //textview: distance
     private TextView textViewTime;          //textview: time
     private TextView textViewSpeed;         //textview: speed
-    private TextView textViewRouteDistance; //textview: distance (at save route)
-    private TextView textViewRouteTime;     //textview: time (at save route)
-    private TextView textViewRouteAVSpeed;  //textview: avspeed (at save route)
-    private TextView textViewRouteCO2;      //textview: co2 (at save route)
-    private TextView textViewRoutePoints;   //textview: points (at save route)
     private Button startButton;             //start/stop button
     private Handler handler;                //handler (for stopwatch)
     private Runnable runnableStopwatch;     //runnable (for stopwatch)
@@ -87,31 +76,28 @@ public class FragmentDrive extends Fragment {
     private static final long minTime = 500;//ms (for GPS tracking)
     private static final float minDistance = 2;//meter (for GPS tracking)
     private LocationListener locationListener;//listener: tracks route
-    private Location location;              //position before tracking (network pos. or static pos.)
-    private LatLng now;                     //LatLng of position before tracking
     private ArrayList<LatLng> positionlist; //Arraylist with all tracked LatLng
     private SaveRouteTask mSaveRouteTask = null;//task to save route to server
     private NotificationManager notificationManager;//notification manager for tracking notification
-    private String timeString;              //tracking time as String
-    private String meterString;             //tracked meters as String
     private RouteDialogFragment detailsDialog;//dialog to show and save route
-    private View rootView;
+    private View rootView;                  // root view
 
 
     public static FragmentDrive newInstance() {
-        FragmentDrive fragment = new FragmentDrive();
-        return fragment;
+        return new FragmentDrive();
     }
-
 
     public FragmentDrive() {
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_drive, container, false);
+        String positionProvider;        //GPS or Network Provider
+        boolean networkEnabled;         //Network Locaton allowed on Phone
+        Location location;              //position before tracking (network pos. or static pos.)
+        LatLng now;                     //LatLng of position before tracking
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
@@ -119,9 +105,7 @@ public class FragmentDrive extends Fragment {
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // DialogFragment.show() will take care of adding the fragment
-                // in a transaction.  We also want to remove any currently showing
-                // dialog, so make our own transaction and take care of that here.
+                //fragment
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 Fragment prev = getFragmentManager().findFragmentByTag("AvatarDialog");
                 if (prev != null) {
@@ -129,13 +113,14 @@ public class FragmentDrive extends Fragment {
                 }
                 ft.addToBackStack(null);
 
-                // Create and show the dialog.
+                //create and show the dialog.
                 DialogAvatarSelection dialog = new DialogAvatarSelection(new DialogAvatarSelection.AvatarSelectionListener() {
                     @Override
                     public void onCloseDialog() {
                         ((MainActivity) getActivity()).reloadData();
                     }
                 });
+                //show dialog
                 dialog.show(getFragmentManager(), "AvatarDialog");
             }
         });
@@ -148,10 +133,10 @@ public class FragmentDrive extends Fragment {
             //if network position disabled: set position to a static position
             now = new LatLng(47.2641, 11.3445); //UNI
         } else {
-            positionProvider = locationManager.NETWORK_PROVIDER;
+            positionProvider = LocationManager.NETWORK_PROVIDER;
             location = locationManager.getLastKnownLocation(positionProvider);
 
-            //Coordinates of current Position (Network)
+            //coordinates of current Position (Network)
             now = new LatLng(location.getLatitude(), location.getLongitude());
         }
 
@@ -187,12 +172,14 @@ public class FragmentDrive extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        //set name and score
         TextView name = (TextView) getActivity().findViewById(R.id.tv_name);
         TextView score = (TextView) getActivity().findViewById(R.id.tv_userpoints);
         name.setText(AppFacade.getInstance().getUser().getName());
+        //point (if 1) or points (if more)
         if (AppFacade.getInstance().getUser().getScore() == 1) {
             score.setText(AppFacade.getInstance().getUser().getScore() + " " + getString(R.string.drive_point));
-        } else{
+        } else {
             score.setText(AppFacade.getInstance().getUser().getScore() + " " + getString(R.string.drive_points));
         }
     }
@@ -200,6 +187,7 @@ public class FragmentDrive extends Fragment {
 
     @Override
     public void onDestroy() {
+        //stop everything which runs and should be closed afterwards
         if (isTracking) {
             //remove locationlistener (if started)
             locationManager.removeUpdates(locationListener);
@@ -216,7 +204,9 @@ public class FragmentDrive extends Fragment {
     }
 
 
-    //START BUTTON
+    /**
+     * START BUTTON
+     */
     public void startButton(final View view) {
 
         //if tracking was not running before
@@ -226,8 +216,9 @@ public class FragmentDrive extends Fragment {
 
             if (gpsEnabled) {
 
-                isTracking = true;
-                googleMap.clear();
+                isTracking = true; //tracking runs now
+                googleMap.clear(); // clear map
+                //set textviews
                 textViewDistance.setTextSize(20);
                 textViewDistance.setText(getString(R.string.drive_searching_for_gps));
                 textViewTime.setText(getString(R.string.drive_empty_time));
@@ -312,7 +303,6 @@ public class FragmentDrive extends Fragment {
                                         long time = System.currentTimeMillis() - startTime;
 
                                         textViewTime.setText(getDriveTimeString(time));
-                                        //textViewRouteTime.setText(timeString);
 
                                         //user not moving (no new gps coordinates)
                                         if ((System.currentTimeMillis() - timeNew) > 8000) {
@@ -545,6 +535,9 @@ public class FragmentDrive extends Fragment {
         }
     }
 
+    /**
+     * Disables the autolock (turn off) of the screen
+     */
     @SuppressWarnings({"deprecation"})
     public void disableAutoLock() {
         KeyguardManager keyguardManager;
@@ -555,6 +548,9 @@ public class FragmentDrive extends Fragment {
         lock.disableKeyguard();
     }
 
+    /**
+     * Enables the autolock
+     */
     @SuppressWarnings({"deprecation"})
     public void enableAutoLock() {
         KeyguardManager keyguardManager;
@@ -565,6 +561,9 @@ public class FragmentDrive extends Fragment {
         lock.reenableKeyguard();
     }
 
+    /**
+     * Show detailed information of the route and allows to save the root
+     */
     private class RouteDialogFragment extends DialogFragment {
         //User friend;
         Route route;
@@ -574,7 +573,6 @@ public class FragmentDrive extends Fragment {
         String co2;
         String points;
 
-
         public RouteDialogFragment(Route route) {
             this.distance = getDistanceString();
             this.time = getDriveTimeString(route.getStopTime().getTime() - route.getStartTime().getTime());
@@ -583,7 +581,6 @@ public class FragmentDrive extends Fragment {
             this.points = getPointsString(route.getDistance());
             this.route = route;
         }
-
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -596,6 +593,11 @@ public class FragmentDrive extends Fragment {
             View view = inflater.inflate(R.layout.fragment_drive_route_details, null);
 
             //get views
+            TextView textViewRouteDistance; //textview: distance
+            TextView textViewRouteTime;     //textview: time
+            TextView textViewRouteAVSpeed;  //textview: avspeed
+            TextView textViewRouteCO2;      //textview: co2
+            TextView textViewRoutePoints;   //textview: points
             textViewRouteDistance = (TextView) view.findViewById(R.id.tv_route_distance);
             textViewRouteTime = (TextView) view.findViewById(R.id.tv_route_time);
             textViewRouteAVSpeed = (TextView) view.findViewById(R.id.tv_route_avspeed);
@@ -630,7 +632,12 @@ public class FragmentDrive extends Fragment {
         }
     }
 
+    /**
+     * Get distance as String
+     * @return distance
+     */
     private String getDistanceString() {
+        String meterString;             //tracked meters as String
         if (distance > 0) {
             if (distance < 1000) {
                 return ((int) distance + getString(R.string.drive_distance_unit1));
@@ -654,8 +661,13 @@ public class FragmentDrive extends Fragment {
         }
     }
 
+    /**
+     * get tracking time as String
+     * @param time = tracking time
+     * @return time
+     */
     private String getDriveTimeString(long time) {
-
+        String timeString;  //tracking time as String
         int sec = (int) ((time / 1000) % 60);
         int min = (int) ((time / 60000) % 60);
         int h = (int) (time / 3600000);
@@ -679,22 +691,39 @@ public class FragmentDrive extends Fragment {
         return timeString;
     }
 
-    private String getCO2String(float distance){
+    /**
+     * get CO2 as String
+     * @param distance = distance of the route
+     * @return co2
+     */
+    private String getCO2String(float distance) {
         DecimalFormat df = new DecimalFormat("0.00");
-        String co2String = "" + df.format(distance * 0.185) + getString(R.string.drive_co2_unit);
-        return co2String;
+        return "" + df.format(distance * 0.185) + getString(R.string.drive_co2_unit);
     }
 
+    /**
+     * calculates the average speed
+     * @param dist = distance of the route
+     * @param time = time of the route
+     * @return average speed
+     */
     private String getAverageSpeedString(float dist, long time) {
         int avSpeed = (int) ((dist / (time / 1000)) * 3.6);
         return "" + avSpeed + getString(R.string.drive_speed_unit);
     }
 
-    private String getPointsString(float distance){
-        String pointsString = "" + ((int) (distance / 200));
-        return pointsString;
+    /**
+     * calculates the points for the route
+     * @param distance = = distance of the route
+     * @return points
+     */
+    private String getPointsString(float distance) {
+        return "" + ((int) (distance / 200));
     }
 
+    /**
+     * reload (to actualise points)
+     */
     public void reload() {
         User user = AppFacade.getInstance().getUser();
 
@@ -709,9 +738,9 @@ public class FragmentDrive extends Fragment {
         // Update score
         TextView score = (TextView) rootView.findViewById(R.id.tv_userpoints);
         if (user.getScore() == 1) {
-            score.setText(user.getScore() +" " + getString(R.string.drive_point));
-        } else{
-            score.setText(user.getScore() +" " + getString(R.string.drive_points));
+            score.setText(user.getScore() + " " + getString(R.string.drive_point));
+        } else {
+            score.setText(user.getScore() + " " + getString(R.string.drive_points));
         }
     }
 

@@ -145,7 +145,11 @@ public class FragmentSocial extends Fragment {
             // Set values
             friendView.setTag(friend.getName());
             name.setText(friend.getName());
-            score.setText(friend.getScore().toString() + " " + getResources().getString(R.string.social_score));
+            if (friend.getScore() == 1) {
+                score.setText(friend.getScore().toString() + " " + getResources().getString(R.string.social_score_one));
+            } else {
+                score.setText(friend.getScore().toString() + " " + getResources().getString(R.string.social_score));
+            }
             rank.setText(getResources().getString(R.string.social_rank) + ": " + rankCounter);
             image.setImageDrawable(AppFacade.getInstance().getAvatar(friend.getAvatar(), getActivity()));
 
@@ -227,7 +231,11 @@ public class FragmentSocial extends Fragment {
         // Set values
         userView.setTag(user.getName());
         name.setText(user.getName());
-        score.setText(user.getScore().toString() + " " + getResources().getString(R.string.social_score));
+        if (user.getScore() == 1) {
+            score.setText(user.getScore().toString() + " " + getResources().getString(R.string.social_score_one));
+        } else {
+            score.setText(user.getScore().toString() + " " + getResources().getString(R.string.social_score));
+        }
         rank.setText(getResources().getString(R.string.social_rank) + ": " + rankCounter);
         image.setImageDrawable(AppFacade.getInstance().getAvatar(user.getAvatar(), getActivity()));
 
